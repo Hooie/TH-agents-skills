@@ -1,6 +1,6 @@
 # TH-agent-skills
 
-과제를 문제 정의부터 작업 분해, 검증, 인계까지 순서대로 진행하기 위한 [Agent Skills] 모음입니다. 게임 클라이언트(C++, 언리얼 엔진 5) 개발용 스킬도 함께 들어 있습니다. 직접 만든 스킬 6개와, 라이선스를 확인하고 가져온 오픈소스 스킬 11개로 이루어져 있습니다.
+과제를 문제 정의부터 작업 분해, 검증, 인계까지 순서대로 진행하기 위한 [Agent Skills](https://agentskills.io) 모음입니다. 게임 클라이언트(C++, 언리얼 엔진 5) 개발용 스킬도 함께 들어 있습니다. 직접 만든 스킬 6개와, 라이선스를 확인하고 가져온 오픈소스 스킬 11개로 이루어져 있습니다.
 
 같은 `SKILL.md` 형식을 Claude Code와 Codex가 모두 읽습니다. 두 도구는 스킬 폴더 위치만 다릅니다.
 
@@ -8,7 +8,7 @@
 
 ## 스킬 세트
 
-필요한 세트만 골라 설치합니다. 언리얼 작업이 없는 환경에서는 `core`만 설치하는 것을 권장합니다. 쓰지 않는 스킬도 설명이 에이전트의 스킬 목록에 들어가 자리를 차지하기 때문입니다.
+필요한 세트만 골라 설치합니다. 언리얼 작업이 없는 환경(예: 클라우드 평가 환경)에서는 `core`만 설치하는 것을 권장합니다. 쓰지 않는 스킬도 설명이 에이전트의 스킬 목록에 들어가 자리를 차지하기 때문입니다.
 
 ### core — 과제 진행 공통
 
@@ -47,9 +47,9 @@
 ### 방법 1. 설치 스크립트 (macOS, Linux, Git Bash, 클라우드 터미널)
 
 ```bash
-git clone --depth 1 https://github.com/Hooie/my-agent-skills.git
-bash my-agent-skills/scripts/install.sh core                          # Codex 개인 폴더(~/.agents/skills)에 core 설치
-bash my-agent-skills/scripts/install.sh core,cpp,unreal ~/.claude/skills   # Claude Code 개인 폴더에 전부 설치
+git clone --depth 1 https://github.com/Hooie/TH-agents-skills.git
+bash TH-agents-skills/scripts/install.sh core                          # Codex 개인 폴더(~/.agents/skills)에 core 설치
+bash TH-agents-skills/scripts/install.sh core,cpp,unreal ~/.claude/skills   # Claude Code 개인 폴더에 전부 설치
 ```
 
 세트는 `core`, `cpp`, `unreal`, `all` 중에서 쉼표로 골라 씁니다. 두 번째 인자로 설치 폴더를 바꿀 수 있습니다.
@@ -57,9 +57,9 @@ bash my-agent-skills/scripts/install.sh core,cpp,unreal ~/.claude/skills   # Cla
 ### 방법 2. skills CLI (Node.js 필요, Windows 포함)
 
 ```bash
-npx skills add Hooie/my-agent-skills --list                                  # 목록 보기
-npx skills add Hooie/my-agent-skills -a codex -g -y --skill problem-framing task-breakdown explain-as-you-go session-handoff verification-before-completion systematic-debugging test-driven-development
-npx skills add Hooie/my-agent-skills -a claude-code -g -y                     # Claude Code에 전부
+npx skills add Hooie/TH-agents-skills --list                                  # 목록 보기
+npx skills add Hooie/TH-agents-skills -a codex -g -y --skill problem-framing task-breakdown explain-as-you-go session-handoff verification-before-completion systematic-debugging test-driven-development
+npx skills add Hooie/TH-agents-skills -a claude-code -g -y                     # Claude Code에 전부
 ```
 
 `-g`를 빼면 현재 프로젝트 폴더에 설치됩니다.
@@ -80,8 +80,8 @@ Windows에서 `~`는 `C:\Users\<사용자 이름>`입니다.
 스킬은 요청이 설명과 맞을 때만 불립니다. 대안 비교 규칙과 작업 순서를 매번 지키게 하려면 [templates/AGENTS.md](templates/AGENTS.md)를 전역 지시 파일에 넣습니다. 기존 내용은 그대로 두고 이 블록만 넣거나 바꿉니다.
 
 ```bash
-bash my-agent-skills/scripts/install-rules.sh codex    # ~/.codex/AGENTS.md
-bash my-agent-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
+bash TH-agents-skills/scripts/install-rules.sh codex    # ~/.codex/AGENTS.md
+bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 ```
 
 ## 사용
