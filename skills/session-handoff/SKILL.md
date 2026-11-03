@@ -4,7 +4,7 @@ description: 새 세션으로 바꾸기 전, 대화를 요약(compact)하기 전
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Session Handoff
@@ -59,6 +59,7 @@ metadata:
 
 - 성공 기준마다 충족 여부와 근거(테스트 결과, 측정값, 화면)를 NOTES.md에 적었다.
 - 충족하지 못한 기준은 숨기지 않고 이유와 남은 작업을 적었다.
+- 성공 기준 문구가 problem-framing에서 정한 원문과 같다. 바뀌었다면 사용자 승인과 이유가 결정 로그에 있다.
 - 주요 결정마다 검토한 안, 고른 이유, 버린 안과 이유가 결정 로그에 있다.
 - README의 실행 방법을 방금 직접 실행해 봤다.
 - `git status`가 깨끗하고, 커밋 기록만 봐도 작업 순서가 보인다.
