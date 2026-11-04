@@ -14,7 +14,7 @@
 2. task-breakdown으로 작업을 나누고, 작업마다 대안 비교 → 사용자 선택 → 지시문 → 테스트 → 구현 → 점검(정확성, 스펙 대조, API 실재 여부) → 검증을 한 번에 하나씩 한다.
 3. 구현하는 내내 explain-as-you-go를 따른다. 자동 테스트가 가능한 작업은 test-driven-development, 버그와 테스트 실패는 systematic-debugging, C++ diff 확인은 game-client-review를 쓴다.
 4. "완료"라고 말하기 전에 verification-before-completion을 따른다.
-5. 세션을 바꾸거나 제출하기 전에 session-handoff를 쓴다.
+5. 세션을 바꾸거나 제출하기 전에는 인계 문서를 직접 쓰지 않는다. session-handoff를 부르라고 안내하고(Codex는 `$session-handoff`, Claude Code는 `/session-handoff`) 사용자의 명령을 기다린다. "인계 문서 정리해 줘"처럼 말로만 요청해도 같다.
 
 ### 묻고 나서 시작하기
 
