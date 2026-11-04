@@ -41,6 +41,15 @@ Use for ANY technical issue:
 - You're in a hurry (rushing guarantees rework)
 - Manager wants it fixed NOW (systematic is faster than thrashing)
 
+## my-agent-skills에서 더한 규칙
+
+mattpocock/skills의 diagnosing-bugs를 참고해 더한 규칙이다. 아래 네 단계와 함께 따른다.
+
+1. **재현 명령부터 만든다.** Phase 1에서 원인을 추측하기 전에, 이 버그에서 실패하는 명령 하나(테스트, 스크립트, 실행 인자)를 만들고 한 번 실행해 출력을 보여 준다. 이 명령은 사용자가 말한 증상을 그대로 확인하고, 매번 같은 결과를 내고, 몇 초 안에 끝나고, 사람 손 없이 실행되어야 한다. 이런 명령이 없으면 가설로 넘어가지 않는다. 만들 수 없으면 시도한 방법을 적고 재현 환경이나 로그를 사용자에게 요청한다.
+2. **가설은 3~5개를 순위와 함께 보여 준다.** Phase 3에서 첫 번째로 떠오른 가설 하나만 붙잡지 않는다. "X가 원인이면 Y를 바꿨을 때 버그가 사라진다"처럼 확인할 수 있는 가설 3~5개를 그럴듯한 순서로 적어 사용자에게 보여 주고, 순위를 바꾸거나 이미 확인한 것을 알려 줄 수 있게 한 번 묻고 멈춘다. 답을 받으면 순위대로 하나씩 검증한다. 검증은 아래 "Form Single Hypothesis"와 "Test Minimally" 규칙대로 한 번에 하나씩 한다.
+3. **디버그 로그에는 표시를 붙인다.** 임시 로그는 `[DEBUG-a4f2]`처럼 고유한 표시로 시작한다. 끝나면 그 표시로 검색해 모두 지웠는지 확인한다.
+4. **수정 방법은 비교한다.** 원인을 찾은 뒤 고치는 방법은 explain-as-you-go 형식으로 대안을 비교하고 사용자가 고른다.
+
 ## The Four Phases
 
 You MUST complete each phase before proceeding to the next.
