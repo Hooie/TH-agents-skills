@@ -106,6 +106,7 @@ bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 ## 참고
 
 - 가져온 스킬 중 일부는 이 저장소에서 함께 쓰기 좋게 조금 고쳤습니다. 없는 스킬을 가리키는 참조 정리, 설명 보완 등이며 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 모두 적었습니다.
+- 일부 규칙은 [mattpocock/skills](https://github.com/mattpocock/skills)를 참고해 다시 썼습니다. 스킬 파일을 가져오지는 않았고, 참고한 곳은 THIRD_PARTY_NOTICES.md에 적었습니다.
 - 언리얼 스킬은 원본 저장소의 다른 `ue-*` 스킬을 가리키기도 합니다. 이 저장소에는 7개만 있어서, 각 스킬 맨 위에 그 사실과 대처 방법을 적어 두었습니다.
 - 언리얼 스킬은 원본 기준 UE 5.8입니다. 다른 버전에서는 API가 다를 수 있습니다.
 - `systematic-debugging/find-polluter.sh`와 `ue-performance/scripts/minidump_stack.py`는 에이전트가 필요할 때 실행하는 보조 스크립트입니다. 자동으로 실행되는 훅은 넣지 않았습니다.
