@@ -15,7 +15,7 @@
 | 스킬 | 출처 | 언제 쓰나 |
 | --- | --- | --- |
 | [problem-framing](skills/problem-framing/) | 직접 작성 · MIT | 여러 단계가 필요한 과제를 처음 받았을 때. 목표, 확인 질문, 가정, 수치 성공 기준, 범위 밖, 1순위 문제, 접근 방식 대안 비교를 NOTES.md에 정리한다 |
-| [task-breakdown](skills/task-breakdown/) | 직접 작성 · MIT | 문제 정의 직후. 30분 단위 작업으로 나누고, 작업마다 방법 대안 비교 → 지시문 → 테스트 → 구현 → 검증 → 커밋을 하나씩 한다 |
+| [task-breakdown](skills/task-breakdown/) | 직접 작성 · MIT | 문제 정의 직후. 30분 단위 작업으로 나누고, 작업마다 방법 대안 비교 → 지시문 → 테스트 → 구현 → 점검 → 검증을 하나씩 한다 |
 | [explain-as-you-go](skills/explain-as-you-go/) | 직접 작성 · MIT | 해결책을 낼 때와 구현하는 내내. 대안 비교와 추천, 고른 이유와 버린 이유, 복잡도, 엣지 케이스, 검증을 결정 로그에 남긴다 |
 | [session-handoff](skills/session-handoff/) | 직접 작성 · MIT | 세션 전환, compact, 제출 직전. 다른 사람이나 새 세션이 이어받을 수 있게 HANDOFF.md를 쓴다 |
 | [verification-before-completion](skills/verification-before-completion/) | obra/superpowers · MIT | "완료"라고 말하기 전. 검증 명령을 실행한 결과를 근거로 남긴다 |
@@ -26,7 +26,7 @@
 
 | 스킬 | 출처 | 언제 쓰나 |
 | --- | --- | --- |
-| [game-client-review](skills/game-client-review/) | 직접 작성 · MIT | AI나 다른 사람이 쓴 게임 클라이언트 C++ 코드를 머지 전에 검토할 때 |
+| [game-client-review](skills/game-client-review/) | 직접 작성 · MIT | AI나 다른 사람이 쓴 게임 클라이언트 C++ 코드를 반영하기 전에 검토할 때 |
 | [cpp-stress-test](skills/cpp-stress-test/) | 직접 작성 · MIT | C++ 알고리즘 문제. 제약에서 복잡도를 정하고 브루트포스와 랜덤 입력으로 대조한다 |
 | [cp-skills-cpp](skills/cp-skills-cpp/) | area44/cp-skills · MIT | C++ 코딩테스트 습관과 알고리즘 패턴 |
 
@@ -93,10 +93,10 @@ bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 ### 작업 흐름
 
 1. `problem-framing` — 질문, 가정, 성공 기준, 1순위 문제, 접근 방식 비교, NOTES.md
-2. `task-breakdown` — 작업 목록. 작업마다 방법 대안 비교 → 사용자 선택 → 지시문 → 테스트 → 구현 → 검증 → 커밋
+2. `task-breakdown` — 작업 목록. 작업마다 방법 대안 비교 → 사용자 선택 → 지시문 → 테스트 → 구현 → 점검(정확성, 스펙 대조, API 실재 여부) → 검증
 3. 구현 내내 `explain-as-you-go`. 자동 테스트가 되는 작업은 `test-driven-development`, 버그는 `systematic-debugging`, AI가 쓴 C++ diff는 `game-client-review`
 4. `verification-before-completion` — 성공 기준 전체 재확인
-5. `session-handoff` — HANDOFF.md, README 실행 확인, 마지막 커밋
+5. `session-handoff` — HANDOFF.md, README 실행 확인
 
 시작점이 다른 경우:
 - 알고리즘·코딩테스트 문제 하나 → `cpp-stress-test` (+ `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
