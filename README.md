@@ -1,6 +1,6 @@
 # TH-agent-skills
 
-과제를 문제 정의부터 작업 분해, 검증, 인계까지 순서대로 진행하기 위한 [Agent Skills](https://agentskills.io) 모음입니다. 게임 클라이언트(C++, 언리얼 엔진 5) 개발용 스킬도 함께 들어 있습니다. 직접 만든 스킬 6개와, 라이선스를 확인하고 가져온 오픈소스 스킬 11개로 이루어져 있습니다.
+기능 개발이나 버그 수정 같은 일을 문제 정의부터 작업 분해, 검증, 인계까지 순서대로 진행하기 위한 [Agent Skills](https://agentskills.io) 모음입니다. 게임 클라이언트(C++, 언리얼 엔진 5) 개발용 스킬도 함께 들어 있습니다. 직접 만든 스킬 6개와, 라이선스를 확인하고 가져온 오픈소스 스킬 11개로 이루어져 있습니다.
 
 같은 `SKILL.md` 형식을 Claude Code와 Codex가 모두 읽습니다. 두 도구는 스킬 폴더 위치만 다릅니다.
 
@@ -8,27 +8,27 @@
 
 ## 스킬 세트
 
-필요한 세트만 골라 설치합니다. 언리얼 작업이 없는 환경(예: 클라우드 평가 환경)에서는 `core`만 설치하는 것을 권장합니다. 쓰지 않는 스킬도 설명이 에이전트의 스킬 목록에 들어가 자리를 차지하기 때문입니다.
+필요한 세트만 골라 설치합니다. 언리얼 작업이 없는 환경(예: 클라우드 개발 환경)에서는 `core`만 설치하는 것을 권장합니다. 쓰지 않는 스킬도 설명이 에이전트의 스킬 목록에 들어가 자리를 차지하기 때문입니다.
 
-### core — 과제 진행 공통
+### core — 작업 진행 공통
 
 | 스킬 | 출처 | 언제 쓰나 |
 | --- | --- | --- |
-| [problem-framing](skills/problem-framing/) | 직접 작성 · MIT | 여러 단계가 필요한 과제를 처음 받았을 때. 목표, 확인 질문, 가정, 수치 성공 기준, 범위 밖, 1순위 문제, 접근 방식 대안 비교를 NOTES.md에 정리한다 |
+| [problem-framing](skills/problem-framing/) | 직접 작성 · MIT | 여러 단계가 필요한 작업을 처음 받았을 때. 목표, 확인 질문, 가정, 수치 성공 기준, 범위 밖, 1순위 문제, 접근 방식 대안 비교를 NOTES.md에 정리한다 |
 | [task-breakdown](skills/task-breakdown/) | 직접 작성 · MIT | 문제 정의 직후. 30분 단위 작업으로 나누고, 작업마다 방법 대안 비교 → 지시문 → 테스트 → 구현 → 점검 → 검증을 하나씩 한다 |
 | [explain-as-you-go](skills/explain-as-you-go/) | 직접 작성 · MIT | 해결책을 낼 때와 구현하는 내내. 대안 비교와 추천, 고른 이유와 버린 이유, 복잡도, 엣지 케이스, 검증을 결정 로그에 남긴다 |
-| [session-handoff](skills/session-handoff/) | 직접 작성 · MIT | 세션 전환, compact, 제출 직전. 다른 사람이나 새 세션이 이어받을 수 있게 HANDOFF.md를 쓴다 |
+| [session-handoff](skills/session-handoff/) | 직접 작성 · MIT | 세션 전환, compact, PR을 올리거나 작업을 넘기기 직전. 다른 사람이나 새 세션이 이어받을 수 있게 HANDOFF.md를 쓴다 |
 | [verification-before-completion](skills/verification-before-completion/) | obra/superpowers · MIT | "완료"라고 말하기 전. 검증 명령을 실행한 결과를 근거로 남긴다 |
 | [systematic-debugging](skills/systematic-debugging/) | obra/superpowers · MIT | 버그나 테스트 실패. 원인을 찾기 전에는 고치지 않는다 |
 | [test-driven-development](skills/test-driven-development/) | obra/superpowers · MIT | 실패하는 테스트를 먼저 쓰고 구현할 때 |
 
-### cpp — C++ 코드 리뷰와 코딩테스트
+### cpp — C++ 코드 리뷰와 알고리즘 문제
 
 | 스킬 | 출처 | 언제 쓰나 |
 | --- | --- | --- |
 | [game-client-review](skills/game-client-review/) | 직접 작성 · MIT | AI나 다른 사람이 쓴 게임 클라이언트 C++ 코드를 반영하기 전에 검토할 때 |
 | [cpp-stress-test](skills/cpp-stress-test/) | 직접 작성 · MIT | C++ 알고리즘 문제. 제약에서 복잡도를 정하고 브루트포스와 랜덤 입력으로 대조한다 |
-| [cp-skills-cpp](skills/cp-skills-cpp/) | area44/cp-skills · MIT | C++ 코딩테스트 습관과 알고리즘 패턴 |
+| [cp-skills-cpp](skills/cp-skills-cpp/) | area44/cp-skills · MIT | C++ 경쟁 프로그래밍 습관과 알고리즘 패턴 |
 
 ### unreal — 언리얼 엔진 5
 
@@ -99,7 +99,7 @@ bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 5. `session-handoff` — HANDOFF.md, README 실행 확인
 
 시작점이 다른 경우:
-- 알고리즘·코딩테스트 문제 하나 → `cpp-stress-test` (+ `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
+- 알고리즘 문제 하나 → `cpp-stress-test` (+ `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
 - 원인을 모르는 버그 하나 → `systematic-debugging`
 - 언리얼 프로젝트 → 처음 한 번 `ue-project-context`, 그다음 위 흐름
 

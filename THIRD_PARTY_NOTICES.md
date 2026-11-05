@@ -38,7 +38,7 @@
 - 라이선스: MIT, Copyright (c) 2026-present AREA44 (원문 표기: "2026-prsent")
 - 가져온 스킬: `skills/cpp` → `cp-skills-cpp`
 - 바꾼 점: 폴더 이름을 `cpp`에서 SKILL.md의 `name` 값인 `cp-skills-cpp`로 바꿨습니다. frontmatter만 아래처럼 고쳤고 본문은 그대로입니다.
-  - `description`에 언제 쓰는지(C++ 경쟁 프로그래밍·코딩테스트)와 언리얼·실무 게임 코드에는 이 명명·구조 규칙을 적용하지 않는다는 문장을 추가함
+  - `description`에 언제 쓰는지(C++ 경쟁 프로그래밍·알고리즘 문제)와 언리얼·실무 게임 코드에는 이 명명·구조 규칙을 적용하지 않는다는 문장을 추가함
   - `metadata`를 목록 형식에서 Agent Skills 표준의 키-값 형식으로 바꿈(값은 같음)
 
 ## mattpocock/skills (참고만 함)

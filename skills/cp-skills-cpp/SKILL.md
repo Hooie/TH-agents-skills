@@ -1,6 +1,6 @@
 ---
 name: cp-skills-cpp
-description: A structured competitive programming knowledge base focused on algorithmic thinking, data structures, and high-performance C++ implementations. Use when solving competitive programming or coding-test problems in C++. Do not apply its naming and structure rules to Unreal Engine or production game code.
+description: A structured competitive programming knowledge base focused on algorithmic thinking, data structures, and high-performance C++ implementations. Use when solving competitive programming or algorithm problems in C++. Do not apply its naming and structure rules to Unreal Engine or production game code.
 license: MIT
 metadata:
   author: area44

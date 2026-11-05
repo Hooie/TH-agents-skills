@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# 스킬 세트를 골라 설치한다 (macOS, Linux, Git Bash, 코파 프로브 같은 클라우드 터미널).
+# 스킬 세트를 골라 설치한다 (macOS, Linux, Git Bash, 클라우드 개발 환경의 터미널).
 #
 # 사용법:
 #   bash scripts/install.sh <세트> [설치 폴더]
 #
 # 세트 (쉼표로 여러 개 가능, 예: core,cpp)
-#   core    과제 진행 공통: problem-framing, task-breakdown, explain-as-you-go, session-handoff,
+#   core    작업 진행 공통: problem-framing, task-breakdown, explain-as-you-go, session-handoff,
 #           verification-before-completion, systematic-debugging, test-driven-development
-#   cpp     C++ 코드 리뷰·코딩테스트: game-client-review, cpp-stress-test, cp-skills-cpp
+#   cpp     C++ 코드 리뷰·알고리즘 문제: game-client-review, cpp-stress-test, cp-skills-cpp
 #   unreal  언리얼 엔진 5: ue-* 스킬 7개
 #   all     전부
 #
