@@ -28,7 +28,12 @@
 | --- | --- | --- |
 | [game-client-review](skills/game-client-review/) | 직접 작성 · MIT | AI나 다른 사람이 쓴 게임 클라이언트 C++ 코드를 반영하기 전에 검토할 때 |
 | [cpp-stress-test](skills/cpp-stress-test/) | 직접 작성 · MIT | C++ 알고리즘 문제. 제약에서 복잡도를 정하고 브루트포스와 랜덤 입력으로 대조한다 |
-| [cp-skills-cpp](skills/cp-skills-cpp/) | area44/cp-skills · MIT | C++ 경쟁 프로그래밍 습관과 알고리즘 패턴 |
+
+### cp — 알고리즘 대회용 코드 습관 (선택)
+
+| 스킬 | 출처 | 언제 쓰나 |
+| --- | --- | --- |
+| [cp-skills-cpp](skills/cp-skills-cpp/) | area44/cp-skills · MIT | C++ 경쟁 프로그래밍 습관과 알고리즘 패턴. 짧은 이름, `main()`에 몰아 쓰기 같은 대회용 규칙이라 게임 코드에는 맞지 않아 `cpp` 세트에서 뺐습니다 |
 
 ### unreal — 언리얼 엔진 5
 
@@ -74,7 +79,7 @@ bash TH-agents-skills/scripts/install.sh core                          # Codex �
 bash TH-agents-skills/scripts/install.sh core,cpp,unreal ~/.claude/skills   # Claude Code 개인 폴더에 전부 설치
 ```
 
-세트는 `core`, `cpp`, `unreal`, `all` 중에서 쉼표로 골라 씁니다. 두 번째 인자로 설치 폴더를 바꿀 수 있습니다.
+세트는 `core`, `cpp`, `cp`, `unreal`, `all` 중에서 쉼표로 골라 씁니다. 두 번째 인자로 설치 폴더를 바꿀 수 있습니다.
 
 ### 방법 3. skills CLI (Node.js 필요, Windows 포함)
 
@@ -121,7 +126,7 @@ bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 5. `session-handoff` — HANDOFF.md, 실행 방법 확인
 
 시작점이 다른 경우:
-- 알고리즘 문제 하나 → `cpp-stress-test` (+ `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
+- 알고리즘 문제 하나 → `cpp-stress-test` (대회식 코드 습관까지 원하면 `cp` 세트의 `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
 - 원인을 모르는 버그 하나 → `systematic-debugging`
 - 언리얼 프로젝트 → 처음 한 번 `ue-project-context`, 그다음 위 흐름
 
