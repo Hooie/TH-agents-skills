@@ -4,7 +4,7 @@
 
 같은 `SKILL.md` 형식을 Claude Code와 Codex가 모두 읽습니다. 두 도구는 스킬 폴더 위치만 다릅니다.
 
-모든 스킬은 한 가지 규칙을 공유합니다. 에이전트가 해결책을 제시할 때는 서로 다른 대안 2~3개를 같은 기준으로 비교하고, 추천안을 고른 이유와 나머지를 버린 이유를 설명합니다. 결정은 사용자가 하고, 결과는 NOTES.md 결정 로그에 남습니다.
+모든 스킬은 한 가지 규칙을 공유합니다. 에이전트가 해결책을 제시할 때는 서로 다른 대안 2~3개를 같은 기준으로 비교하고, 추천안을 고른 이유와 나머지를 버린 이유를 설명합니다. 결정은 사용자가 하고, 결과는 NOTES.md 결정 로그에 결정한 순서대로 남습니다. 결정마다 장점과 트레이드오프, 코드 위치를 함께 적어, 나중에 사용자가 읽고 바로 설명할 수 있게 합니다.
 
 ## 스킬 세트
 
@@ -44,7 +44,29 @@
 
 ## 설치
 
-### 방법 1. 설치 스크립트 (macOS, Linux, Git Bash, 클라우드 터미널)
+### 방법 1. Codex에서 링크로 설치 (skill-installer)
+
+Codex에 기본으로 들어 있는 `$skill-installer`에 스킬 폴더 링크를 넘깁니다. 저장소 주소만 넘기면 설치할 경로가 없다며 멈추므로, 스킬마다 폴더 링크를 넘깁니다. 아래를 그대로 붙여 넣으면 core 7개가 한 번에 설치됩니다.
+
+```text
+$skill-installer 아래 스킬들을 설치해 줘.
+https://github.com/Hooie/TH-agents-skills/tree/main/skills/problem-framing
+https://github.com/Hooie/TH-agents-skills/tree/main/skills/task-breakdown
+https://github.com/Hooie/TH-agents-skills/tree/main/skills/explain-as-you-go
+https://github.com/Hooie/TH-agents-skills/tree/main/skills/session-handoff
+https://github.com/Hooie/TH-agents-skills/tree/main/skills/verification-before-completion
+https://github.com/Hooie/TH-agents-skills/tree/main/skills/systematic-debugging
+https://github.com/Hooie/TH-agents-skills/tree/main/skills/test-driven-development
+```
+
+C++ 작업이면 `https://github.com/Hooie/TH-agents-skills/tree/main/skills/game-client-review`와 `https://github.com/Hooie/TH-agents-skills/tree/main/skills/cpp-stress-test`도 함께 넘깁니다.
+
+- 설치 위치는 `~/.codex/skills`(`$CODEX_HOME/skills`)입니다. 설치한 다음 차례부터 쓸 수 있습니다. `/skills` 목록에 안 보이면 Codex를 다시 시작합니다.
+- 같은 이름의 폴더가 이미 있으면 덮어쓰지 않고 멈춥니다. 새 버전으로 바꾸려면 그 폴더를 지운 뒤 다시 설치합니다.
+- 스킬 폴더를 통째로 복사하므로 `agents/openai.yaml`도 함께 들어갑니다.
+- 이 방법으로는 [항상 지킬 규칙](#항상-지킬-규칙-넣기-선택)(`templates/AGENTS.md`)이 들어가지 않습니다. 핵심 규칙은 스킬 안에도 있으므로 첫 요청을 `$problem-framing`으로 시작하면 됩니다.
+
+### 방법 2. 설치 스크립트 (macOS, Linux, Git Bash, 클라우드 터미널)
 
 ```bash
 git clone --depth 1 https://github.com/Hooie/TH-agents-skills.git
@@ -54,7 +76,7 @@ bash TH-agents-skills/scripts/install.sh core,cpp,unreal ~/.claude/skills   # Cl
 
 세트는 `core`, `cpp`, `unreal`, `all` 중에서 쉼표로 골라 씁니다. 두 번째 인자로 설치 폴더를 바꿀 수 있습니다.
 
-### 방법 2. skills CLI (Node.js 필요, Windows 포함)
+### 방법 3. skills CLI (Node.js 필요, Windows 포함)
 
 ```bash
 npx skills add Hooie/TH-agents-skills --list                                  # 목록 보기
@@ -64,7 +86,7 @@ npx skills add Hooie/TH-agents-skills -a claude-code -g -y                     #
 
 `-g`를 빼면 현재 프로젝트 폴더에 설치됩니다.
 
-### 방법 3. 직접 복사
+### 방법 4. 직접 복사
 
 `skills/` 아래에서 원하는 스킬 폴더를 통째로 아래 위치에 복사합니다.
 
@@ -92,11 +114,11 @@ bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 
 ### 작업 흐름
 
-1. `problem-framing` — 질문, 가정, 성공 기준, 1순위 문제, 접근 방식 비교, NOTES.md
-2. `task-breakdown` — 작업 목록. 작업마다 방법 대안 비교 → 사용자 선택 → 지시문 → 테스트 → 구현 → 점검(정확성, 스펙 대조, API 실재 여부) → 검증
+1. `problem-framing` — 요구사항 문서(README 등)를 끝까지 읽고, 문서에 없는 것은 근거를 붙인 추정안으로 묻기. 성공 기준, 1순위 문제, 접근 방식 비교, NOTES.md. 요구사항 문서는 고치지 않습니다
+2. `task-breakdown` — 작업 목록. 작업마다 방법 대안 비교 → 사용자 선택 → 지시문 → 테스트(경계값, 잘못된 입력, 상태와 순서, 누적 오차, 회귀) → 구현 → 점검(정확성, 스펙 대조, API 실재 여부, 반례) → 전체 테스트. 서로 기다리지 않는 작업은 허락을 받은 뒤 다른 터미널에서 동시에 진행
 3. 구현 내내 `explain-as-you-go`. 자동 테스트가 되는 작업은 `test-driven-development`, 버그는 `systematic-debugging`, AI가 쓴 C++ diff는 `game-client-review`
-4. `verification-before-completion` — 성공 기준 전체 재확인
-5. `session-handoff` — HANDOFF.md, README 실행 확인
+4. `verification-before-completion` — 성공 기준 전체 재확인. 그다음 `explain-as-you-go`로 결정 로그를 다듬고, 완성된 코드로 만든 예상 질문에 답해 보기
+5. `session-handoff` — HANDOFF.md, 실행 방법 확인
 
 시작점이 다른 경우:
 - 알고리즘 문제 하나 → `cpp-stress-test` (+ `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
