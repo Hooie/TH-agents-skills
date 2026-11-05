@@ -1,10 +1,10 @@
 ---
 name: session-handoff
-description: 새 세션으로 바꾸기 전, 대화를 요약(compact)하기 전, 작업을 오래 멈추기 전, PR을 올리거나 작업을 넘기기 직전에 사용한다. 다른 사람이나 새 세션이 바로 이어받을 수 있도록 현재 상태, 끝난 일과 남은 일, 실행·검증 방법, 주요 결정, 남은 위험을 HANDOFF.md에 정리하고 README의 실행 방법이 실제로 동작하는지 확인한다. 새 세션을 시작할 때는 HANDOFF.md부터 읽는다. Use before switching sessions, compacting, pausing, or submitting work.
+description: 새 세션으로 바꾸기 전, 대화를 요약(compact)하기 전, 작업을 오래 멈추기 전, PR을 올리거나 작업을 넘기기 직전에 사용한다. 다른 사람이나 새 세션이 바로 이어받을 수 있도록 현재 상태, 끝난 일과 남은 일, 실행·검증 방법, 주요 결정, 남은 위험을 HANDOFF.md에 정리하고 README의 실행 방법이 실제로 동작하는지 확인한다. 새 세션을 시작할 때는 HANDOFF.md부터 읽는다. Use before switching sessions, compacting, pausing, or handing off work (e.g. opening a PR).
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.4.0"
+  version: "1.4.1"
 ---
 
 # Session Handoff
@@ -15,7 +15,7 @@ metadata:
 
 - 컨텍스트가 길어져 새 세션으로 옮기거나 compact하기 직전
 - 작업을 멈추거나 다른 사람, 다른 에이전트에게 넘길 때
-- PR을 올리거나 작업을 넘기기 직전
+- PR을 올리거나 결과물을 넘기기 직전
 - 새 세션을 시작할 때(이때는 아래 "이어받을 때"만 한다)
 
 ## 넘겨줄 때

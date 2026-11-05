@@ -1,10 +1,10 @@
 ---
 name: cpp-stress-test
-description: C++ 알고리즘 문제를 풀 때, 제약 조건에서 필요한 시간 복잡도를 먼저 정하고, 제출 전에 브루트포스 풀이와 랜덤 입력으로 대조 검증한다. 알고리즘 문제, 정답이 맞는지 확신이 없을 때, 반례 찾기, 시간 초과 점검에 사용. Use for C++ algorithm and competitive programming problems to pick a complexity from the constraints and stress-test against brute force before submitting.
+description: C++ 알고리즘 문제(온라인 저지, 경쟁 프로그래밍)를 풀 때, 제약 조건에서 필요한 시간 복잡도를 먼저 정하고, 제출 전에 브루트포스 풀이와 랜덤 입력으로 대조 검증한다. 알고리즘 문제, 정답이 맞는지 확신이 없을 때, 반례 찾기, 시간 초과 점검에 사용. Use for C++ algorithm and competitive programming problems to pick a complexity from the constraints and stress-test against brute force before submitting.
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # C++ Stress Test
