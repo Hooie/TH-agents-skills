@@ -22,17 +22,17 @@
 | [systematic-debugging](skills/systematic-debugging/) | obra/superpowers · MIT | 버그나 테스트 실패. 원인을 찾기 전에는 고치지 않는다 |
 | [test-driven-development](skills/test-driven-development/) | obra/superpowers · MIT | 실패하는 테스트를 먼저 쓰고 구현할 때 |
 
-### cpp — C++ 코드 리뷰와 알고리즘 문제
+### cpp — C++ 코드 리뷰
 
 | 스킬 | 출처 | 언제 쓰나 |
 | --- | --- | --- |
 | [game-client-review](skills/game-client-review/) | 직접 작성 · MIT | AI나 다른 사람이 쓴 게임 클라이언트 C++ 코드를 반영하기 전에 검토할 때 |
-| [cpp-stress-test](skills/cpp-stress-test/) | 직접 작성 · MIT | C++ 알고리즘 문제. 제약에서 복잡도를 정하고 브루트포스와 랜덤 입력으로 대조한다 |
 
-### cp — 알고리즘 대회용 코드 습관 (선택)
+### cp — 알고리즘 문제 풀이 (선택)
 
 | 스킬 | 출처 | 언제 쓰나 |
 | --- | --- | --- |
+| [cpp-stress-test](skills/cpp-stress-test/) | 직접 작성 · MIT | C++ 알고리즘 문제. 제약에서 복잡도를 정하고 브루트포스와 랜덤 입력으로 대조한다 |
 | [cp-skills-cpp](skills/cp-skills-cpp/) | area44/cp-skills · MIT | C++ 경쟁 프로그래밍 습관과 알고리즘 패턴. 짧은 이름, `main()`에 몰아 쓰기 같은 대회용 규칙이라 게임 코드에는 맞지 않아 `cpp` 세트에서 뺐습니다 |
 
 ### unreal — 언리얼 엔진 5
@@ -64,7 +64,7 @@ https://github.com/Hooie/TH-agents-skills/tree/main/skills/systematic-debugging
 https://github.com/Hooie/TH-agents-skills/tree/main/skills/test-driven-development
 ```
 
-C++ 작업이면 `https://github.com/Hooie/TH-agents-skills/tree/main/skills/game-client-review`와 `https://github.com/Hooie/TH-agents-skills/tree/main/skills/cpp-stress-test`도 함께 넘깁니다.
+C++ 작업이면 `https://github.com/Hooie/TH-agents-skills/tree/main/skills/game-client-review`도 함께 넘깁니다.
 
 - 설치 위치는 `~/.codex/skills`(`$CODEX_HOME/skills`)입니다. 설치한 다음 차례부터 쓸 수 있습니다. `/skills` 목록에 안 보이면 Codex를 다시 시작합니다.
 - 같은 이름의 폴더가 이미 있으면 덮어쓰지 않고 멈춥니다. 새 버전으로 바꾸려면 그 폴더를 지운 뒤 다시 설치합니다.
@@ -119,14 +119,14 @@ bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 
 ### 작업 흐름
 
-1. `problem-framing` — 요구사항 문서(README 등)를 끝까지 읽고, 문서에 없는 것은 근거를 붙인 추정안으로 묻기. 성공 기준, 1순위 문제, 접근 방식 비교, NOTES.md. 요구사항 문서는 고치지 않습니다
-2. `task-breakdown` — 작업 목록. 작업마다 방법 대안 비교 → 사용자 선택 → 지시문 → 테스트(경계값, 잘못된 입력, 상태와 순서, 누적 오차, 회귀) → 구현 → 점검(정확성, 스펙 대조, API 실재 여부, 반례) → 전체 테스트. 서로 기다리지 않는 작업은 허락을 받은 뒤 다른 터미널에서 동시에 진행
+1. `problem-framing` — 요구사항 문서(README 등)를 끝까지 읽고, 문서에 없는 것은 근거를 붙인 추정안으로 묻기. 기존 코드가 있으면 처음 상태부터 실행해 확인하고, 요구사항을 준 담당자에게 물을 수 있으면 보낼 질문도 따로 만듭니다. 성공 기준, 1순위 문제, 접근 방식 비교, NOTES.md. 요구사항 문서는 고치지 않습니다
+2. `task-breakdown` — 작업 목록. 작업마다 방법 대안 비교 → 사용자 선택 → 지시문 → 테스트(경계값, 잘못된 입력, 상태와 순서, 누적 오차, 회귀) → 구현 → 점검(정확성, 스펙 대조, API 실재 여부, 보안·민감정보, 반례) → 전체 테스트 → 커밋(푸시하지 않음). 작업이 끝나면 직접 돌려 볼 확인 명령을 알려 줍니다. 서로 기다리지 않는 작업은 허락을 받은 뒤 다른 터미널에서 동시에 진행
 3. 구현 내내 `explain-as-you-go`. 자동 테스트가 되는 작업은 `test-driven-development`, 버그는 `systematic-debugging`, AI가 쓴 C++ diff는 `game-client-review`
 4. `verification-before-completion` — 성공 기준 전체 재확인. 그다음 `explain-as-you-go`로 결정 로그를 다듬고, 완성된 코드로 만든 예상 질문에 답해 보기
-5. `session-handoff` — HANDOFF.md, 실행 방법 확인
+5. `session-handoff` — HANDOFF.md, 실행 방법 확인, 마지막 커밋(푸시하지 않음)
 
 시작점이 다른 경우:
-- 알고리즘 문제 하나 → `cpp-stress-test` (대회식 코드 습관까지 원하면 `cp` 세트의 `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
+- 알고리즘 문제 하나 → `cp` 세트의 `cpp-stress-test` (대회식 코드 습관까지 원하면 `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
 - 원인을 모르는 버그 하나 → `systematic-debugging`
 - 언리얼 프로젝트 → 처음 한 번 `ue-project-context`, 그다음 위 흐름
 
