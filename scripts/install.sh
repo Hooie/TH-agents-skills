@@ -7,8 +7,8 @@
 # 세트 (쉼표로 여러 개 가능, 예: core,cpp)
 #   core    작업 진행 공통: problem-framing, task-breakdown, explain-as-you-go, session-handoff,
 #           verification-before-completion, systematic-debugging, test-driven-development
-#   cpp     C++ 코드 리뷰·알고리즘 문제: game-client-review, cpp-stress-test
-#   cp      알고리즘 대회용 코드 습관: cp-skills-cpp (게임 코드에는 맞지 않아 cpp에서 뺐다)
+#   cpp     C++ 코드 리뷰: game-client-review
+#   cp      알고리즘 문제 풀이: cpp-stress-test, cp-skills-cpp
 #   unreal  언리얼 엔진 5: ue-* 스킬 7개
 #   all     전부
 #
@@ -24,8 +24,8 @@ DEST="${2:-$HOME/.agents/skills}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 CORE="problem-framing task-breakdown explain-as-you-go session-handoff verification-before-completion systematic-debugging test-driven-development"
-CPP="game-client-review cpp-stress-test"
-CP="cp-skills-cpp"
+CPP="game-client-review"
+CP="cpp-stress-test cp-skills-cpp"
 UNREAL="ue-project-context ue-cpp-foundations ue-actor-component-architecture ue-networking-replication ue-testing-debugging ue-module-build-system ue-performance"
 
 LIST=""
