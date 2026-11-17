@@ -17,7 +17,7 @@
 | [problem-framing](skills/problem-framing/) | 직접 작성 · MIT | 여러 단계가 필요한 작업을 처음 받았을 때. 목표, 확인 질문, 가정, 수치 성공 기준, 범위 밖, 1순위 문제, 접근 방식 대안 비교를 NOTES.md에 정리한다 |
 | [task-breakdown](skills/task-breakdown/) | 직접 작성 · MIT | 문제 정의 직후. 30분 단위 작업으로 나누고, 작업마다 방법 대안 비교 → 지시문 → 테스트 → 구현 → 점검 → 검증을 하나씩 한다 |
 | [explain-as-you-go](skills/explain-as-you-go/) | 직접 작성 · MIT (지적을 받을 때: obra/superpowers receiving-code-review 참고) | 해결책을 낼 때와 구현하는 내내. 대안 비교와 추천, 고른 이유와 버린 이유, 복잡도, 엣지 케이스, 검증을 결정 로그에 남긴다 |
-| [independent-review](skills/independent-review/) | 직접 작성 · MIT (obra/superpowers requesting-code-review 참고) | 큰 작업을 끝냈을 때, 마무리나 PR 전. 대화 기록이 없는 새 세션(새 터미널이나 서브에이전트)이 요구사항과 diff만 보고 검토하도록 리뷰 지시문을 만들고, 돌아온 지적을 확인해 처리한다 |
+| [independent-review](skills/independent-review/) | 직접 작성 · MIT (obra/superpowers requesting-code-review, addyosmani/agent-skills doubt-driven-development 참고) | 큰 작업을 끝냈을 때, 마무리나 PR 전. 대화 기록이 없는 새 세션(새 터미널이나 서브에이전트)이 요구사항과 diff만 보고 검토하도록 리뷰 지시문을 만들고, 돌아온 지적을 확인해 처리한다 |
 | [session-handoff](skills/session-handoff/) | 직접 작성 · MIT | 세션 전환, compact, PR을 올리거나 작업을 넘기기 직전. 다른 사람이나 새 세션이 이어받을 수 있게 HANDOFF.md를 쓴다 |
 | [verification-before-completion](skills/verification-before-completion/) | obra/superpowers · MIT | "완료"라고 말하기 전. 검증 명령을 실행한 결과를 근거로 남긴다 |
 | [systematic-debugging](skills/systematic-debugging/) | obra/superpowers · MIT | 버그나 테스트 실패. 원인을 찾기 전에는 고치지 않는다 |
