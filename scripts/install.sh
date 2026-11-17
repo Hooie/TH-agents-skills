@@ -23,7 +23,7 @@ SETS="${1:-core}"
 DEST="${2:-$HOME/.agents/skills}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-CORE="problem-framing task-breakdown explain-as-you-go session-handoff verification-before-completion systematic-debugging test-driven-development"
+CORE="problem-framing task-breakdown explain-as-you-go independent-review session-handoff verification-before-completion systematic-debugging test-driven-development"
 CPP="game-client-review"
 CP="cpp-stress-test cp-skills-cpp"
 UNREAL="ue-project-context ue-cpp-foundations ue-actor-component-architecture ue-networking-replication ue-testing-debugging ue-module-build-system ue-performance"

@@ -16,7 +16,8 @@
 | --- | --- | --- |
 | [problem-framing](skills/problem-framing/) | 직접 작성 · MIT | 여러 단계가 필요한 작업을 처음 받았을 때. 목표, 확인 질문, 가정, 수치 성공 기준, 범위 밖, 1순위 문제, 접근 방식 대안 비교를 NOTES.md에 정리한다 |
 | [task-breakdown](skills/task-breakdown/) | 직접 작성 · MIT | 문제 정의 직후. 30분 단위 작업으로 나누고, 작업마다 방법 대안 비교 → 지시문 → 테스트 → 구현 → 점검 → 검증을 하나씩 한다 |
-| [explain-as-you-go](skills/explain-as-you-go/) | 직접 작성 · MIT | 해결책을 낼 때와 구현하는 내내. 대안 비교와 추천, 고른 이유와 버린 이유, 복잡도, 엣지 케이스, 검증을 결정 로그에 남긴다 |
+| [explain-as-you-go](skills/explain-as-you-go/) | 직접 작성 · MIT (지적을 받을 때: obra/superpowers receiving-code-review 참고) | 해결책을 낼 때와 구현하는 내내. 대안 비교와 추천, 고른 이유와 버린 이유, 복잡도, 엣지 케이스, 검증을 결정 로그에 남긴다 |
+| [independent-review](skills/independent-review/) | 직접 작성 · MIT (obra/superpowers requesting-code-review 참고) | 큰 작업을 끝냈을 때, 마무리나 PR 전. 대화 기록이 없는 새 세션(새 터미널이나 서브에이전트)이 요구사항과 diff만 보고 검토하도록 리뷰 지시문을 만들고, 돌아온 지적을 확인해 처리한다 |
 | [session-handoff](skills/session-handoff/) | 직접 작성 · MIT | 세션 전환, compact, PR을 올리거나 작업을 넘기기 직전. 다른 사람이나 새 세션이 이어받을 수 있게 HANDOFF.md를 쓴다 |
 | [verification-before-completion](skills/verification-before-completion/) | obra/superpowers · MIT | "완료"라고 말하기 전. 검증 명령을 실행한 결과를 근거로 남긴다 |
 | [systematic-debugging](skills/systematic-debugging/) | obra/superpowers · MIT | 버그나 테스트 실패. 원인을 찾기 전에는 고치지 않는다 |
@@ -58,6 +59,7 @@ $skill-installer 아래 스킬들을 설치해 줘.
 https://github.com/Hooie/TH-agents-skills/tree/main/skills/problem-framing
 https://github.com/Hooie/TH-agents-skills/tree/main/skills/task-breakdown
 https://github.com/Hooie/TH-agents-skills/tree/main/skills/explain-as-you-go
+https://github.com/Hooie/TH-agents-skills/tree/main/skills/independent-review
 https://github.com/Hooie/TH-agents-skills/tree/main/skills/session-handoff
 https://github.com/Hooie/TH-agents-skills/tree/main/skills/verification-before-completion
 https://github.com/Hooie/TH-agents-skills/tree/main/skills/systematic-debugging
@@ -85,7 +87,7 @@ bash TH-agents-skills/scripts/install.sh core,cpp,unreal ~/.claude/skills   # Cl
 
 ```bash
 npx skills add Hooie/TH-agents-skills --list                                  # 목록 보기
-npx skills add Hooie/TH-agents-skills -a codex -g -y --skill problem-framing task-breakdown explain-as-you-go session-handoff verification-before-completion systematic-debugging test-driven-development
+npx skills add Hooie/TH-agents-skills -a codex -g -y --skill problem-framing task-breakdown explain-as-you-go independent-review session-handoff verification-before-completion systematic-debugging test-driven-development
 npx skills add Hooie/TH-agents-skills -a claude-code -g -y                     # Claude Code에 전부
 ```
 
@@ -123,7 +125,7 @@ bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 2. `task-breakdown` — 작업 목록. 작업마다 방법 대안 비교 → 사용자 선택 → 지시문 → 테스트(경계값, 잘못된 입력, 상태와 순서, 누적 오차, 회귀) → 구현 → 점검(정확성, 과잉 설계, 스펙 대조, API 실재 여부, 기존 코드와의 충돌, 보안·민감정보, 반례) → 전체 테스트 → 커밋(푸시하지 않음). 작업이 끝나면 직접 돌려 볼 확인 명령을 알려 줍니다. 서로 기다리지 않는 작업은 허락을 받은 뒤 다른 터미널에서 동시에 진행하거나 서브에이전트에 맡깁니다
 3. 구현 내내 `explain-as-you-go`. 자동 테스트가 되는 작업은 `test-driven-development`, 버그는 `systematic-debugging`, AI가 쓴 C++ diff는 `game-client-review`
 4. `verification-before-completion` — 성공 기준 전체 재확인. 기준마다 확인한 테스트와 방금 실행한 결과를 대조표로 남긴다. 그다음 `explain-as-you-go`로 결정 로그와 주석을 다듬고 결과를 요약
-5. `session-handoff` — HANDOFF.md, 실행 방법 확인, 마지막 커밋(푸시하지 않음)
+5. `independent-review` — 대화 기록이 없는 새 세션에게 결과물 검토받기(선택). 그다음 `session-handoff` — HANDOFF.md, 실행 방법 확인, 마지막 커밋(푸시하지 않음)
 
 시작점이 다른 경우:
 - 알고리즘 문제 하나 → `cp` 세트의 `cpp-stress-test` (대회식 코드 습관까지 원하면 `cp-skills-cpp`). 이때는 TDD 대신 브루트포스 대조로 검증합니다.
@@ -135,10 +137,10 @@ bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 - 가져온 스킬 중 일부는 이 저장소에서 함께 쓰기 좋게 조금 고쳤습니다. 없는 스킬을 가리키는 참조 정리, 설명 보완 등이며 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 모두 적었습니다.
 - 일부 규칙은 [mattpocock/skills](https://github.com/mattpocock/skills)를 참고해 다시 썼습니다. 스킬 파일을 가져오지는 않았고, 참고한 곳은 THIRD_PARTY_NOTICES.md에 적었습니다.
 - 언리얼 스킬은 원본 저장소의 다른 `ue-*` 스킬을 가리키기도 합니다. 이 저장소에는 7개만 있어서, 각 스킬 맨 위에 그 사실과 대처 방법을 적어 두었습니다.
-- `session-handoff`는 Codex에서 자동으로 불리지 않고 `$session-handoff`로 직접 부를 때만 쓰입니다(`skills/session-handoff/agents/openai.yaml`). Claude Code와 Claude 앱에는 영향이 없습니다.
+- `session-handoff`와 `independent-review`는 Codex에서 자동으로 불리지 않고 `$session-handoff`, `$independent-review`로 직접 부를 때만 쓰입니다(각 스킬의 `agents/openai.yaml`). Claude Code와 Claude 앱에는 영향이 없습니다.
 - 언리얼 스킬은 원본 기준 UE 5.8입니다. 다른 버전에서는 API가 다를 수 있습니다.
 - `systematic-debugging/find-polluter.sh`와 `ue-performance/scripts/minidump_stack.py`는 에이전트가 필요할 때 실행하는 보조 스크립트입니다. 자동으로 실행되는 훅은 넣지 않았습니다.
 
 ## 라이선스
 
-직접 만든 스킬(`problem-framing`, `task-breakdown`, `explain-as-you-go`, `session-handoff`, `game-client-review`, `cpp-stress-test`)은 [MIT](LICENSE)입니다. 가져온 스킬은 각 폴더의 `LICENSE`를 따르며, 원본 저장소와 바꾼 점은 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 있습니다.
+직접 만든 스킬(`problem-framing`, `task-breakdown`, `explain-as-you-go`, `independent-review`, `session-handoff`, `game-client-review`, `cpp-stress-test`)은 [MIT](LICENSE)입니다. 가져온 스킬은 각 폴더의 `LICENSE`를 따르며, 원본 저장소와 바꾼 점은 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 있습니다.
