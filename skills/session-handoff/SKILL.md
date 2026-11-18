@@ -4,7 +4,7 @@ description: 새 세션으로 바꾸기 전, 대화를 요약(compact)하기 전
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.8.0"
+  version: "1.9.0"
 ---
 
 # Session Handoff
@@ -29,6 +29,7 @@ metadata:
    - 처음 보는 사람이 HANDOFF.md만 읽어도 무엇을 왜 했는지 이해하게 쓴다. explain-as-you-go "사람이 읽는 기록 쓰는 법"을 따른다: 완전한 문장, 내부 용어 풀어 쓰기, 번호에는 내용을 함께, 구체적인 값.
    - 다른 곳에 있는 내용은 통째로 복사하지 않고, 핵심을 한두 문장으로 쓴 뒤 위치를 붙인다. "NOTES.md 참고"만 쓰고 끝내지 않는다. 자세한 대안 비교와 검증 과정은 NOTES.md에만 둔다.
    - API 키, 비밀번호, 토큰, 개인정보는 쓰지 않는다. 명령이나 출력에 들어 있으면 `<REDACTED>`로 바꾼다.
+   - 다 쓰면 기록 읽기 시험(independent-review)을 받을지 묻는다. 사용자가 원하지 않으면 건너뛴다.
 4. **마지막으로 커밋한다.** git 저장소가 있으면 NOTES.md와 HANDOFF.md까지 넣어 커밋하고, `git status`로 남은 변경이 없는지 확인한다. 푸시하지 않는다. 저장소가 없으면 이 단계를 건너뛴다.
 
 ## HANDOFF.md 형식
