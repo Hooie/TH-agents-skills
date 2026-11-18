@@ -1,6 +1,6 @@
 ---
 name: cpp-stress-test
-description: C++ 알고리즘 문제(온라인 저지, 경쟁 프로그래밍)를 풀 때, 제약 조건에서 필요한 시간 복잡도를 먼저 정하고, 제출 전에 브루트포스 풀이와 랜덤 입력으로 대조 검증한다. 알고리즘 문제, 정답이 맞는지 확신이 없을 때, 반례 찾기, 시간 초과 점검에 사용. Use for C++ algorithm and competitive programming problems to pick a complexity from the constraints and stress-test against brute force before submitting.
+description: Use when solving C++ algorithm problems (online judges, competitive programming): first set the required time complexity from the constraints, and before submitting, verify the solution against a brute-force solution with random inputs. Use for algorithm problems, when you are not sure an answer is correct, to find counterexamples, and to check for time limit exceeded. Use for C++ algorithm and competitive programming problems to pick a complexity from the constraints and stress-test against brute force before submitting.
 license: MIT
 metadata:
   author: my-agent-skills
@@ -9,25 +9,27 @@ metadata:
 
 # C++ Stress Test
 
-예제 입력이 맞았다고 정답인 것은 아니다. 제약에서 복잡도를 정해 풀고, 제출 전에 느리지만 확실한 풀이와 랜덤 입력 수백 개로 대조한다.
+> **Output language:** write everything the user reads (replies, questions, NOTES.md, HANDOFF.md, code comments, reports) in the user's language. Keep the Korean headings, labels, fixed phrases, and examples quoted in this skill exactly as written.
 
-알고리즘 문제 풀이에는 test-driven-development를 적용하지 않는다. 예제 입력과 브루트포스 대조가 테스트 역할을 한다. 코드 스타일은 cp-skills-cpp가 설치되어 있으면 그 규칙을 따른다.
+Passing the sample input does not make an answer correct. Set the complexity from the constraints, solve it, and before submitting, compare it against a slow but certain solution on hundreds of random inputs.
 
-## 1. 제약에서 복잡도를 정한다
+Do not apply test-driven-development to solving algorithm problems. The sample inputs and the brute-force comparison serve as the tests. For code style, follow the rules of cp-skills-cpp if it is installed.
 
-C++ 기준 1초에 단순 연산 약 10⁸회를 잡는다.
+## 1. Set the complexity from the constraints
 
-| 최대 N | 허용 복잡도 | 흔한 접근 |
+For C++, assume about 10⁸ simple operations in 1 second.
+
+| Max N | Allowed complexity | Common approaches |
 | --- | --- | --- |
-| 10 | O(N!) | 순열 완전 탐색 |
-| 20 | O(2ᴺ · N) | 비트마스크, 부분집합 |
-| 500 | O(N³) | 플로이드, 3중 DP |
-| 5,000 | O(N²) | 2중 DP, 모든 쌍 |
-| 10⁶ | O(N log N) | 정렬, 이분 탐색, 힙, 세그먼트 트리 |
-| 10⁸ | O(N) | 투 포인터, 누적 합, 한 번 순회 |
-| 10¹⁸ | O(log N) | 수학, 이분 탐색, 분할 정복 거듭제곱 |
+| 10 | O(N!) | Exhaustive search over permutations |
+| 20 | O(2ᴺ · N) | Bitmasks, subsets |
+| 500 | O(N³) | Floyd, 3-level nested DP |
+| 5,000 | O(N²) | 2-level nested DP, all pairs |
+| 10⁶ | O(N log N) | Sorting, binary search, heaps, segment trees |
+| 10⁸ | O(N) | Two pointers, prefix sums, a single pass |
+| 10¹⁸ | O(log N) | Math, binary search, exponentiation by divide and conquer |
 
-풀이를 쓰기 전에 후보 풀이 2~3개를 제약과 비교해 사용자에게 보여 준다. 고른 풀이의 이유와 버린 풀이마다의 이유를 함께 쓴다.
+Before writing the solution, compare 2–3 candidate solutions against the constraints and show them to the user. Write the reason for the chosen solution and the reason for rejecting each of the others.
 
 ```text
 N ≤ 2×10⁵ 이므로 O(N log N) 이하가 필요하다.
@@ -36,36 +38,36 @@ N ≤ 2×10⁵ 이므로 O(N log N) 이하가 필요하다.
 - C 세그먼트 트리 O(N log N) → 버림: 복잡도는 같은데 구현이 길어 실수할 곳이 많다.
 ```
 
-경계에 걸리면 연산 횟수를 직접 계산한다. 예: N = 5,000이면 O(N²) = 2.5×10⁷이라 1초 안이다. cp-skills-cpp의 목표 복잡도(n ≤ 2,000일 때만 O(n²))는 이 표보다 보수적인 어림값이다. 둘이 다르면 직접 계산한 연산 횟수로 판단하고, 해시나 나눗셈처럼 상수가 큰 연산이 많으면 보수적으로 본다.
+If it is close to a boundary, calculate the number of operations directly. For example: with N = 5,000, O(N²) = 2.5×10⁷, which fits within 1 second. The target complexity in cp-skills-cpp (O(n²) only when n ≤ 2,000) is a more conservative rule of thumb than this table. When the two differ, decide by the operation count you calculated, and be conservative when there are many operations with large constants, such as hashing or division.
 
-## 2. 풀이를 쓴다
+## 2. Write the solution
 
-- 합, 곱, 거리 계산에 `long long`이 필요한지 본다. 10⁹ 두 개를 더하면 int 범위를 넘는다.
-- 입출력이 많으면 `ios::sync_with_stdio(false); cin.tie(nullptr);`를 쓰고 `endl` 대신 `'\n'`을 쓴다.
-- 테스트 케이스가 여러 개면 전역 배열과 컨테이너를 케이스마다 초기화한다.
-- 재귀 깊이가 10⁵를 넘을 수 있으면 반복문으로 바꾼다.
-- C++ 표준은 채점 환경에 맞춘다. cp-skills-cpp 규칙대로 C++23으로 썼다면 대조할 때도 `--std c++23`을 준다. stress.py의 기본값은 c++17이다.
+- Check whether sums, products, and distance calculations need `long long`. Adding two values of 10⁹ exceeds the int range.
+- If there is a lot of input and output, use `ios::sync_with_stdio(false); cin.tie(nullptr);`, and use `'\n'` instead of `endl`.
+- If there are multiple test cases, reset global arrays and containers for each case.
+- If the recursion depth can exceed 10⁵, change it to a loop.
+- Match the C++ standard to the judging environment. If you wrote it in C++23 following the cp-skills-cpp rules, pass `--std c++23` when comparing too. The default in stress.py is c++17.
 
-## 3. 브루트포스와 생성기를 만든다
+## 3. Write the brute force and the generator
 
-- `brute.cpp`: 문제를 그대로 옮긴 느린 풀이. 완전 탐색처럼 틀리기 어려운 방식으로 쓴다. 빠른 풀이의 코드를 재사용하지 않는다.
-- `gen.py`: 첫 인자로 시드를 받아 작은 입력 하나를 출력한다. [assets/gen_example.py](assets/gen_example.py)를 복사해 형식만 바꾼다. N은 작게(1~8) 잡고, 최소 크기, 모두 같은 값, 최댓값과 최솟값, 음수 같은 엣지 케이스를 일부러 섞는다.
+- `brute.cpp`: a slow solution that transcribes the problem as is. Write it in a way that is hard to get wrong, such as exhaustive search. Do not reuse code from the fast solution.
+- `gen.py`: takes a seed as its first argument and prints one small input. Copy [assets/gen_example.py](assets/gen_example.py) and change only the format. Keep N small (1–8), and deliberately mix in edge cases such as the minimum size, all-equal values, the maximum and minimum values, and negative numbers.
 
-## 4. 대조한다
+## 4. Compare
 
 ```bash
 python3 scripts/stress.py sol.cpp brute.cpp gen.py -n 300
 ```
 
-- 스크립트 경로는 이 스킬 폴더 기준이다. 작업 폴더에서 실행하며, 필요하면 `scripts/stress.py`를 작업 폴더로 복사한다.
-- 출력이 달라지는 첫 입력을 `failing_input.txt`에 저장하고 멈춘다. 그 입력을 손으로 따라가며 원인을 찾는다. 같은 요청을 다시 생성하지 않는다.
-- 실수 답이면 `--eps 1e-6`, 컴파일러를 바꾸려면 `--cxx clang++`, 시간 제한은 `--time-limit 1.0`.
-- 고친 뒤에는 실패한 입력부터 다시 돌리고, 시드를 바꿔 한 번 더 돌린다(`--seed 1000`).
+- The script path is relative to this skill folder. Run it from the work folder, and copy `scripts/stress.py` into the work folder if needed.
+- Save the first input whose output differs to `failing_input.txt` and stop. Trace that input by hand to find the cause. Do not regenerate the same request.
+- For real-number answers use `--eps 1e-6`, to change the compiler use `--cxx clang++`, and for the time limit use `--time-limit 1.0`.
+- After fixing, rerun starting from the failing input, then run once more with a different seed (`--seed 1000`).
 
-## 5. 시간을 확인한다
+## 5. Check the time
 
-생성기를 최대 크기 입력 하나만 내도록 바꿔 `sol` 실행 시간을 잰다. 스크립트가 마지막에 가장 느린 실행 시간을 보여 준다.
+Change the generator to output only one maximum-size input and measure the run time of `sol`. The script shows the slowest run time at the end.
 
-## 6. 기록한다
+## 6. Record it
 
-NOTES.md 결정 로그에 검토한 풀이와 버린 이유, 고른 풀이의 복잡도와 근거, 대조한 테스트 수와 시드 범위, 찾은 반례와 원인을 남긴다. explain-as-you-go를 쓰고 있다면 그 형식을 따른다.
+In the NOTES.md decision log, record the solutions considered and why they were rejected, the complexity of the chosen solution and its basis, the number of tests compared and the seed range, and the counterexamples found and their causes. If you are using explain-as-you-go, follow its format.

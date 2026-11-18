@@ -1,6 +1,6 @@
 ---
 name: independent-review
-description: 큰 작업 하나를 끝냈을 때, 마무리하기 전, PR을 올리기 전, 다른 사람이 만든 변경을 검토할 때 사용한다. 작업한 세션이 자기 코드를 직접 검토하지 않고, 대화 기록이 없는 새 세션(새 터미널이나 서브에이전트)이 요구사항과 diff만 보고 검토하도록 리뷰 지시문을 만든다. 돌아온 지적은 확인한 뒤 고치거나 근거를 들어 답한다. HANDOFF.md나 NOTES.md를 처음 읽는 사람이 문서만으로 작업을 이해할 수 있는지 시험할 때도 사용한다(기록 읽기 시험). Use to get a fresh-context review of finished work - prepare a self-contained reviewer prompt, then verify and act on the findings.
+description: Use when you have finished one large piece of work, before wrapping up, before opening a PR, or when reviewing a change someone else made. Instead of the session that did the work reviewing its own code, prepare a reviewer prompt so that a new session with no conversation history (a new terminal or a subagent) reviews it from only the requirements and the diff. Check the findings that come back, then fix them or answer with evidence. Also use it to test whether someone reading HANDOFF.md or NOTES.md for the first time can understand the work from the documents alone (the record reading test). Use to get a fresh-context review of finished work - prepare a self-contained reviewer prompt, then verify and act on the findings.
 license: MIT
 metadata:
   author: my-agent-skills
@@ -9,44 +9,46 @@ metadata:
 
 # Independent Review
 
-같은 세션이 자기 코드를 점검하면, 만들 때 놓친 것을 점검할 때도 똑같이 놓친다. 테스트를 모두 통과했는데 버그가 남는 경우가 대부분 이렇다. 그래서 검토는 대화 기록이 없는 다른 세션에게 맡긴다. 그 세션은 요구사항과 결과물만 보므로, 작업한 쪽의 생각을 따라가지 않는다.
+> **Output language:** write everything the user reads (replies, questions, NOTES.md, HANDOFF.md, code comments, reports) in the user's language. Keep the Korean headings, labels, fixed phrases, and examples quoted in this skill exactly as written.
 
-이 스킬은 두 역할로 나뉜다.
+When a session checks its own code, it misses during the check exactly what it missed while building it. Most cases where all the tests pass but a bug remains happen this way. So the review is handed to another session with no conversation history. That session sees only the requirements and the deliverable, so it does not follow the thinking of the side that did the work.
 
-- **요청하는 쪽(작업한 세션):** 검토 범위를 정하고, 다른 세션에 그대로 붙여 넣을 리뷰 지시문을 만들고, 돌아온 지적을 처리한다. 직접 검토하지 않는다.
-- **검토하는 쪽(새 세션):** 지시문만 받아 읽기 전용으로 검토하고 지적 목록을 돌려준다.
+This skill is split into two roles.
 
-## 요청하는 쪽의 절차
+- **Requester (the session that did the work):** sets the review range, prepares a reviewer prompt that can be pasted as is into another session, and handles the findings that come back. It does not review directly.
+- **Reviewer (a new session):** receives only the prompt, reviews read-only, and returns a list of findings.
 
-1. **범위를 정한다.**
-   - 시작 커밋: 이번 작업을 시작하기 전 커밋(NOTES.md의 처음 상태나 첫 작업 커밋의 부모). 애매하면 사용자에게 묻는다.
-   - 끝 커밋: 지금 HEAD. 커밋하지 않은 변경이 있으면 검토 전에 커밋할지 사용자에게 묻는다. 리뷰어는 커밋된 것만 본다.
-   - `git log --oneline 시작..끝`으로 범위 안의 커밋 목록을 확인해 지시문에 넣는다.
-2. **리뷰 지시문을 만든다.** 아래 "리뷰 지시문 틀"을 채운다. 넣는 것과 넣지 않는 것을 지킨다.
-   - 넣는 것: 요구사항 문서의 경로, NOTES.md의 `## 성공 기준`, `## 범위 밖`, `## 확인 질문과 답`(사용자·요청자와 정한 규칙), 실행·테스트 명령, 검토 범위(커밋 두 개).
-   - 넣지 않는 것: 대화 기록, `## 지금까지의 흐름`, 결정 로그의 이유와 대안 비교, "여기는 이미 확인했다" 같은 안내. 작업한 쪽의 판단이 들어가면 리뷰어가 같은 맹점을 따라간다.
-3. **사용자에게 넘긴다.** 지시문을 코드 블록 하나로 보여 주고 이렇게 안내한 뒤 **멈춘다.**
+## Requester procedure
+
+1. **Set the range.**
+   - Start commit: the commit before this work started (the initial state in NOTES.md, or the parent of the first task commit). If it is unclear, ask the user.
+   - End commit: the current HEAD. If there are uncommitted changes, ask the user whether to commit them before the review. The reviewer sees only what is committed.
+   - Check the list of commits in the range with `git log --oneline 시작..끝` and put it in the prompt.
+2. **Prepare the reviewer prompt.** Fill in the "Reviewer prompt template" below. Keep to what goes in and what stays out.
+   - Goes in: the path of the requirements document, NOTES.md `## 성공 기준`, `## 범위 밖`, `## 확인 질문과 답` (rules agreed with the user or with whoever requested the work), the run and test commands, and the review range (two commits).
+   - Stays out: the conversation history, `## 지금까지의 흐름`, the reasons and alternatives comparisons in the decision log, and notes such as "여기는 이미 확인했다" (this part has already been checked). If the working side's judgment gets in, the reviewer follows the same blind spots.
+3. **Hand it to the user.** Show the prompt as a single code block, give the guidance below, and **stop.**
    - "새 터미널에서 이 폴더로 새 세션을 열고 아래 지시문을 그대로 붙여 넣어 주세요. 리뷰 결과가 나오면 여기에 붙여 주세요."
-   - 쓰는 도구가 서브에이전트를 지원하면 "제가 서브에이전트로 직접 띄울 수도 있습니다"를 선택지로 함께 묻는다. 허락받은 뒤에만 띄우고, 같은 지시문을 쓴다.
-   - Codex CLI가 있으면 "같은 터미널에서 읽기 전용 Codex를 한 번 실행해 검토할 수도 있습니다"를 선택지로 함께 묻는다. 허락받으면 아래 순서로 한다.
-     1. `codex --version`과 `codex exec --help`를 실행해, 설치된 버전에 읽기 전용 실행 옵션(예: `--sandbox read-only`)과 작업 폴더 옵션이 있는지 확인한다. 옵션 이름은 버전마다 다를 수 있으므로 도움말에 나온 것만 쓴다.
-     2. 지시문을 저장소 밖의 임시 파일에 저장한다. 지시문을 명령줄 인자로 직접 넣지 않는다. 코드에 들어 있는 따옴표, `$(...)`, 백틱 때문에 지시문이 잘리거나 명령이 실행될 수 있다.
-     3. 실행할 명령을 사용자에게 보여 주고 확인받은 뒤, 표준 입력으로 넘긴다. 예: `codex exec --sandbox read-only -C <저장소> - < <임시 파일>`
-     4. 실행이 실패하거나 읽기 전용 옵션이 없으면 그 사실을 알리고 새 터미널 방식으로 돌아간다. 같은 세션의 자기 검토로 조용히 대신하지 않는다.
-4. **지적을 처리한다.** 리뷰 결과를 받으면 explain-as-you-go "지적을 받을 때" 순서를 따른다. 리뷰 결과는 판결이 아니라 자료다. 리뷰어는 맥락이 없어서 틀릴 수 있고, 맥락이 없어서 맞을 수도 있다. 지적마다 내 말로 다시 쓰고 코드와 실행으로 확인한 뒤, 아래 순서대로 처음 맞는 하나로 분류한다.
-   1. **전달 부족:** 지시문의 요구사항이나 규칙이 부족하거나 애매해서 생긴 지적. 지시문을 먼저 고치고, 다시 검토할 때 이 지적이 사라지는지 본다.
-   2. **고칠 것:** 실제 결함이다. 실패하는 테스트를 먼저 추가하고 고친다(task-breakdown 실행 루프와 같은 순서, 같은 보고·커밋 형식). 동작 규칙을 정해야 하는 지적은 사용자에게 묻는다.
-   3. **감수할 트레이드오프:** 실제 문제지만 고치는 비용이 더 크다. 사용자에게 보여 주고 결정 로그에 트레이드오프로 남긴다.
-   4. **잡음:** 리뷰어에게 없던 맥락에서는 맞는 코드다. 근거(코드 위치, 실행 결과, 요구사항 문장)를 붙여 받아들이지 않은 이유를 쓴다. 그 맥락을 지시문에 넣었으면 이 지적이 안 나왔을지도 적어 둔다.
-   - "고치면 좋은 것"은 기본으로 3(감수할 트레이드오프)이나 4(잡음)로 분류하고 이유를 남긴다. task-breakdown 실행 루프 5의 과잉 설계 점검을 통과하고, 고치는 비용이 작을 때만 고친다. 리뷰어의 지적을 모두 따르면 과잉 설계가 된다.
-   - "판단하지 않고 넘긴 것" 목록도 하나씩 본다. 다뤄야 할 것은 지적과 같이 처리하고, 아니면 `## 남은 위험`에 이유와 함께 옮긴다.
-5. **다시 검토할지 정한다.** "고칠 것"을 고쳤거나 지시문을 고쳤으면 같은 방식으로 한 번 더 검토받을지 사용자에게 묻는다. 검토는 최대 3회까지 한다.
-   - 다음 검토에서 사소하거나 이미 다룬 지적만 나오면 멈춘다.
-   - 3회를 하고도 중요한 지적이 계속 나오면 더 돌리지 않고 사용자에게 알린다. 결과물이 아직 준비되지 않았다는 신호이므로, 범위를 줄이거나 작업을 다시 나눌지 정한다.
-   - 사용자가 "그만해도 된다"고 하면 멈춘다.
-6. **기록한다.** NOTES.md `## 검증 결과`에 한 단락으로 남긴다: 언제, 어떤 범위를, 어떤 방식(새 터미널 / 서브에이전트 / 읽기 전용 Codex)으로 몇 번 검토했는지, 지적을 네 분류로 나눠 각각 몇 개였는지와 받아들이지 않은 이유. 고친 지적은 결정 로그에 항목으로 남긴다.
+   - If the tool in use supports subagents, also ask, as an option, "제가 서브에이전트로 직접 띄울 수도 있습니다". Launch one only after permission, and use the same prompt.
+   - If Codex CLI is available, also ask, as an option, "같은 터미널에서 읽기 전용 Codex를 한 번 실행해 검토할 수도 있습니다". If permitted, do it in the order below.
+     1. Run `codex --version` and `codex exec --help` to check whether the installed version has a read-only run option (for example, `--sandbox read-only`) and a working-folder option. Option names can differ between versions, so use only what appears in the help output.
+     2. Save the prompt to a temporary file outside the repository. Do not put the prompt directly into a command-line argument. Quotes, `$(...)`, and backticks in the code can cut the prompt short or cause commands to run.
+     3. Show the command to be run to the user, get confirmation, and pass the prompt via standard input. For example: `codex exec --sandbox read-only -C <repo> - < <temp file>`
+     4. If the run fails or there is no read-only option, say so and return to the new-terminal method. Do not quietly substitute a self-review by the same session.
+4. **Handle the findings.** When the review results come in, follow the order in explain-as-you-go "When receiving feedback". Review results are material, not a verdict. The reviewer has no context, so it can be wrong, and because it has no context, it can also be right. Restate each finding in your own words, check it with the code and by running it, and then classify it as the first of the following that fits.
+   1. **전달 부족 (briefing gap):** a finding caused by requirements or rules in the prompt that were missing or ambiguous. Fix the prompt first, and see whether this finding disappears in the next review.
+   2. **고칠 것 (fix):** a real defect. Add a failing test first and fix it (the same order and the same report and commit format as the task-breakdown execution loop). For findings that require deciding a behavior rule, ask the user.
+   3. **감수할 트레이드오프 (accepted trade-off):** a real problem, but fixing it costs more. Show it to the user and record it in the decision log as a trade-off.
+   4. **잡음 (noise):** code that is correct in a context the reviewer did not have. Write the reason for not accepting it with evidence (code location, run result, requirement sentence). Also note whether this finding would have come up if that context had been in the prompt.
+   - "고치면 좋은 것" (nice to fix) is classified by default as 3 (감수할 트레이드오프) or 4 (잡음), with the reason recorded. Fix it only when it passes the over-engineering check in task-breakdown Execution loop 5 and the cost of fixing it is small. Following every reviewer finding leads to over-engineering.
+   - Also go through the "판단하지 않고 넘긴 것" (passed over without judgment) list one by one. Handle the ones that need handling the same way as findings; otherwise move them to `## 남은 위험` with the reason.
+5. **Decide whether to review again.** If you fixed "고칠 것" items or fixed the prompt, ask the user whether to get one more review the same way. Review at most 3 times.
+   - If the next review brings up only trivial findings or ones already handled, stop.
+   - If important findings keep coming after 3 reviews, do not run more; tell the user. It is a sign that the deliverable is not ready yet, so decide whether to reduce the scope or split the work again.
+   - If the user says "그만해도 된다" (it is fine to stop), stop.
+6. **Record it.** Leave one paragraph in NOTES.md `## 검증 결과`: when, which range, by which method (new terminal / subagent / read-only Codex), and how many times it was reviewed; the findings split into the four classes with the count for each, and the reasons for those not accepted. Record fixed findings as entries in the decision log.
 
-## 리뷰 지시문 틀
+## Reviewer prompt template
 
 ````markdown
 너는 이 저장소의 변경을 처음 보는 코드 리뷰어다. 아래 정보만으로 검토한다. 이 변경을 만든 대화나 이유는 모른다고 생각하고, 결과물만 보고 판단한다.
@@ -88,21 +90,21 @@ metadata:
 4. 확인한 명령: 검토 중 실행한 명령 목록
 ````
 
-## 기록 읽기 시험
+## Record reading test
 
-코드 검토와 같은 원리를 문서에 쓴다. 문서를 쓴 세션은 빠진 설명을 자기 기억으로 채워 읽기 때문에 빈 곳을 못 찾는다. 대화 기록이 없는 세션에게 문서만 주고, 처음 읽는 사람이 찾을 정보를 물어본다.
+Apply the same principle as code review to documents. The session that wrote a document fills in missing explanations from its own memory as it reads, so it cannot find the gaps. Give only the documents to a session with no conversation history, and ask it for the information a first-time reader would look for.
 
-1. **문서를 정한다.** HANDOFF.md와 NOTES.md의 `# 자세한 기록` 위쪽(읽는 부분)만 준다. 코드, 대화 기록, 결정 로그의 자세한 비교는 주지 않는다.
-2. **질문을 정한다.** 아래 다섯 개는 항상 묻고, 이 작업에서 꼭 전해야 할 것이 더 있으면 두 개까지 더한다. 내가 기대하는 답은 지시문에 넣지 않고 따로 적어 둔다.
-   1. 무엇을 왜 만들었고, 지금 어디까지 왔나
-   2. 가장 중요한 결정 하나는 무엇이고, 왜 그렇게 했으며, 무엇을 포기했나
-   3. 성공 기준을 각각 무엇으로 확인했나
-   4. 아직 안 되는 것이나 위험한 것은 무엇인가
-   5. 이어서 작업하려면 무엇부터 하고, 어떤 명령으로 실행·테스트하나
-3. **넘긴다.** 아래 지시문을 코드 리뷰와 같은 방법(새 터미널 / 허락받은 서브에이전트 / 읽기 전용 Codex)으로 넘기고 멈춘다.
-4. **비교한다.** 질문마다 돌아온 답을 기대한 답과 비교해 맞음 / 틀림 / 문서에 없음으로 나눈다. 틀렸거나 문서에 없으면 그 내용을 문서에 쓴다. 고칠 것은 문서이고 코드가 아니다. 고칠 때는 explain-as-you-go "작업을 마칠 때"의 사실 지키기 규칙을 따른다. 리뷰어가 짚은 모르는 용어, 앞뒤가 다른 곳도 같은 방법으로 고친다.
-5. **다시 할지 정한다.** 고친 것이 있으면 한 번 더 시험할지 묻는다. 최대 2회까지 한다.
-6. **기록한다.** NOTES.md `## 검증 결과`에 한 줄로 남긴다: 언제, 질문 몇 개 중 몇 개가 맞았는지, 무엇을 고쳤는지.
+1. **Choose the documents.** Give only HANDOFF.md and the part of NOTES.md above `# 자세한 기록` (the reading part). Do not give the code, the conversation history, or the detailed comparisons in the decision log.
+2. **Choose the questions.** Always ask the five below, and add up to two more if there is something in this work that must get across. Do not put the answers you expect in the prompt; write them down separately.
+   1. 무엇을 왜 만들었고, 지금 어디까지 왔나 (what was built and why, and how far it has come)
+   2. 가장 중요한 결정 하나는 무엇이고, 왜 그렇게 했으며, 무엇을 포기했나 (the single most important decision, why, and what was given up)
+   3. 성공 기준을 각각 무엇으로 확인했나 (what each success criterion was checked with)
+   4. 아직 안 되는 것이나 위험한 것은 무엇인가 (what does not work yet or is risky)
+   5. 이어서 작업하려면 무엇부터 하고, 어떤 명령으로 실행·테스트하나 (to continue the work, what comes first and which commands run and test it)
+3. **Hand it over.** Pass the prompt below by the same methods as the code review (new terminal / approved subagent / read-only Codex) and stop.
+4. **Compare.** For each question, compare the answer that came back with the answer you expected and sort it into 맞음 / 틀림 / 문서에 없음 (correct / wrong / not in the document). If it is wrong or not in the document, write that content into the document. What gets fixed is the document, not the code. When fixing, follow the fact-preservation rule in explain-as-you-go "When finishing the work". Fix the unknown terms and inconsistencies the reviewer pointed out the same way.
+5. **Decide whether to test again.** If something was fixed, ask whether to test once more. Do it at most 2 times.
+6. **Record it.** Leave one line in NOTES.md `## 검증 결과`: when, how many of the questions were answered correctly, and what was fixed.
 
 ```markdown
 너는 이 작업에 참여하지 않은 개발자다. 아래 문서만 읽고 질문에 답한다. 코드와 다른 파일은 열지 않는다. 파일을 고치지 않는다.
@@ -121,11 +123,11 @@ metadata:
 4. 이 문서가 읽는 사람이 이미 안다고 가정한 것
 ```
 
-## 하지 않는 것
+## What not to do
 
-- 요청하는 쪽이 리뷰를 직접 하거나, 리뷰어의 결론을 미리 짐작해 지시문에 넣지 않는다.
-- 리뷰 결과를 확인 없이 그대로 고치지 않는다. 같은 범위를 3회 넘게 검토하지 않는다. 결론이 "그대로 마쳐도 됨"이어도 "판단하지 않고 넘긴 것" 목록은 본다.
-- 사용자 허락 없이 서브에이전트, 새 세션, 외부 CLI를 띄우지 않는다.
-- 커밋되지 않은 변경을 리뷰 범위에 넣는다고 가정하지 않는다.
+- The requester does not review it directly, and does not guess the reviewer's conclusion in advance and put it into the prompt.
+- Do not apply review results as they are without checking them. Do not review the same range more than 3 times. Even if the conclusion is "그대로 마쳐도 됨", go through the "판단하지 않고 넘긴 것" list.
+- Do not launch subagents, new sessions, or external CLIs without the user's permission.
+- Do not assume uncommitted changes are included in the review range.
 
-(이 스킬은 obra/superpowers의 requesting-code-review(MIT)에서 "대화 기록 없이 만든 리뷰 지시문"과 "판단하지 않고 넘긴 것 목록"을, anthropics/skills의 doc-coauthoring에서 "대화 기록 없는 세션에게 문서를 읽혀 보는 시험"을, addyosmani/agent-skills의 doubt-driven-development(MIT)에서 "결함을 찾는 지시", "지적의 네 분류", "최대 3회", "읽기 전용 CLI 실행"을 참고해 새로 썼다.)
+(This skill was newly written with reference to: from requesting-code-review in obra/superpowers (MIT), "a reviewer prompt built without the conversation history" and "the list of things passed over without judgment"; from doc-coauthoring in anthropics/skills, "a test that has a session with no conversation history read the documents"; and from doubt-driven-development in addyosmani/agent-skills (MIT), "an instruction to find defects", "the four classes of findings", "at most 3 times", and "a read-only CLI run".)

@@ -1,6 +1,6 @@
 ---
 name: problem-framing
-description: 여러 단계가 필요한 작업, 요구사항 문서(기획서, 이슈, README 등), 기능 요청, 문제가 여러 개 섞인 버그 리포트를 처음 받았을 때 코드를 쓰기 전에 사용한다. 문서를 끝까지 읽고 기존 코드는 구조를 본 뒤 관련된 부분을 읽고, 문서에 없는 것(언어, 환경, 동작 규칙, 범위, 사용 환경 같은 외부 상황)은 혼자 정하지 않고 근거를 붙인 추정안으로 사용자에게 묻는다. 요구사항을 준 사람에게 물을 수 있으면 메신저나 이슈로 보낼 질문도 만들어 준다. 답을 받은 뒤 목표, 출처가 붙은 성공 기준, 범위 밖, 1순위 문제, 접근 방식 대안 비교, 역할 분담을 NOTES.md에 정리한다. 알고리즘 문제 하나는 cpp-stress-test로, 원인을 모르는 단일 버그는 systematic-debugging으로 시작한다. Use at the start of a multi-step task, requirement document or feature request, before writing code.
+description: Use before writing code when you first receive work that needs multiple steps, a requirements document (spec, issue, README, etc.), a feature request, or a bug report that mixes several problems. Read the document all the way through, look at the structure of the existing code and then read the related parts, and do not decide on your own anything the document does not cover (language, environment, behavior rules, scope, external context such as the usage environment); ask the user with proposed answers backed by evidence. If the person who gave the requirements can be asked, also prepare questions to send by messenger or issue. After the answers, organize the goal, success criteria with sources, out of scope, the top-priority problem, a comparison of approach alternatives, and the division of roles in NOTES.md. Start a single algorithm problem with cpp-stress-test and a single bug of unknown cause with systematic-debugging. Use at the start of a multi-step task, requirement document or feature request, before writing code.
 license: MIT
 metadata:
   author: my-agent-skills
@@ -9,70 +9,72 @@ metadata:
 
 # Problem Framing
 
-코드를 쓰기 전에 사용자의 요구사항을 먼저 파악한다. 무엇을 만들지, 무엇이 완료인지, 어떤 방법으로 풀지는 사용자의 답으로 정한다. **정해지지 않은 것은 혼자 정하지 않고, 근거를 붙인 추정안으로 묻는다.**
+> **Output language:** write everything the user reads (replies, questions, NOTES.md, HANDOFF.md, code comments, reports) in the user's language. Keep the Korean headings, labels, fixed phrases, and examples quoted in this skill exactly as written.
 
-시작할 때 사용자에게 "problem-framing으로 시작합니다"라고 알린다.
+Understand the user's requirements before writing code. What to build, what counts as done, and how to solve it are decided by the user's answers. **Do not decide anything undecided on your own; ask with proposed answers backed by evidence.**
 
-## 작업 흐름에서의 위치
+When starting, tell the user "problem-framing으로 시작합니다".
 
-이 스킬이 첫 단계다. 순서는 problem-framing → task-breakdown → 작업마다 구현과 검증 → verification-before-completion → session-handoff이고, explain-as-you-go는 처음부터 끝까지 함께 쓴다.
+## Place in the workflow
 
-사용자가 이 스킬을 직접 불렀으면 작업이 작아 보여도 아래 절차를 모두 따른다. 사용자가 부르지 않았을 때만, 다음 경우에는 이 스킬 대신 다른 길로 간다.
-- 알고리즘 문제 하나 → cpp-stress-test (설치되어 있지 않으면 바로 풀이)
-- 원인을 모르는 버그 하나 → systematic-debugging
-- 질문 하나, 한두 줄 수정 → 바로 처리
+This skill is the first step. The order is problem-framing → task-breakdown → implementation and verification per task → verification-before-completion → session-handoff, and explain-as-you-go is used alongside from start to finish.
 
-## 절대 규칙
+If the user invoked this skill directly, follow the whole procedure below even if the work looks small. Only when the user did not invoke it, take another route instead of this skill in the following cases.
+- A single algorithm problem → cpp-stress-test (if it is not installed, solve it directly)
+- A single bug of unknown cause → systematic-debugging
+- A single question, or a one- or two-line change → handle it directly
 
-- **혼자 정하지 않는다.** 요청 원문에 없는 것은 정해지지 않은 것이다. 언어, 버전, 빌드 도구, 테스트 방식, 폴더 구조, 동작 규칙, 범위를 AI가 고르지 않는다. 대신 원문에서 근거를 찾아 추정안을 만들고 사용자에게 확인받는다(1단계 2~5번).
-- **요구사항 문서는 요청자의 문서다.** 기획서, 이슈, README처럼 다른 사람이 쓴 요구사항 문서에는 내 메모나 결정을 섞지 않는다. 실행 방법, 메모, 결정은 NOTES.md와 HANDOFF.md에 쓴다. 문서 자체를 고쳐야 할 이유가 생기면 먼저 묻는다.
-- **답을 받기 전에는 만들지 않는다.** 사용자의 답이 오기 전에는 파일을 만들거나 고치지 않고, 프로젝트를 만드는 명령을 실행하지 않는다. NOTES.md도 답을 받은 뒤에 만든다. 예외는 하나다. 이미 있는 코드와 테스트를 그대로 빌드하고 실행해 처음 상태를 확인하는 것은 답을 받기 전에 한다.
-- **환경은 선택지를 만드는 데만 쓴다.** 폴더 내용이나 설치된 도구를 읽어 보는 것은 괜찮다. 다만 그 결과로 결정하지 말고 "설치된 것: .NET 9, MSVC 19.44. 어느 것으로 할까요?"처럼 선택지로 보여 준다.
-- **"작아서 생략"을 스스로 정하지 않는다.** 확인 질문, 접근 방식 비교, task-breakdown 중 무엇이든 건너뛰려면 사용자에게 먼저 묻는다.
-- 가정으로 진행하는 경우는 사용자가 "알아서 정해", "가정하고 진행해"처럼 직접 말했을 때뿐이다. 그때도 가정마다 NOTES.md에 "가정(사용자가 위임)"이라고 적는다.
+## Hard rules
 
-## 절차
+- **Do not decide on your own.** Anything not in the original request is undecided. The AI does not pick the language, version, build tool, test approach, folder structure, behavior rules, or scope. Instead, find evidence in the original text, build a proposed answer, and get the user's confirmation (Step 1, items 2–5).
+- **The requirements document belongs to the requester.** Do not mix your notes or decisions into requirement documents written by others, such as specs, issues, or READMEs. Write run instructions, notes, and decisions in NOTES.md and HANDOFF.md. If a reason to change the document itself comes up, ask first.
+- **Do not build anything before the answers arrive.** Until the user's answers come, do not create or change files and do not run commands that create a project. NOTES.md is also created only after the answers. There is one exception: building and running the existing code and tests as they are, to check the initial state, is done before the answers.
+- **Use the environment only to build options.** Reading the folder contents or the installed tools is fine. But do not decide from the result; show it as options, such as "설치된 것: .NET 9, MSVC 19.44. 어느 것으로 할까요?".
+- **Do not decide on your own to "skip it because it is small".** To skip any of the confirmation questions, the approach comparison, or task-breakdown, ask the user first.
+- Proceed on assumptions only when the user says so directly, such as "알아서 정해" or "가정하고 진행해". Even then, write "가정(사용자가 위임)" in NOTES.md for each assumption.
 
-### 0단계: 공통 규칙을 확인한다
+## Procedure
 
-이 스킬은 공통 작업 규칙(대안 비교, 묻고 나서 시작하기, 사실과 근거, 멈추고 기다리기)을 전제로 쓰였다. 이 세션이 받은 지시(AGENTS.md, CLAUDE.md 등)에 "작업 규칙 (my-agent-skills)" 절이 이미 있으면 이 단계를 건너뛴다. 없으면 이 스킬 폴더의 `references/rules.md`를 끝까지 읽고, 이 작업이 끝날 때까지 그 규칙을 따른다. 스킬만 설치되고 전역 지시 파일은 없는 환경에서도 같은 규칙으로 일하기 위해서다. 읽었으면 첫 응답에 "공통 규칙: references/rules.md를 읽음" 한 줄을 남긴다.
+### Step 0: Check the shared rules
 
-### 1단계: 묻고 멈춘다
+This skill was written assuming the shared working rules (comparing alternatives, asking before starting, facts and evidence, stopping and waiting). If the instructions this session received (AGENTS.md, CLAUDE.md, etc.) already contain a "Working rules (my-agent-skills)" section (or the older "작업 규칙 (my-agent-skills)"), skip this step. If not, read `references/rules.md` in this skill folder all the way through and follow those rules until this work is finished. This is so that the same rules apply even in an environment where only the skills are installed and there is no global instruction file. If you read it, leave one line in the first response: "공통 규칙: references/rules.md를 읽음".
 
-1. **요구사항 문서를 끝까지 읽고 목표를 다시 쓴다.** 요구사항이 문서(기획서, 이슈, 작업 폴더의 README 등)로 주어졌으면 그 문서부터 찾아 처음부터 끝까지 읽는다. 문서가 가리키는 파일(예제 입력, 기존 코드, 다른 문서)도 함께 읽는다. 그다음 요청 원문(문서, 이슈, 기획서)을 2~3문장으로 요약한다. 원문에 없는 내용은 넣지 않는다.
-   - **기존 코드가 크면 구조부터 본다.** 먼저 소스 파일의 전체 줄 수를 센다(git 저장소면 bash `git ls-files '*.cpp' '*.h' '*.py' | xargs wc -l | tail -1`, PowerShell `(git ls-files *.cpp *.h *.py | Get-Content | Measure-Object -Line).Lines`. git이 아니면 `Intermediate`, `Binaries`, 서드파티처럼 생성되거나 외부에서 온 폴더는 빼고 센다).
-     - 2,500줄 이하이면 전부 읽는다.
-     - 넘으면 폴더 구조, 진입점(main, 게임 모드, 앱 시작점), 테스트 위치, 빌드 설정을 본 뒤, 요구사항에 나온 이름(기능, 클래스, 화면)으로 검색해 관련 파일을 고르고, 합쳐서 2,500줄 안에서 먼저 읽는다. 나머지는 필요해질 때 읽는다.
-     - 센 줄 수, 고른 파일, 검색 명령을 "읽은 범위"로 적는다.
-   - 도구가 서브에이전트를 지원하면 "탐색은 서브에이전트에 맡기고 관련 파일 목록과 요약만 받기"를 선택지로 제안할 수 있다. 요약 중 결정에 쓰는 내용은 이 세션이 원본 파일에서 직접 확인한다.
-   - 원문에서 읽어 낼 수 있는 것은 원문에서 찾고, 필요한데 원문에 없거나 애매한 정보는 사용자에게 묻는다. 사용자가 문서 밖의 정보(전달사항, 제약, 환경, 의도)를 따로 알고 있을 수 있다.
-   - 사용자가 준 전달사항은 원문과 같은 무게로 쓰고, 추정보다 우선한다. NOTES.md에는 출처를 "사용자 전달"로 적는다.
-   - **기존 코드와 테스트가 있으면 고치기 전에 그대로 빌드하고 테스트를 실행해 처음 상태를 확인한다.** 통과·실패 수와 경고, 실행한 명령을 질문 위에 "처음 상태"로 적는다. 이것은 사실 확인이라 묻지 않고 한다. 빌드 산출물 말고는 파일을 만들거나 고치지 않는다. 실행하지 못했으면 "미확인 — 이유"라고 쓴다.
-2. **정해지지 않은 것을 모두 찾는다.** 원문을 한 줄씩 읽으며, 원문만으로 답할 수 없는 것을 적는다. 원문에 적혀 있지 않아도 구현하려면 정해야 하는 것까지 찾는다. 다음 묶음을 빠짐없이 확인한다.
-   - 환경: 언어와 버전, 빌드 도구, 테스트 방식, 폴더 구조, 실행 환경, 버전 관리(git 저장소가 이미 있는지, 없으면 만들지)
-   - 동작 규칙: 경계값(정확히 0일 때, 최댓값일 때), 같은 동작이 반복될 때, 두 기능이 동시에 걸리거나 순서가 바뀔 때(예: 보호막이 독 피해도 막는가), 잘못된 입력
-   - 외부 상황: 누가 어떤 상황에서 쓰는지, 실행되는 곳(플랫폼, 기기, 프레임레이트), 데이터 크기와 호출 빈도, 함께 동작하는 다른 시스템, 앞으로 바뀌거나 늘어날 가능성이 큰 것, 실패했을 때의 영향
-   - 결과물: 무엇을 만들어 넘기는지, 무엇이 완료인지, 성능 수치 목표
-   - 범위: 이번에 하지 않는 것
-3. **사실과 결정을 나눈다.** 찾아보면 알 수 있는 것(설치된 도구, 폴더 구조, 기존 코드의 동작)은 **사실**이다. 사실은 사용자에게 묻지 않고 에이전트가 직접 확인하고, 확인한 방법을 함께 적는다. 사용자에게는 **결정**(무엇을 쓸지, 어떻게 동작해야 하는지)만 묻는다.
-   - **요청자에게 물을 것을 따로 나눈다.** 요구사항을 준 사람(기획자, 리드, 요청한 동료)만 답할 수 있는 것이 있다: 지금 어떻게 일하고 있는지, 무엇이 불편한지, 무엇을 보고 완료라고 판단할지, 숨은 제약. 요청자에게 물을 방법(메신저, 이슈 댓글 등)이 있는지 모르면 첫 차례에 사용자에게 묻는다. 물을 방법이 없으면 이 구분을 건너뛰고 모두 사용자에게 추정안으로 묻는다.
-   - 명령 경로(PATH)에서 찾지 못한 도구도 "없음"으로 결론 내지 않는다. 표준 설치 위치까지 확인한다. 예: Windows의 Visual Studio와 MSVC는 `vswhere.exe`로, CMake는 Visual Studio 설치 폴더 안까지 찾아본다. 끝까지 확인하지 못했으면 "미확인"이라고 쓰고, 그것을 근거로 추천하지 않는다.
-   - 외부 패키지(NuGet, pip, vcpkg 등)를 내려받아야 하는 안은 다운로드가 되는지 먼저 확인한다. 파일을 만들지 않는 방법(패키지 서버 주소에 접속해 보기 등)으로 확인하고, 확인하지 못했으면 선택지에 "미확인 — 다운로드가 막혀 있으면 이 안은 실패한다"고 적는다.
-4. **이번 차례의 질문을 고른다.** 다른 질문의 답을 몰라도 지금 바로 답할 수 있는 결정만 이번 차례에 넣는다. 다른 답에 따라 내용이 바뀌는 질문은 다음 차례로 미룬다. 예: 언어를 정하기 전에는 테스트 프레임워크를 묻지 않는다.
-   - 질문은 답에 따라 결정이 달라지는 것만 고른다. 질문마다 "이 답에 따라 무엇이 달라지는지"를 한 줄로 쓸 수 있어야 하고, 그 줄을 쓸 수 없는 질문은 뺀다. 질문 개수는 정해 두지 않는다. 빠진 정보가 많으면 질문도 많아지고, 적으면 적어진다.
-5. **질문을 보낸다.** 질문마다 번호, 추천안, 근거, 가능한 다른 답 1~2개, 그 답에 따라 무엇이 달라지는지 한 줄을 붙인다. 질문은 "예"라고만 답해도 추천안이 받아들여지게 쓴다. 이번 차례의 질문은 한 번에 모두 보낸다. **여기서 응답을 끝낸다.**
-   - 첫 차례 질문의 끝에는 "문서 밖에서 알려 주실 내용(전달사항, 제약, 환경)이 있으면 함께 적어 주세요"를 붙인다.
-   - 요청자에게 물을 수 있으면, 요청자용 질문을 사용자가 메신저나 이슈 댓글에 그대로 붙일 수 있는 문장으로 따로 묶어 준다. 사용자가 요청자의 답을 전해 주면 출처를 "요청자 답"으로 적는다.
-   - **요청자에게는 여러 차례에 걸쳐 묻는다.** 요청자는 요구사항을 한 번에 다 말해 주지 않는 경우가 많다. 첫 차례에는 맥락 질문 2~3개만 만든다: 지금 이 일을 어떻게 하고 있는지, 누가 어떤 상황에서 쓰는지, 무엇이 불편한지. 사소해 보여도 맥락을 모으는 질문부터 한다. 답을 받으면 그 답에서 나온 새 사실을 짚어 다음 질문을 만든다(예: "매주 엑셀로 따로 정리하신다고 하셨는데, 그 표에는 어떤 항목이 들어가나요?"). 완료 판단 기준과 하지 않을 일은 맥락이 모인 뒤에 묻는다.
-   - 요청자에게 해법이나 할 일 목록을 달라고 묻지 않는다. "무엇을 만들면 되나요?", "할 일을 순서대로 알려 주세요" 같은 질문은 만들지 않는다. 요청자에게는 상황과 기준을 묻고, 무엇을 어떻게 만들지는 그 답을 바탕으로 사용자와 정한다.
-   - 요청자의 답이 짧거나 일부만 답하면 그것을 실패로 보지 않는다. 받은 답을 `## 확인 질문과 답`에 적고, 아직 모르는 것을 다음 차례 질문으로 만든다. 차례마다 "이번 답으로 알게 된 것 / 아직 모르는 것"을 한 줄씩 보여 준다.
-   - 추천안은 원문에서 찾은 근거로 만든 추정안이다. 근거는 원문 인용(예: "요구사항 문서 12행: 매 프레임 호출된다")으로 쓰고, 원문에 근거가 없으면 "원문에 없음 — (일반적인 경우나 비슷한 시스템 기준)"이라고 쓴다. 근거가 약한 추정은 약하다고 밝힌다.
-   - 질문 하나에는 결정 하나만 담는다. "0과 음수는 무시하고, 미등록 스킬은 예외로 할까요?"처럼 여러 결정을 한 질문에 묶지 않는다. 묶으면 "추천안" 한마디에 일부 결정이 정해지지 않은 채 넘어간다.
-   - 추천안이 요청 원문과 다르거나 원문을 넓게 해석한 것이면 그 사실을 밝힌다. 예: "원문은 '콘솔 프로젝트 하나에 테스트까지'인데, 별도 테스트 프로젝트를 추천합니다. 이유: ...".
-6. **다음 차례를 반복한다.** 답을 받으면 새로 물을 수 있게 된 질문을 같은 방식으로 다음 차례에 묻는다. 정해지지 않은 결정이 하나도 남지 않을 때까지 반복한다.
-   - 답이 질문의 일부만 다뤘으면(예: "추천안"이라고만 답했는데 질문 안에 따로 정해 달라고 한 항목이 있었다면) 남은 결정을 다음 차례에 다시 묻는다.
-   - 2단계로 넘어가기 전에 정해지지 않은 결정이 없는지 확인한다. 하나라도 남아 있으면 "결정이 끝났다"고 말하지 않는다.
-   - 정해 둔 작업 시간이 있으면 전체 시간의 25%가 되기 전에 질문을 끝내는 것을 목표로 한다. 넘길 것 같으면 남은 질문을 중요도순으로 보여 주고, 계속 물을지 사용자에게 묻는다.
+### Step 1: Ask, then stop
+
+1. **Read the requirements document all the way through and restate the goal.** If the requirements were given as a document (spec, issue, README in the work folder, etc.), find that document first and read it from beginning to end. Also read the files it points to (example input, existing code, other documents). Then summarize the original request (document, issue, spec) in 2–3 sentences. Do not add anything that is not in the original.
+   - **If the existing code is large, look at the structure first.** First count the total lines of the source files (in a git repository, bash `git ls-files '*.cpp' '*.h' '*.py' | xargs wc -l | tail -1`, PowerShell `(git ls-files *.cpp *.h *.py | Get-Content | Measure-Object -Line).Lines`; if it is not git, count without generated or external folders such as `Intermediate`, `Binaries`, and third-party code).
+     - If it is 2,500 lines or fewer, read all of it.
+     - If it is more, look at the folder structure, entry points (main, game mode, app startup), test locations, and build settings, then search for names that appear in the requirements (features, classes, screens) to pick the related files, and read those first, within 2,500 lines in total. Read the rest when it becomes needed.
+     - Record the counted line total, the chosen files, and the search commands as "읽은 범위" (range read).
+   - If the tool supports subagents, you may offer, as an option, delegating exploration to a subagent and receiving only the list of related files and a summary. Anything from the summary that a decision relies on is checked directly by this session in the original files.
+   - Find what can be read from the original text in the original, and ask the user about information that is needed but missing or ambiguous in it. The user may separately know information outside the document (notes passed on, constraints, environment, intent).
+   - Give notes the user passes on the same weight as the original text, and prefer them over estimates. In NOTES.md, record their source as "사용자 전달".
+   - **If there is existing code and tests, build it and run the tests as they are before changing anything, to check the initial state.** Write the pass/fail counts, warnings, and the commands run above the questions as "처음 상태" (initial state). This is a fact check, so do it without asking. Do not create or change any files other than build outputs. If you could not run it, write "미확인 — 이유".
+2. **Find everything that is undecided.** Read the original line by line and note what cannot be answered from the original alone. Also find things that are not written in the original but must be decided to implement it. Check every one of the following groups.
+   - Environment: language and version, build tool, test approach, folder structure, runtime environment, version control (whether a git repository already exists, and if not, whether to create one)
+   - Behavior rules: boundary values (exactly 0, the maximum), when the same action repeats, when two features apply at once or their order changes (for example, does a shield also block poison damage), invalid input
+   - External context: who uses it and in what situation, where it runs (platform, device, frame rate), data size and call frequency, other systems that work alongside it, what is likely to change or grow later, the impact of a failure
+   - Deliverable: what is built and handed over, what counts as done, numeric performance targets
+   - Scope: what is not done this time
+3. **Separate facts from decisions.** Things that can be found by looking (installed tools, folder structure, behavior of existing code) are **facts**. The agent checks facts directly without asking the user, and records how they were checked. Ask the user only about **decisions** (what to use, how it should behave).
+   - **Separate out what to ask the requester.** Some things only the person who gave the requirements (planner, lead, the colleague who asked) can answer: how they work now, what is inconvenient, what they will look at to judge it done, hidden constraints. If you do not know whether there is a way to ask the requester (messenger, issue comments, etc.), ask the user in the first round. If there is no way to ask, skip this split and ask the user everything as proposed answers.
+   - Do not conclude "없음" (not present) for a tool that was not found on the command path (PATH). Check the standard install locations too. For example, on Windows look for Visual Studio and MSVC with `vswhere.exe`, and look for CMake inside the Visual Studio install folder. If you could not confirm it after all, write "미확인" and do not base a recommendation on it.
+   - For options that require downloading external packages (NuGet, pip, vcpkg, etc.), first check whether downloading works. Check in a way that creates no files (such as connecting to the package server address), and if you could not check, write in the option "미확인 — 다운로드가 막혀 있으면 이 안은 실패한다" (unconfirmed — this option fails if downloads are blocked).
+4. **Choose this round's questions.** Put in this round only the decisions that can be answered right now without knowing the answers to other questions. Defer questions whose content changes depending on another answer to the next round. For example, do not ask about the test framework before the language is decided.
+   - Choose only questions whose answer changes the decision. For each question you must be able to write one line on "what changes depending on this answer"; drop any question for which you cannot write that line. There is no fixed number of questions. If a lot of information is missing, there will be many questions; if little is missing, few.
+5. **Send the questions.** Attach to each question a number, a recommendation, the evidence, 1–2 other possible answers, and one line on what changes depending on the answer. Write the questions so that answering just "예" (yes) accepts the recommendation. Send all of this round's questions at once. **End the response here.**
+   - At the end of the first round of questions, add "문서 밖에서 알려 주실 내용(전달사항, 제약, 환경)이 있으면 함께 적어 주세요".
+   - If the requester can be asked, group the requester questions separately as sentences the user can paste directly into a messenger or an issue comment. When the user relays the requester's answer, record its source as "요청자 답".
+   - **Ask the requester over several rounds.** Requesters often do not state all the requirements at once. In the first round, write only 2–3 context questions: how they do this work now, who uses it in what situation, what is inconvenient. Start with questions that gather context, even if they seem trivial. When answers come, pick up the new facts in them to build the next questions (for example, "매주 엑셀로 따로 정리하신다고 하셨는데, 그 표에는 어떤 항목이 들어가나요?"). Ask about completion criteria and things not to do after the context has been gathered.
+   - Do not ask the requester for a solution or a to-do list. Do not write questions such as "무엇을 만들면 되나요?" or "할 일을 순서대로 알려 주세요". Ask the requester about situations and criteria, and decide what to build and how with the user, based on those answers.
+   - If the requester's answer is short or covers only part, do not treat it as a failure. Record the answer received in `## 확인 질문과 답`, and turn what is still unknown into the next round's questions. Each round, show one line each for "이번 답으로 알게 된 것 / 아직 모르는 것".
+   - The recommendation is a proposed answer built from evidence found in the original. Write the evidence as a quote from the original (for example, "요구사항 문서 12행: 매 프레임 호출된다"), and if the original has no evidence, write "원문에 없음 — (일반적인 경우나 비슷한 시스템 기준)". Say so when an estimate rests on weak evidence.
+   - Put only one decision in each question. Do not bundle several decisions into one question, such as "0과 음수는 무시하고, 미등록 스킬은 예외로 할까요?". If they are bundled, a one-word "추천안" (recommendation) answer lets some of the decisions pass without being decided.
+   - If the recommendation differs from the original request or reads it broadly, say so. For example: "원문은 '콘솔 프로젝트 하나에 테스트까지'인데, 별도 테스트 프로젝트를 추천합니다. 이유: ...".
+6. **Repeat for the next round.** When answers come, ask the questions that have now become askable in the next round, in the same way. Repeat until no undecided decision remains.
+   - If an answer covered only part of a question (for example, the user answered only "추천안" but the question contained an item they were asked to decide separately), ask the remaining decision again in the next round.
+   - Before moving on to Step 2, confirm that no undecided decision remains. If even one remains, do not say "결정이 끝났다" (the decisions are done).
+   - If there is a set working time, aim to finish the questions before 25% of the total time has passed. If it looks like it will go over, show the remaining questions in order of importance and ask the user whether to keep asking.
 
 ```text
 problem-framing으로 시작합니다. 요구사항 문서를 끝까지 읽었습니다. 이번 차례에 정할 것이 3가지 있습니다.
@@ -100,56 +102,56 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 (완료 판단 기준은 이 답을 받은 뒤 다음 차례에 묻겠습니다.)
 ```
 
-### 2단계: 답을 받은 뒤 정리하고 멈춘다
+### Step 2: After the answers, organize and stop
 
-7. **답을 기록한다.** 질문과 답을 그대로 NOTES.md에 적는다. 답이 새 질문을 만들면 6번대로 다음 차례에 묻는다. 답을 해석해야 범위가 정해지면(예: "잘못된 입력은 0으로" → 음수만인지, NaN·무한대도 포함인지) 해석을 그대로 적용하지 말고 "이렇게 이해했는데 맞나요?"라고 확인받는다.
-   - 같은 확인을 요구사항 문서의 애매한 문장과 요청자의 답에도 한다. 두 가지 이상으로 읽히면 가능한 해석을 나란히 보여 주고 다시 묻는다. 확인받기 전에는 어느 해석으로도 성공 기준이나 계획을 쓰지 않는다.
-   - 기록하는 사실과 결정에는 출처를 붙인다: 요구사항 / 사용자 답 / 요청자 답 / 직접 확인(명령) / 승인된 추정. 일반 지식이나 추정으로 채운 내용은 사용자가 승인하기 전까지 성공 기준과 계획에 넣지 않는다.
-   - 질문과 답은 `## 확인 질문과 답`에 근거와 함께 적는다. 동작 규칙, 설계, 범위처럼 코드에 드러나는 답은 결정 로그에도 D 항목으로 쓰고(장점과 트레이드오프 포함), `## 확인 질문과 답`에는 "→ D2"처럼 번호만 남긴다. 언어, 도구처럼 단순한 선택은 `## 확인 질문과 답`에만 쓴다.
-   - 결정 로그 항목은 아래 NOTES.md 형식의 틀(### D번호)을 쓴다. 쓰는 법은 explain-as-you-go의 "결정 로그 쓰는 법"을 따른다. 같은 결정을 두 번 쓰지 않는다.
-8. **화면이 있는 제품이면 사용자와 핵심 흐름부터 정한다.** 결과물이 사람이 화면으로 쓰는 제품(웹 서비스, 툴, 앱, 게임 UI)이면 성공 기준보다 먼저 아래 "화면이 있는 제품 작업에서 정할 것"의 세 가지를 정해 NOTES.md `## 사용자와 핵심 흐름`에 적는다. 로직, 알고리즘, 엔진 내부 시스템처럼 화면 흐름이 없는 작업이면 건너뛰고 "해당 없음 — 이유"만 적는다. 해당하는지 애매하면 사용자에게 묻는다.
-9. **성공 기준을 정한다.** 확인 가능한 형태로 쓴다: 통과해야 할 테스트, 수치 목표(ms, fps, 메모리, 입력 크기), 재현되지 않아야 할 증상. "잘 동작한다" 같은 기준은 쓰지 않는다. 기준마다 출처를 붙인다: (요구사항 문서 7행), (사용자 전달), (요청자 답), (Q3 답), (추정 — Q5에서 사용자 확인).
-   - 요청자에게 물을 수 있으면, 만들 것·완료 기준·하지 않을 것을 3~5줄로 요약한 확인 문장을 만들어 준다. 사용자가 요청자에게 보내 확인받고, 받은 답을 NOTES.md에 "요청자 확인"으로 적는다.
-10. **범위 밖을 적는다.** 사용자가 답한 범위를 바탕으로 이번에 하지 않을 일을 적는다.
-11. **핵심 문제를 고른다.** 성공 기준에 가장 큰 영향을 주는 문제를 1순위로 정하고 이유를 한 줄로 적는다.
-12. **접근 방식을 비교한다.** 1순위 문제를 푸는 방법 2~3개를 성공 기준, 위험, 드는 시간으로 비교하고 추천안, 고른 이유, 버린 안마다 이유를 적는다. 형식은 explain-as-you-go의 "해결책을 제시할 때"를 따른다. 합리적인 방법이 하나뿐이면 "대안 없음 — 이유"라고 쓴다. 사용자가 고르면 이 비교를 결정 로그의 D 항목으로 쓴다.
-13. **계획과 역할을 쓴다.** 계획은 5줄 이내로, 단계마다 확인 방법을 붙인다. AI에게 맡길 일과 사용자가 판단할 일을 나눈다.
-14. **NOTES.md를 만든다.** 아래 형식으로 작업 폴더 최상단에 만든다.
-15. **확인받는다.** 성공 기준, 범위 밖, 1순위 문제, 접근 방식 비교를 보여 주고, 고칠 것과 어느 접근 방식으로 갈지 묻는다. **여기서 응답을 끝낸다.**
+7. **Record the answers.** Write the questions and answers as they are in NOTES.md. If an answer creates a new question, ask it in the next round as in item 6. If the answer has to be interpreted to settle the scope (for example, "잘못된 입력은 0으로" → only negative numbers, or NaN and infinity too?), do not apply your interpretation as is; confirm it with "이렇게 이해했는데 맞나요?".
+   - Do the same confirmation for ambiguous sentences in the requirements document and for the requester's answers. If they can be read in two or more ways, show the possible interpretations side by side and ask again. Do not write success criteria or a plan on any interpretation before it is confirmed.
+   - Attach a source to the facts and decisions you record: 요구사항 / 사용자 답 / 요청자 답 / 직접 확인(명령) / 승인된 추정. Content filled in from general knowledge or estimation is not put in the success criteria or the plan until the user approves it.
+   - Write the questions and answers in `## 확인 질문과 답` with their evidence. Answers that show up in the code, such as behavior rules, design, and scope, are also written as D entries in the decision log (including benefits and trade-offs), and only the number, like "→ D2", is left in `## 확인 질문과 답`. Simple choices such as language or tools are written only in `## 확인 질문과 답`.
+   - Decision log entries use the template (### D번호) in the NOTES.md format below. Follow explain-as-you-go "How to write the decision log" for how to write them. Do not write the same decision twice.
+8. **For products with screens, decide the users and core flows first.** If the deliverable is a product people use through screens (web service, tool, app, game UI), decide the three things in "What to decide for products with screens" below before the success criteria, and write them in NOTES.md `## 사용자와 핵심 흐름`. For work with no screen flow, such as logic, algorithms, or engine-internal systems, skip this and write only "해당 없음 — 이유". If it is unclear whether it applies, ask the user.
+9. **Set the success criteria.** Write them in a checkable form: tests that must pass, numeric targets (ms, fps, memory, input size), symptoms that must not reproduce. Do not write criteria such as "잘 동작한다" (works well). Attach a source to each criterion: (요구사항 문서 7행), (사용자 전달), (요청자 답), (Q3 답), (추정 — Q5에서 사용자 확인).
+   - If the requester can be asked, prepare a confirmation message that summarizes what will be built, the completion criteria, and what will not be done in 3–5 lines. The user sends it to the requester for confirmation, and the reply received is recorded in NOTES.md as "요청자 확인".
+10. **Write what is out of scope.** Based on the scope the user answered, write what will not be done this time.
+11. **Pick the core problem.** Make the problem with the biggest impact on the success criteria the top priority, and write the reason in one line.
+12. **Compare approaches.** Compare 2–3 ways to solve the top-priority problem on success criteria, risk, and time required, and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. Follow explain-as-you-go "When proposing solutions" for the format. If there is only one reasonable approach, write "대안 없음 — 이유". When the user chooses, write this comparison as a D entry in the decision log.
+13. **Write the plan and roles.** Keep the plan within 5 lines, with a check method for each step. Separate the work given to the AI from the judgments the user makes.
+14. **Create NOTES.md.** Create it at the root of the work folder in the format below.
+15. **Get confirmation.** Show the success criteria, out of scope, the top-priority problem, and the approach comparison, and ask what to change and which approach to take. **End the response here.**
 
-### 3단계: 다음 단계를 안내하고 멈춘다
+### Step 3: Point to the next step and stop
 
-16. 답을 NOTES.md에 반영하고 다음 단계를 두 선택지로 안내한다.
-   - 이 세션에서 이어 가기: "다음은 task-breakdown입니다(Claude Code `/task-breakdown`, Codex `$task-breakdown`)". 질문과 답이 오간 대화가 남아 있어 흐름을 다시 설명할 필요가 없다. 대화 기록을 한 세션에 모아 둬야 할 때도 이쪽을 고른다.
-   - 새 세션에서 시작하기: NOTES.md가 완성됐으므로 새 세션을 열고 task-breakdown을 부른다. 질문과 답이 맥락을 차지하지 않아 구현 중 압축이 늦게 온다. 대신 NOTES.md에 없는 것은 넘어가지 않는다. 이 선택지를 보여 줄 때는 사용자가 말한 전달사항과 고른 이유가 NOTES.md에 빠짐없이 들어갔는지 확인하고, 빠진 것이 있으면 함께 보여 준다.
+16. Reflect the answers in NOTES.md and present the next step as two options.
+   - Continue in this session: "다음은 task-breakdown입니다(Claude Code `/task-breakdown`, Codex `$task-breakdown`)". The conversation with the questions and answers is still there, so the flow does not need to be explained again. Choose this one also when the conversation record needs to be kept together in one session.
+   - Start in a new session: NOTES.md is complete, so open a new session and invoke task-breakdown. The questions and answers do not take up context, so compaction comes later during implementation. In exchange, anything not in NOTES.md does not carry over. When showing this option, check that the notes the user passed on and the reasons they gave for their choices are all in NOTES.md, and show anything missing alongside.
 
-   task-breakdown을 건너뛰자고 제안할 수는 있지만, 사용자가 동의하기 전에는 건너뛰지 않는다. **여기서 응답을 끝낸다.** 다음 스킬을 스스로 시작하지 않는다.
+   You may suggest skipping task-breakdown, but do not skip it until the user agrees. **End the response here.** Do not start the next skill on your own.
 
-## NOTES.md 형식
+## NOTES.md format
 
-NOTES.md는 두 부분으로 나눈다. 앞부분 "읽는 부분"은 사용자가 처음에 읽고 전체를 파악하는 곳이라 짧게 유지한다(대략 두 쪽). 뒷부분 "자세한 기록"은 필요할 때 찾아보는 곳이다. 사실 하나는 한 곳에만 쓰고, 다른 곳에서는 번호(D2, T3, Q4)로 가리킨다(explain-as-you-go "사람이 읽는 기록 쓰는 법" 10번).
+NOTES.md is split into two parts. The front part, "읽는 부분" (the reading part), is where the user reads first to grasp the whole picture, so keep it short (about two pages). The back part, "자세한 기록" (detailed record), is for looking things up when needed. Write each fact in only one place, and refer to it elsewhere by number (D2, T3, Q4) (explain-as-you-go "How to write records people read", item 10).
 
 ```markdown
 # NOTES
 
 ## 목표
-(2~3문장. 요구사항 출처: 문서나 이슈 이름)
+(2–3 sentences. Source of the requirements: name of the document or issue)
 
 ## 지금 상태
-(작업 하나를 마칠 때, 질문을 보내고 멈출 때마다 고친다. 대화가 압축되면 여기부터 읽고 이어 간다.)
+(Update this whenever a task is finished and whenever you stop after sending questions. If the conversation is compacted, read from here and continue.)
 - 진행 중: T3 — 방법 승인 대기 / 구현 중 / 검증 중 / 없음
-- 다음 할 일: (한 줄)
+- 다음 할 일: (one line)
 - 마지막 커밋과 테스트: a1b2c3d, 전체 테스트 16건 통과 (22:26)
-- 답을 기다리는 질문: 없음 / Q5 (한 줄 요약)
-- 막힌 것: 없음 / (한 줄)
-- 시간: 경과 1:10 / 남은 1:50 / 다음 체크포인트 75% 15:30 (`date`로 확인한 시각 14:20) — 정해 둔 작업 시간이 없으면 "정하지 않음"
+- 답을 기다리는 질문: 없음 / Q5 (one-line summary)
+- 막힌 것: 없음 / (one line)
+- 시간: 경과 1:10 / 남은 1:50 / 다음 체크포인트 75% 15:30 (`date`로 확인한 시각 14:20) — if no working time was set, "정하지 않음"
 
 ## 지금까지의 흐름
-(시간 순서대로 5~10문장, 10문장을 넘기지 않는다. 처음 문제 → 물어서 알게 된 것 → 고른 방법과 이유 → 바뀐 것과 이유 → 지금 상태와 남은 것. 작업이 끝날 때마다 고친다. 쓰는 법은 explain-as-you-go "사람이 읽는 기록 쓰는 법".)
+(Chronological, 5–10 sentences; never more than 10. Initial problem → what was learned by asking → chosen approach and reason → what changed and why → current state and what remains. Update it whenever a task ends. For how to write it, see explain-as-you-go "How to write records people read".)
 
 ## 성공 기준
 - [ ] ... (출처: 요구사항 문서 7행)
-(마무리 때 이 아래에 "성공 기준 대조표"를 붙인다. 형식은 task-breakdown "마치며" 3단계.)
+(At wrap-up, attach the "성공 기준 대조표" below this. The format is in task-breakdown "Wrapping up", step 3.)
 
 ## 범위 밖
 - ...
@@ -167,78 +169,78 @@ NOTES.md는 두 부분으로 나눈다. 앞부분 "읽는 부분"은 사용자�
 # 자세한 기록
 
 ## 확인 질문과 답
-- 사용자 전달: (문서 밖에서 받은 정보. 없으면 "없음")
-- 요청자 답: (요청자에게 물어 받은 답과 확인받은 요약. 물을 곳이 없었으면 "없음")
-- 처음 상태: (기존 코드가 있었다면 고치기 전의 빌드·테스트 결과와 명령. 처음 숫자는 여기에만 쓴다)
+- 사용자 전달: (information received outside the document. If none, "없음")
+- 요청자 답: (answers obtained by asking the requester, and the confirmed summary. If there was nobody to ask, "없음")
+- 처음 상태: (if there was existing code, the build and test results and commands from before changing it. Initial numbers are written only here)
 - Q1. 언어 → C++17 (사용자, 추천과 같음) — 근거: 요구사항 문서 3행
 - Q2. 쿨다운 0인 프레임에 바로 사용 → 예 (사용자) → D2
 
 ## 사용자와 핵심 흐름
-(화면이 있는 제품일 때만. 아니면 "해당 없음 — 이유")
-- 사용자와 상황: ... (출처)
-- 핵심 흐름 1: (시작 화면) → ... → (끝, 사용자가 얻는 것) (출처)
+(Only for products with screens. Otherwise "해당 없음 — 이유")
+- 사용자와 상황: ... (source)
+- 핵심 흐름 1: (start screen) → ... → (end, what the user gets) (source)
 - 꼭 필요한 화면과 기능: ...
 - 이번에 만들지 않을 것: ...
 
 ## 우선순위
-1. (핵심 문제) — 이유: ...
+1. (core problem) — 이유: ...
 
 ## 접근 방식
-(한 줄. 예: "현재 목표를 유지하고 잃었을 때만 한 번 훑는다 — 비교와 이유는 D8". 대안 비교 표는 결정 로그에만 둔다.)
+(One line. For example: "현재 목표를 유지하고 잃었을 때만 한 번 훑는다 — 비교와 이유는 D8". Keep the comparison table of alternatives only in the decision log.)
 
 ## 계획
 1. ... → 확인: ...
 
 ## 작업 목록
-(task-breakdown이 채운다)
+(filled in by task-breakdown)
 
 ## 역할 분담
 - AI: ...
 - 직접: ...
 
 ## 결정 로그
-(물어서 정한 결정, 요청자 답으로 정한 규칙, 고친 버그만 자세히 쓴다. 알리고 진행한 결정은 "결정 한눈에 보기"의 한 줄로 끝낸다. 결정한 순서대로 D1, D2…를 붙인다. 쓰는 법은 explain-as-you-go "결정 로그 쓰는 법".)
+(Write in detail only decisions made by asking, rules set by the requester's answers, and bugs fixed. Decisions that were announced and carried out end with their one line in "결정 한눈에 보기". Number them D1, D2… in the order decided. For how to write them, see explain-as-you-go "How to write the decision log".)
 
-### D1. (무엇을 무엇으로 정했나 한 줄) — (접근 방식 / T1 등), (HH:MM)
-- 요약: (한 문장. 무엇을 정했고, 핵심 이유 하나, 포기한 것 하나. 이 줄만 읽어도 설명할 수 있게)
-- 상황: (왜 정해야 했나. 원문 근거가 있으면 인용)
-- 검토한 안: A ... / B ... (또는 "대안 없음 — 이유")
-- 고른 이유: (사용자가 이유를 적었으면 그 말을 먼저, AI의 근거는 그 뒤. 이 안이 주는 이점 포함)
-- 트레이드오프: (얻는 대신 잃은 것, 감수한 위험, 이 안이 약해지는 입력이나 상황)
-- 버린 안: (안마다 한 줄 — 버린 이유 / 이런 조건이면 이 안이 낫다)
-- 확신도: 높음 / 중간 / 낮음 — (왜 그렇게 보는지 한 줄). 중간·낮음이면: (무엇을 확인하면 올라가는지)
-- 코드 위치: (파일과 함수. 구현 전이면 "구현 전")
-- 정한 사람: 사용자 — (사용자가 적은 이유 요약) (AI 추천 A) / 사용자 (추천과 같음) / AI (사용자가 위임)
+### D1. (what was set to what, in one line) — (접근 방식 / T1, etc.), (HH:MM)
+- 요약: (one sentence: what was decided, one key reason, one thing given up. Make it explainable from this line alone)
+- 상황: (why it had to be decided. Quote the original if there is evidence in it)
+- 검토한 안: A ... / B ... (or "대안 없음 — 이유")
+- 고른 이유: (if the user wrote a reason, their words first, then the AI's evidence. Include the benefit this option gives)
+- 트레이드오프: (what was lost in exchange, risks accepted, inputs or situations where this option is weak)
+- 버린 안: (one line per option — why it was rejected / under what conditions that option would be better)
+- 확신도: 높음 / 중간 / 낮음 — (one line on why you see it that way). If 중간 or 낮음: (what, once checked, would raise it)
+- 코드 위치: (file and function. Before implementation, "구현 전")
+- 정한 사람: 사용자 — (summary of the reason the user wrote) (AI 추천 A) / 사용자 (추천과 같음) / AI (사용자가 위임)
 - 검증: ...
 
 ## 검증 결과
-(작업마다 "무엇을 확인하려 했나 → 무엇을 했나 → 결과 → 그래서 알 수 있는 것"을 문장으로 쓴다. 전후 측정 숫자는 해당 결정의 "검증" 줄에 쓰고, 여기서는 번호로 가리킨다.)
-- 테스트 명령: (한 번만 적고, 아래에서는 "전체 테스트"라고 부른다)
+(For each task, write in sentences "what you meant to check → what you did → the result → what that tells you". Before/after measurement numbers go in the "검증" line of the relevant decision; refer to them here by number.)
+- 테스트 명령: (write it once; below, call it "전체 테스트")
 ```
 
-## 화면이 있는 제품 작업에서 정할 것
+## What to decide for products with screens
 
-기능 목록부터 만들면 화면은 많은데 처음부터 끝까지 이어지지 않는 결과물이 나오기 쉽다. 사용하는 사람의 흐름을 먼저 정하고, 그 흐름에 필요한 것만 만든다.
+If you start from a feature list, it is easy to end up with many screens that do not connect from start to finish. Decide the flow of the people who use it first, and build only what that flow needs.
 
-1. **사용자와 상황.** 누가, 언제, 어떤 목적으로 쓰는지. 원문과 요청자 답에서 찾은 실제 상황을 쓴다(예: "매장 직원이 손님 응대 중 짧게 재고를 확인한다"). 원문에 없으면 요청자나 사용자에게 묻는다. 추정으로 채우지 않는다.
-2. **핵심 흐름 1~2개.** 사용자가 처음 화면에서 시작해 목적을 이루기까지 거치는 단계를 순서대로 쓴다. 예: "상품 검색 → 상세 보기 → 장바구니 담기 → 주문 확인". 흐름이 여러 개면 사용자에게 가장 중요한 하나를 1순위로 정한다.
-3. **꼭 필요한 화면과 기능, 만들지 않을 것.** 핵심 흐름을 끝까지 따라가는 데 필요한 화면과 기능만 고른다. 흐름에 없는 기능(로그인, 설정, 통계 화면 등)은 원문이나 요청자가 요구하지 않았으면 "이번에 만들지 않을 것"에 적는다.
+1. **Users and situation.** Who uses it, when, and for what purpose. Write the real situation found in the original and the requester's answers (for example, "매장 직원이 손님 응대 중 짧게 재고를 확인한다"). If it is not in the original, ask the requester or the user. Do not fill it in with estimates.
+2. **1–2 core flows.** Write, in order, the steps users go through from the first screen to achieving their goal. For example: "상품 검색 → 상세 보기 → 장바구니 담기 → 주문 확인". If there are several flows, make the one most important to the user the top priority.
+3. **Screens and features truly needed, and what not to build.** Pick only the screens and features needed to follow the core flow to the end. Features not in the flow (login, settings, statistics screens, etc.) go under "이번에 만들지 않을 것" unless the original or the requester asked for them.
 
-- 요청자에게 물을 수 있으면 이 세 가지를 채우는 쪽으로 묻는다. 예: "이 서비스를 쓰는 분은 보통 어떤 상황에서 여시나요?", "그분이 가장 먼저 하고 싶은 일은 무엇인가요?"
-- 성공 기준에 핵심 흐름을 넣는다. 예: "처음 온 사용자가 안내 없이 검색부터 주문 확인까지 끝낼 수 있다(핵심 흐름 1)".
-- 계획과 작업 순서는 핵심 흐름 1이 처음부터 끝까지 가장 먼저 동작하도록 잡는다. 화면 하나를 완벽하게 만든 뒤 다음 화면으로 가지 않는다. 흐름 전체가 거칠게라도 이어진 뒤에 다듬는다.
+- If the requester can be asked, ask in a way that fills in these three things. For example: "이 서비스를 쓰는 분은 보통 어떤 상황에서 여시나요?", "그분이 가장 먼저 하고 싶은 일은 무엇인가요?"
+- Put the core flow in the success criteria. For example: "처음 온 사용자가 안내 없이 검색부터 주문 확인까지 끝낼 수 있다(핵심 흐름 1)".
+- Arrange the plan and task order so that core flow 1 works from start to finish first. Do not perfect one screen before moving on to the next. Polish after the whole flow is connected, even roughly.
 
-## 게임 클라이언트 작업에서 꼭 물을 것
+## What to always ask for game client work
 
-- 대상 플랫폼과 기준 프레임레이트. 60fps면 프레임 예산은 약 16.7ms, 30fps면 약 33.3ms다.
-- 엔진과 버전. 언리얼이면 5.x 중 어느 버전인지, 블루프린트와 C++ 중 무엇으로 작업하는지.
-- 싱글플레이인지 멀티플레이인지. 멀티플레이면 어떤 로직이 서버 권한인지.
-- 재현 조건. 기기, 맵, 데이터 크기, 첫 실행인지 반복 실행인지.
+- Target platform and baseline frame rate. At 60fps the frame budget is about 16.7ms; at 30fps, about 33.3ms.
+- Engine and version. For Unreal, which 5.x version, and whether the work is done in Blueprint or C++.
+- Single-player or multiplayer. If multiplayer, which logic is server-authoritative.
+- Reproduction conditions. Device, map, data size, whether it is the first run or a repeated run.
 
-## 하지 않는 것
+## What not to do
 
-- 사용자의 답을 받기 전에 구현 코드, 프로젝트 파일, NOTES.md를 만들지 않는다.
-- 설치된 도구나 폴더 상태를 보고 언어나 구조를 정하지 않는다.
-- 다른 사람이 쓴 요구사항 문서를 묻지 않고 고치거나 덮어쓰지 않는다.
-- 근거 없이 "보통 이렇다"로만 추천하지 않는다. 원문 근거가 없으면 없다고 쓴다.
-- 여기서 정한 성공 기준을 이후 결과에 맞춰 고쳐 쓰지 않는다. 바꿔야 하면 사용자 승인을 받고 원래 문구와 이유를 결정 로그에 남긴다.
+- Do not create implementation code, project files, or NOTES.md before receiving the user's answers.
+- Do not decide the language or structure from installed tools or folder state.
+- Do not edit or overwrite requirement documents written by others without asking.
+- Do not recommend based only on "보통 이렇다" (it is usually like this) without evidence. If there is no evidence in the original, say there is none.
+- Do not rewrite the success criteria set here to fit later results. If they must change, get the user's approval and record the original wording and the reason in the decision log.

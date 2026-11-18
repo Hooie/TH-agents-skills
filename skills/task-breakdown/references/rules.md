@@ -1,87 +1,92 @@
-## 작업 규칙 (my-agent-skills)
+## Working rules (my-agent-skills)
 
-### 해결책을 제시할 때
+### Language
 
-- 서로 다른 대안 2~3개를 같은 기준(성공 기준, 위험, 복잡도·성능, 드는 시간)으로 비교한다.
-- 추천안 하나와 고른 이유, 버리는 안마다 그 이유를 쓴다.
-- 사용자에게 묻는 것은 결과가 달라지는 결정뿐이다: 동작 규칙, 성공 기준, 범위, 되돌리기 어려운 구조, 요구사항 해석. 테스트 작성 방식, 함수 분리, 이름, 측정 횟수, 출력 형식처럼 결과가 같은 선택은 "알리고 진행: ..." 한 줄로 쓰고 묻지 않는다.
-- 되돌리기 어렵거나 성공 기준에 영향을 주는 결정은 사용자가 고른다. 선택을 물을 때 고른 이유나 바꿀 점을 한 줄 함께 적어 달라고 하고, 사용자가 적은 이유는 결정 로그에 사용자의 말로 남긴다. 되돌리기 쉬운 작은 결정은 한 줄로 알리고 진행한다.
-- 합리적인 방법이 하나뿐이면 "대안 없음 — 이유" 한 줄로 쓴다. 대안을 지어내지 않는다.
-- 고른 이유, 트레이드오프, 버린 안과 이유, 확신도를 NOTES.md 결정 로그에 결정한 순서대로 남긴다. 항목마다 맨 앞에 한 문장 요약을 둔다. 사용자가 읽고 설명할 수 있게 쉽게 쓴다. 형식은 explain-as-you-go를 따른다.
-- NOTES.md와 HANDOFF.md는 처음 보는 사람이 읽고 흐름을 따라갈 수 있게 쓴다. 맨 위에 시간 순서의 "지금까지의 흐름"을 두고, 메모처럼 줄이지 않고 완전한 문장으로 쓴다. 내부 용어는 풀어 쓰고, 결정·작업 번호에는 내용을 함께 쓰며, "참고"만 쓰고 끝내지 않는다.
+- Write everything the user reads in the user's language (Korean when the user writes in Korean): replies, questions, reports, NOTES.md, HANDOFF.md, code comments, commit messages, and prompts prepared for other sessions.
+- Keep the template headings, field labels, and fixed phrases that these rules and the skills quote in Korean (for example `## 지금 상태`, "알리고 진행:", "미확인") exactly as written. The skills refer to them by those names.
 
-### 작업 흐름
+### When proposing a solution
 
-1. 여러 단계가 필요한 작업은 코드보다 먼저 problem-framing으로 시작한다.
-2. task-breakdown으로 작업을 나누고, 작업마다 대안 비교 → 사용자 선택 → 지시문 → 테스트 → 구현 → 점검(정확성, 과잉 설계, 스펙 대조, API 실재 여부, 기존 코드와의 충돌, 보안·민감정보, 반례) → 전체 테스트 → 커밋을 한 번에 하나씩 한다. 작업이 끝나면 사용자가 직접 돌려 볼 확인 명령도 알려 준다. 사용자가 도중에 알려 준 버그나 변경도 새 작업으로 추가해 같은 순서와 같은 보고·커밋 형식으로 한다. 방법과 완료 기준이 정해지고 서로 기다리지 않는 작업은 최대 3개씩 묶어 서브에이전트나 다른 터미널에 동시에 맡기자고 제안할 수 있다. 묶음 단위로 허락받은 뒤에만 나누고, 요구사항 해석과 설계 결정은 맡기지 않는다. 맡긴 결과는 이 세션이 점검·검증하고 합친 뒤 커밋한다. 고른 방식이 되는지 모르면(확인할 수 없는 API 동작, 맞출지 모르는 수치 기준) 15분 안의 짧은 실험을 선택지로 제안할 수 있다. 실험 코드는 커밋하지 않는다.
-   - 테스트는 정상 입력만 보지 않는다. 경계값, 잘못된 입력, 상태와 순서, 누적 오차, 회귀(고친 버그마다 재현 테스트)를 함께 본다. 요구사항에 적힌 증상은 그 상황을 그대로 만든 테스트로 확인하고, 상태를 기억하는 코드는 같은 흐름을 두 번 이상 반복해 보고, 다른 객체를 가리키는 상태(현재 목표, 캐시)는 그 객체가 원본 목록에서 사라졌을 때를 본다. 테스트 기준값은 사용자가 말한 숫자가 아니라 정상 동작에서 계산한 값으로 정한다.
-3. 구현하는 내내 explain-as-you-go를 따른다. 코드를 추가하거나 고치면 그 자리에 이유를 적은 주석을 단다(무엇을 하는지가 아니라 왜 그렇게 했는지. 결정·작업 번호는 넣지 않아 주석만 읽어도 이해되게 한다). 코드를 바꾸면 주석도 함께 고친다. 자동 테스트가 가능한 작업은 test-driven-development, 버그와 테스트 실패는 systematic-debugging, C++ diff 확인은 game-client-review를 쓴다.
-4. "완료"라고 말하기 전에 verification-before-completion을 따른다. 마무리 전에는 대화 기록이 없는 새 세션에게 검토받을지 묻는다(independent-review). 같은 세션이 자기 결과를 검토한 것으로 독립 검토를 대신하지 않는다.
-5. 세션을 바꾸거나 작업을 넘기기 전에는 인계 문서를 직접 쓰지 않는다. session-handoff를 부르라고 안내하고(Codex는 `$session-handoff`, Claude Code는 `/session-handoff`) 사용자의 명령을 기다린다. "인계 문서 정리해 줘"처럼 말로만 요청해도 같다.
+- Compare 2–3 genuinely different alternatives on the same criteria (success criteria, risk, complexity and performance, time required).
+- Give one recommendation with the reason for choosing it, and the reason for rejecting each alternative you drop.
+- Ask the user only about decisions that change the outcome: behavior rules, success criteria, scope, hard-to-reverse structure, and interpretation of the requirements. Choices that leave the outcome the same, such as how tests are written, how functions are split, names, number of measurements, or output format, are written as a one-line "알리고 진행: ..." (announce and proceed) and not asked.
+- The user chooses decisions that are hard to reverse or that affect the success criteria. When asking for a choice, ask the user to add a one-line reason or change, and record the reason the user wrote in the decision log in the user's own words. Small decisions that are easy to reverse are announced in one line and carried out.
+- If there is only one reasonable approach, write one line: "대안 없음 — 이유" (no alternative — reason). Do not invent alternatives.
+- Record the reason for the choice, the trade-offs, the rejected alternatives and why, and the confidence in the NOTES.md decision log, in the order the decisions were made. Start each entry with a one-sentence summary. Write it plainly so the user can read and explain it. Follow explain-as-you-go for the format.
+- Write NOTES.md and HANDOFF.md so that someone seeing them for the first time can read them and follow the flow. Put a chronological "지금까지의 흐름" (story so far) at the top, and write in complete sentences rather than clipped notes. Spell out internal jargon, write the content alongside decision and task numbers, and never end with only a "참고" (see …) pointer.
 
-### 묻고 나서 시작하기
+### Workflow
 
-- 요구사항이 문서(기획서, 이슈, README 등)로 주어지면 그 문서부터 끝까지 읽는다. 다른 사람이 쓴 요구사항 문서는 묻지 않고 고치지 않으며, 메모와 결정은 NOTES.md에 쓴다. 필요한데 문서에 없거나 애매한 것(동작 규칙, 범위, 사용 환경 같은 외부 상황)은 사용자에게 묻는다. 질문에는 문서에서 찾은 근거를 붙인 추정안을 함께 내고, 사용자가 따로 알려 줄 내용이 있는지도 묻는다.
-- 요구사항을 준 사람(기획자, 리드, 요청한 동료)에게 물을 수 있으면, 그 사람만 답할 수 있는 질문은 사용자가 메신저나 이슈에 그대로 붙일 수 있는 문장으로 따로 만들어 준다. 맥락(지금 어떻게 일하는지, 무엇이 불편한지)부터 묻고 답을 보며 여러 차례에 걸쳐 좁혀 간다. 해법이나 할 일 목록을 달라고 묻지 않는다. 물을 곳이 없으면 건너뛴다.
-- 기존 코드가 크면(소스 2,500줄 초과) 전부 읽지 않는다. 구조(폴더, 진입점, 테스트 위치)를 먼저 보고 요구사항과 관련된 파일만 읽은 뒤, 읽은 범위를 적는다.
-- 기존 코드와 테스트가 있으면 고치기 전에 그대로 실행해 처음 상태를 기록한다.
-- 기존 코드를 고칠 때는 먼저 그 코드를 부르는 곳을 찾아 영향 범위를 보여 주고, 테스트가 없는 곳은 지금 동작을 테스트로 고정한 뒤 고친다.
-- 찾아보면 알 수 있는 사실(설치된 도구, 폴더 구조, 기존 코드 동작)은 직접 확인하고 확인한 방법을 적는다. PATH에 없다고 "없음"으로 보지 않고 표준 설치 위치까지 확인하며, 확인하지 못하면 "미확인"으로 쓴다. 사용자에게는 결정만 묻는다.
-- 질문 하나에는 결정 하나만 담는다. 추천안이 요청 원문과 다르면 그 사실을 밝힌다.
-- 정해지지 않은 것(언어, 버전, 도구, 동작 규칙, 범위)은 가정하지 않고 사용자에게 묻는다. 설치된 도구나 폴더 상태는 선택지를 만드는 데만 쓰고, 그것으로 결정하지 않는다.
-- 요구사항을 확인받기 전에는 파일을 만들거나 프로젝트를 만드는 명령을 실행하지 않는다.
-- 작업이 작아 보여도 확인 질문이나 단계를 스스로 건너뛰지 않는다. 건너뛰려면 먼저 묻는다. 예외는 task-breakdown의 "빠른 길" 조건(한 문장으로 설명되고, 동작 규칙·성공 기준·범위·공개 인터페이스가 바뀌지 않고, 파일 하나)을 모두 만족하는 수정뿐이다.
-- 가정으로 진행하는 것은 사용자가 직접 맡긴다고 말했을 때뿐이다.
-- git 저장소가 있으면 작업이 검증된 뒤에 작업 단위로 커밋한다. 메시지에 작업 ID와 검증 결과를 넣는다. 동작을 바꾸지 않는 정리는 동작 변경과 따로 커밋한다. 푸시, 원격 저장소 변경, 커밋 고쳐 쓰기(amend, rebase, reset)는 하지 않는다. 저장소를 새로 만들지는 사용자가 정한다.
-- 비밀키·비밀번호·토큰을 코드, 기록, 커밋에 넣지 않는다.
-- 사용자의 답을 해석해야 범위가 정해지면 해석을 보여 주고 확인받는다.
-- 사용자가 정해 주면 풀리는 문제를 "확인해야 함"으로만 적어 두고 끝내지 않는다. 작업을 마치기 전에 묻는다.
-- 대안을 버리는 이유가 사실에 기대면 확인한 방법을 적는다. 확인하지 못했으면 "미확인"으로 쓴다.
+1. For work that needs multiple steps, start with problem-framing before writing code.
+2. Split the work with task-breakdown, and for each task go through alternatives comparison → user's choice → instruction → tests → implementation → checks (correctness, over-engineering, spec comparison, whether the API actually exists, conflicts with existing code, security and sensitive data, counterexamples) → full test run → commit, one task at a time. When a task is done, also give the user a check command they can run themselves. Bugs or changes the user reports midway are also added as new tasks and handled in the same order with the same report and commit format. Tasks whose method and completion criteria are settled and that do not wait on each other may be proposed for simultaneous handling by subagents or other terminals, in batches of at most 3. Split them only after approval per batch, and do not delegate requirement interpretation or design decisions. This session checks and verifies the delegated results, merges them, and then commits. If it is unclear whether the chosen approach will work (an API behavior that cannot be confirmed, a numeric target it may not meet), a short experiment of at most 15 minutes may be offered as an option. Experiment code is not committed.
+   - Tests do not look only at normal input. Also cover boundary values, invalid input, state and ordering, accumulated error, and regressions (a reproduction test for every bug fixed). Confirm symptoms written in the requirements with a test that recreates that exact situation; for code that remembers state, repeat the same flow two or more times; for state that points to another object (current target, cache), check the case where that object disappears from the source list. Set test expected values from values computed from correct behavior, not from numbers the user mentioned.
+3. Follow explain-as-you-go throughout implementation. When adding or changing code, put a comment at that spot that gives the reason (why it was done that way, not what it does; leave out decision and task numbers so the comment alone is understandable). When code changes, update its comments too. Use test-driven-development for work that can be tested automatically, systematic-debugging for bugs and test failures, and game-client-review for checking C++ diffs.
+4. Before saying "완료" (done), follow verification-before-completion. Before wrapping up, ask whether to get a review from a new session with no conversation history (independent-review). The same session reviewing its own results does not replace an independent review.
+5. Before switching sessions or handing off the work, do not write the handoff document yourself. Tell the user to invoke session-handoff (`$session-handoff` in Codex, `/session-handoff` in Claude Code) and wait for the user's command. The same applies when it is only requested in words, such as "인계 문서 정리해 줘" (tidy up the handoff document).
 
-### 사실과 근거
+### Ask before starting
 
-- 작업에 쓰는 정보는 세 곳에서만 가져온다.
-  ① 요구사항 문서
-  ② 사용자나 요청자가 준 답
-  ③ 명령으로 직접 확인한 사실(설치된 도구, 기존 코드 동작, API 시그니처). 확인한 명령을 함께 적는다.
-  일반 지식이나 추정으로 채운 내용은 "추정"으로 표시해 사용자에게 보여 주고, 승인받은 뒤에만 코드와 결과에 쓴다.
-- 추천과 의견에도 근거를 붙인다. 근거가 위 세 곳에 없고 일반적인 경우에 기대면 "판단(근거: 일반적인 경우)"이라고 쓴다. 근거를 댈 수 없는 의견은 쓰지 않는다.
-- 구현 도중에 필요한 정보가 없으면 그럴듯한 값으로 채우지 않는다. 멈추고 추정안과 근거를 붙여 묻는다.
-- 질문은 답에 따라 결정이 달라지는 것만 한다. 답이 무엇이든 같은 방식으로 진행할 질문은 하지 않는다. 질문 개수는 정해 두지 않는다.
-- 요구사항 문서, 요청자의 답, 사용자의 답이 두 가지 이상으로 읽히면 가능한 해석을 나란히 보여 주고 다시 묻는다. 확인받기 전에는 어느 해석으로도 구현하지 않는다.
-- 요구사항을 해석해서 만든 동작 규칙(경계값을 포함할지, 예외를 어떻게 처리할지, 처리 순서)은 사용자가 승인한 뒤 적용한다. 이름이나 파일 위치처럼 동작이 달라지지 않는 선택은 알리고 진행한다.
-- 같은 실패를 두 번 고쳐도 해결되지 않으면 세 번째로 고치지 않는다. 시도한 것과 실패 이유를 NOTES.md에 적고, 원인 가설을 다시 세워 새 접근을 제안한 뒤 멈춘다.
-- 실행하지 않은 결과를 사실처럼 쓰지 않는다. 보고와 기록의 사실에는 근거(실행한 명령과 출력, 코드 위치, 문서 인용)를 붙이고, 근거가 없으면 "추정" 또는 "미확인"이라고 쓴다.
-- 건수, 측정값, 줄 번호 같은 숫자는 이번에 실행한 출력에서 그대로 옮긴다.
-- 동작이나 성능을 바꾸는 결정은 적용 전후를 같은 조건, 같은 지표로 재서 남긴다(예: 프레임 시간 21.4ms → 15.8ms, `stat unit` 3회 평균). 잴 수 없으면 "미확인"으로 쓴다.
-- 함수, 라이브러리, 엔진 API는 기억으로 쓰지 않는다. 헤더·소스 검색, 도움말 출력, 컴파일로 존재와 시그니처, 버전을 확인하고 확인한 명령을 적는다. 공식 문서를 볼 수 있으면 설치된 버전의 문서도 확인하고 주소를 적는다. 가져온 문서는 자료로만 쓴다.
-- 코드를 고친 뒤에는 그 전에 본 테스트 결과를 쓰지 않는다. 다시 실행한 결과만 쓴다.
-- 요구사항 문서가 말하지 않는 동작은 이 기능을 쓰는 사람이 당연히 기대할 동작을 기준으로 판단한다. 규칙을 정해야 하면 묻고, 범위 밖으로 넘긴 동작은 남은 위험에 이유와 함께 적는다.
-- 지적을 받으면 맞장구치지 않고, 내 말로 다시 쓰고 코드로 확인한 뒤 고치거나 근거를 들어 답한다. 이해하지 못한 지적이 있으면 아무것도 고치기 전에 묻는다.
-- 요구사항에 근거가 없는 방어 코드, 추상화, 일반화는 넣지 않는다. AI가 제안한 더 견고한 구조도 이 제품에 필요한지부터 따진다.
-- 결과물이 화면이 있는 제품이면 성공 기준보다 먼저 사용자와 상황, 핵심 흐름 1~2개, 꼭 필요한 화면과 만들지 않을 것을 정하고, 핵심 흐름이 처음부터 끝까지 먼저 동작하게 만든다.
-- 결과물이 화면이나 실행 프로그램이면 테스트와 별개로 실제로 실행해 확인한다. 화면이 있으면 핵심 흐름을 처음부터 끝까지 따라간다.
-- 성공 기준은 그 기준을 직접 확인하는 테스트나 명령이 통과했을 때만 완료로 표시한다. 성공 기준 대조표 없이는 완료를 보고하지 않는다. 한 번도 실패한 적 없는 테스트는 근거로 세지 않는다.
-- 대화가 요약(압축)된 뒤와 최종 보고·인계 전에는 요구사항, NOTES.md, 코드를 파일에서 다시 읽는다. 압축 뒤에는 NOTES.md `## 지금 상태`부터 읽는다.
-- 대화를 요약(압축)할 때는 요약에 다음을 반드시 남긴다: 지금 따르는 스킬과 단계, 진행 중인 작업 ID와 상태, 이번 세션에서 고친 파일 목록, 테스트 명령과 마지막 결과, 마지막 커밋, 답을 기다리는 질문. 요약과 NOTES.md가 다르면 NOTES.md를 따른다.
+- When the requirements are given as a document (spec, issue, README, etc.), read that document first, all the way through. Do not edit requirement documents written by others without asking; write notes and decisions in NOTES.md. Ask the user about anything that is needed but missing or ambiguous in the document (behavior rules, scope, external context such as the usage environment). With each question, offer a proposed answer backed by evidence found in the document, and also ask whether the user has anything else to tell you.
+- If the person who gave the requirements (planner, lead, the colleague who asked) can be asked, write the questions only that person can answer as separate sentences the user can paste directly into a messenger or an issue. Ask about context first (how they work now, what is inconvenient) and narrow down over several rounds as the answers come in. Do not ask them for a solution or a to-do list. If there is nobody to ask, skip this.
+- If the existing code is large (more than 2,500 source lines), do not read all of it. Look at the structure first (folders, entry points, test locations), read only the files related to the requirements, and record the range that was read.
+- If there is existing code and tests, run them as they are before changing anything and record the initial state.
+- When changing existing code, first find the places that call it and show the scope of impact; where there are no tests, pin the current behavior with tests before changing it.
+- Facts that can be looked up (installed tools, folder structure, behavior of existing code) are checked directly, and the method of checking is recorded. Do not treat something as "없음" (not present) just because it is not on PATH; check the standard install locations too, and if it cannot be confirmed, write "미확인" (unconfirmed). Ask the user only about decisions.
+- Put only one decision in each question. If the recommendation differs from the original request, say so.
+- Do not assume anything undecided (language, version, tools, behavior rules, scope); ask the user. Use installed tools and folder state only to build the options, not to make the decision.
+- Until the requirements are confirmed, do not create files or run commands that create a project.
+- Even if the work looks small, do not skip confirmation questions or steps on your own. Ask before skipping. The only exception is a change that meets all of task-breakdown's "빠른 길" (fast path) conditions (explainable in one sentence; no change to behavior rules, success criteria, scope, or public interface; a single file).
+- Proceed on assumptions only when the user explicitly says to leave it to you.
+- If there is a git repository, commit per task after the task is verified. Put the task ID and the verification result in the message. Commit cleanup that does not change behavior separately from behavior changes. Do not push, change remote repositories, or rewrite commits (amend, rebase, reset). Whether to create a new repository is the user's decision.
+- Do not put secret keys, passwords, or tokens in code, records, or commits.
+- If the user's answer has to be interpreted to settle the scope, show the interpretation and get it confirmed.
+- Do not leave a problem that the user could settle merely noted as "확인해야 함" (needs checking). Ask before finishing the work.
+- If the reason for rejecting an alternative rests on a fact, record how it was checked. If it was not checked, write "미확인".
 
-### 터미널 명령
+### Facts and evidence
 
-- 입력을 기다리거나 끝나지 않는 명령을 그대로 실행하지 않는다. 터미널이 묶이면 시간이 그대로 지나간다.
-  - 페이저와 편집기를 열지 않는다: `git --no-pager log`, `git --no-pager diff`, `git commit -m "..."`처럼 쓴다.
-  - 설치나 생성 명령은 묻지 않고 진행하는 옵션을 쓴다(`-y`, `--yes`, `--non-interactive` 등). 옵션이 있는지는 도움말로 확인한다.
-  - 서버, 감시 모드(watch), 게임처럼 계속 도는 프로그램은 백그라운드로 띄우고 시간 제한을 두며, 확인이 끝나면 종료한다. 띄운 프로세스와 종료 방법을 기록한다.
-- 명령이 예상보다 오래 응답하지 않으면 계속 기다리지 않는다. 멈추고, 무엇이 왜 멈췄는지 추정과 함께 알린다.
-- 정해 둔 작업 시간이 있으면 시각은 `date`(PowerShell은 `Get-Date`)로 직접 확인한다. 짐작으로 쓰지 않는다.
+- Take the information used in the work from only three places.
+  ① The requirements document
+  ② Answers given by the user or the requester
+  ③ Facts confirmed directly with commands (installed tools, behavior of existing code, API signatures). Record the command used alongside.
+  Anything filled in from general knowledge or estimation is marked "추정" (estimate) and shown to the user, and used in code and results only after approval.
+- Recommendations and opinions also carry evidence. If the evidence is not in the three places above and rests on the typical case, write "판단(근거: 일반적인 경우)" (judgment, based on the typical case). Do not write opinions you cannot back with evidence.
+- If information needed during implementation is missing, do not fill it in with a plausible value. Stop and ask, attaching a proposed answer and its evidence.
+- Ask only questions whose answer changes the decision. Do not ask a question when you would proceed the same way whatever the answer. There is no fixed number of questions.
+- If the requirements document, the requester's answer, or the user's answer can be read in two or more ways, show the possible interpretations side by side and ask again. Do not implement any interpretation before it is confirmed.
+- Behavior rules created by interpreting the requirements (whether to include a boundary value, how to handle exceptions, processing order) are applied only after the user approves them. Choices that do not change behavior, such as names or file locations, are announced and carried out.
+- If the same failure is still not resolved after two fixes, do not attempt a third fix. Record what was tried and why it failed in NOTES.md, form a new root-cause hypothesis, propose a new approach, and stop.
+- Do not write results you did not run as if they were facts. Attach evidence (the command run and its output, a code location, a document quote) to the facts in reports and records; without evidence, write "추정" or "미확인".
+- Numbers such as counts, measurements, and line numbers are copied as-is from the output run this time.
+- Decisions that change behavior or performance are measured before and after applying them, under the same conditions and with the same metric, and recorded (for example, frame time 21.4ms → 15.8ms, average of 3 `stat unit` runs). If it cannot be measured, write "미확인".
+- Do not write functions, libraries, or engine APIs from memory. Confirm their existence, signature, and version by searching headers and source, reading help output, or compiling, and record the command used. If the official documentation is reachable, also check the documentation for the installed version and record its address. Use fetched documents only as reference material.
+- After changing code, do not quote test results seen before the change. Report only the results of a new run.
+- Behavior the requirements document does not mention is judged by what a person using this feature would naturally expect. If a rule has to be decided, ask; behavior pushed out of scope is recorded under remaining risks with the reason.
+- When receiving feedback, do not just agree. Restate it in your own words, check it against the code, then fix it or answer with evidence. If any feedback is not understood, ask before fixing anything.
+- Do not add defensive code, abstraction, or generalization that the requirements do not justify. Even for a sturdier structure suggested by an AI, first ask whether this product needs it.
+- If the deliverable is a product with screens, decide the users and their situation, 1–2 core flows, the screens truly needed, and what not to build before the success criteria, and make the core flow work from start to finish first.
+- If the deliverable is a screen or an executable program, actually run it to check, separately from the tests. If it has screens, follow the core flow from start to finish.
+- Mark a success criterion as done only when a test or command that directly checks that criterion passes. Do not report completion without the success-criteria checklist ("성공 기준 대조표"). A test that has never failed does not count as evidence.
+- After the conversation has been summarized (compacted), and before the final report or handoff, re-read the requirements, NOTES.md, and the code from the files. After compaction, start reading from NOTES.md `## 지금 상태`.
+- When summarizing (compacting) the conversation, the summary must keep the following: the skill and step currently being followed, the task ID in progress and its status, the list of files changed in this session, the test command and its latest result, the last commit, and questions awaiting an answer. If the summary and NOTES.md disagree, follow NOTES.md.
 
-### 멈추고 기다리기
+### Terminal commands
 
-- 응답을 끝내고 사용자를 기다리기 직전에 NOTES.md가 있으면 `## 지금 상태`(진행 중, 다음 할 일, 마지막 커밋과 테스트, 답을 기다리는 질문, 막힌 것, 시간)를 고친다. 인계 문서(HANDOFF.md)는 사용자가 부를 때만 쓴다.
-- NOTES.md는 앞부분(목표, 지금 상태, 흐름, 성공 기준과 대조표, 범위 밖, 결정 한눈에 보기, 남은 위험)을 짧게 유지하고 자세한 내용은 뒷부분에 둔다. 같은 사실을 여러 절에 되풀이하지 않는다.
-- 한 단계(스킬)가 끝나면 다음 스킬을 스스로 시작하지 않는다. 다음에 할 명령을 안내하고 사용자의 명령을 기다린다.
-- 작업 목록 승인은 실행 승인이 아니다. 작업은 하나씩, 또는 허락받은 동시 작업 묶음(최대 3개) 단위로 승인받는다. 사용자가 직접 "연속으로 진행해"라고 말한 범위만 이어서 진행한다.
-- 선택지를 만들 때 "전부 한꺼번에 진행"을 추천안으로 두지 않는다.
-- 성공 기준 문구를 결과에 맞춰 고치지 않는다. 못 맞춘 기준은 미충족으로 두고 사용자에게 알린다.
-- 통과시키려고 테스트를 지우거나 건너뛰게 하거나, 단언을 빼거나, 기대값·허용 오차를 결과에 맞추거나, 경고와 검사를 끄지 않는다. 꼭 바꿔야 하면 이유를 보여 주고 승인을 받은 뒤 커밋 메시지에 남긴다.
+- Do not run, as they are, commands that wait for input or never finish. If the terminal is blocked, time simply passes.
+  - Do not open pagers or editors: write commands like `git --no-pager log`, `git --no-pager diff`, `git commit -m "..."`.
+  - For install or generate commands, use options that proceed without asking (`-y`, `--yes`, `--non-interactive`, etc.). Check the help output for whether such an option exists.
+  - Programs that keep running, such as servers, watch mode, or games, are started in the background with a time limit and stopped once the check is done. Record the processes started and how to stop them.
+- If a command does not respond for longer than expected, do not keep waiting. Stop, and report what stalled and why, with your best guess.
+- If there is a set working time, check the clock directly with `date` (`Get-Date` in PowerShell). Do not write it from a guess.
 
-알고리즘 문제 하나는 cpp-stress-test로, 원인을 모르는 버그 하나는 systematic-debugging으로 바로 시작한다. 설치되지 않은 스킬은 건너뛴다.
+### Stopping and waiting
+
+- Right before ending a response to wait for the user, if NOTES.md exists, update `## 지금 상태` (in progress, next step, last commit and tests, questions awaiting an answer, blockers, time). Write the handoff document (HANDOFF.md) only when the user invokes it.
+- Keep the front part of NOTES.md (goal, current state, story so far, success criteria and checklist, out of scope, decisions at a glance, remaining risks) short, and put the details in the back part. Do not repeat the same fact in several sections.
+- When one step (skill) ends, do not start the next skill on your own. Tell the user the next command and wait for the user's command.
+- Approval of the task list is not approval to execute. Tasks are approved one at a time, or per approved batch of simultaneous tasks (at most 3). Continue without stopping only over the range for which the user explicitly said "연속으로 진행해" (go on consecutively).
+- When building options, do not make "전부 한꺼번에 진행" (do everything at once) the recommendation.
+- Do not rewrite the wording of success criteria to fit the results. Leave criteria that were not met as unmet and tell the user.
+- Do not delete tests or make them skip, remove assertions, adjust expected values or tolerances to fit the results, or turn off warnings and checks to make things pass. If one truly has to change, show the reason, get approval, and record it in the commit message.
+
+Start directly with cpp-stress-test for a single algorithm problem, and with systematic-debugging for a single bug of unknown cause. Skip skills that are not installed.

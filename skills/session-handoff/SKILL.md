@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: 새 세션으로 바꾸기 전, 대화를 요약(compact)하기 전, 작업을 오래 멈추기 전, PR을 올리거나 작업을 넘기기 직전에 사용한다. 다른 사람이나 새 세션이 바로 이어받을 수 있도록 현재 상태, 끝난 일과 남은 일, 실행·검증 방법, 주요 결정, 남은 위험을 HANDOFF.md에 정리하고 실행 방법이 실제로 동작하는지 확인한다. 다른 사람이 쓴 요구사항 문서에는 내 메모를 섞지 않는다. 새 세션을 시작할 때는 HANDOFF.md부터 읽는다. Use before switching sessions, compacting, pausing, or handing off work (e.g. opening a PR).
+description: Use before switching to a new session, before summarizing the conversation (compact), before pausing the work for a long time, and right before opening a PR or handing off the work. Organize the current state, the work done and remaining, how to run and verify, the key decisions, and the remaining risks in HANDOFF.md so that another person or a new session can pick it up right away, and check that the run instructions actually work. Do not mix your notes into requirement documents written by others. When starting a new session, read HANDOFF.md first. Use before switching sessions, compacting, pausing, or handing off work (e.g. opening a PR).
 license: MIT
 metadata:
   author: my-agent-skills
@@ -9,57 +9,59 @@ metadata:
 
 # Session Handoff
 
-세션이 바뀌거나 작업이 다른 사람에게 넘어가도 처음부터 다시 설명할 필요가 없게 만든다. 리뷰를 받을 때는 리뷰어가 결과물과 과정을 한 번에 이해할 수 있게 만든다.
+> **Output language:** write everything the user reads (replies, questions, NOTES.md, HANDOFF.md, code comments, reports) in the user's language. Keep the Korean headings, labels, fixed phrases, and examples quoted in this skill exactly as written.
 
-## 언제 쓰나
+Make it so that even when the session changes or the work passes to someone else, nothing has to be explained again from the beginning. When getting a review, make it possible for the reviewer to understand the deliverable and the process in one go.
 
-- 컨텍스트가 길어져 새 세션으로 옮기거나 compact하기 직전
-- 작업을 멈추거나 다른 사람, 다른 에이전트에게 넘길 때
-- PR을 올리거나 결과물을 넘기기 직전
-- 새 세션을 시작할 때(이때는 아래 "이어받을 때"만 한다)
+## When to use
 
-## 넘겨줄 때
+- Right before moving to a new session or compacting because the context has grown long
+- When pausing the work or handing it over to another person or another agent
+- Right before opening a PR or handing over the deliverable
+- When starting a new session (in this case, do only "When taking over" below)
 
-1. **NOTES.md를 최신으로 만든다.** 작업 목록의 상태, 결정 로그, 검증 결과가 실제 코드와 맞는지 확인한다. 넘기기 직전인데 `## 검증 결과`에 성공 기준 전체를 다시 확인한 기록이 없으면 verification-before-completion부터 한다.
-   - 결정 로그를 처음부터 순서대로 읽어 본다. 결정한 순서와 번호가 맞는지, 항목마다 이유, 장점, 트레이드오프, 코드 위치가 있는지 확인하고 빈 곳을 채운다.
-2. **실행 방법을 다시 확인한다.** HANDOFF.md `## 실행과 검증`에 쓸 설치·실행·테스트 명령을 처음 보는 사람처럼 그대로 실행해 본다. 실패하면 명령이나 코드를 고친다.
-   - 다른 사람이 쓴 요구사항 문서에는 내 메모를 섞지 않는다. 실행 방법은 HANDOFF.md에 쓴다. 문서를 고쳐야 할 이유가 있으면 사용자에게 먼저 묻는다.
-   - 요구사항 문서가 결과물의 형식(파일 이름, 위치, 실행 방법, 출력 형식)을 정해 두었으면 그대로 맞췄는지 다시 대조한다.
-3. **HANDOFF.md를 쓴다.** 아래 형식으로 작업 폴더 최상단에 만든다. 이미 있으면 덮어쓰지 말고 위쪽을 갱신한다.
-   - 처음 보는 사람이 HANDOFF.md만 읽어도 무엇을 왜 했는지 이해하게 쓴다. explain-as-you-go "사람이 읽는 기록 쓰는 법"을 따른다: 완전한 문장, 내부 용어 풀어 쓰기, 번호에는 내용을 함께, 구체적인 값.
-   - 다른 곳에 있는 내용은 통째로 복사하지 않고, 핵심을 한두 문장으로 쓴 뒤 위치를 붙인다. "NOTES.md 참고"만 쓰고 끝내지 않는다. 자세한 대안 비교와 검증 과정은 NOTES.md에만 둔다.
-   - API 키, 비밀번호, 토큰, 개인정보는 쓰지 않는다. 명령이나 출력에 들어 있으면 `<REDACTED>`로 바꾼다.
-   - 다 쓰면 기록 읽기 시험(independent-review)을 받을지 묻는다. 사용자가 원하지 않으면 건너뛴다.
-4. **마지막으로 커밋한다.** git 저장소가 있으면 NOTES.md와 HANDOFF.md까지 넣어 커밋하고, `git status`로 남은 변경이 없는지 확인한다. 푸시하지 않는다. 저장소가 없으면 이 단계를 건너뛴다.
+## When handing off
 
-## HANDOFF.md 형식
+1. **Bring NOTES.md up to date.** Check that the task list statuses, the decision log, and the verification results match the actual code. If it is right before handing off and `## 검증 결과` has no record of rechecking all the success criteria, do verification-before-completion first.
+   - Read the decision log in order from the beginning. Check that the order of the decisions and the numbers match and that each entry has a reason, benefits, trade-offs, and a code location, and fill in the gaps.
+2. **Recheck the run instructions.** Run the install, run, and test commands that will go into HANDOFF.md `## 실행과 검증` exactly as written, as someone seeing them for the first time. If they fail, fix the commands or the code.
+   - Do not mix your notes into requirement documents written by others. Write the run instructions in HANDOFF.md. If there is a reason to change the document, ask the user first.
+   - If the requirements document specifies the format of the deliverable (file names, locations, how to run it, output format), check again that it matches exactly.
+3. **Write HANDOFF.md.** Create it at the root of the work folder in the format below. If it already exists, do not overwrite it; update the upper part.
+   - Write it so that someone seeing it for the first time understands what was done and why from HANDOFF.md alone. Follow explain-as-you-go "How to write records people read": complete sentences, internal jargon spelled out, content alongside numbers, concrete values.
+   - Do not copy content that lives elsewhere wholesale; write the gist in one or two sentences and add the location. Do not end with only "NOTES.md 참고". Keep the detailed alternatives comparisons and the verification process only in NOTES.md.
+   - Do not write API keys, passwords, tokens, or personal data. If they appear in commands or output, replace them with `<REDACTED>`.
+   - When done, ask whether to take the record reading test (independent-review). Skip it if the user does not want it.
+4. **Commit last.** If there is a git repository, commit including NOTES.md and HANDOFF.md, and check with `git status` that no changes remain. Do not push. If there is no repository, skip this step.
+
+## HANDOFF.md format
 
 ```markdown
 # HANDOFF
 
 ## 요약
-(3~5문장. 무엇을 왜 만들었는지, 어떤 문제를 어떻게 풀었는지, 지금 어디까지 왔는지. 작업을 모르는 사람이 읽어도 이해되게 쓴다.)
+(3–5 sentences. What was built and why, which problem was solved and how, how far it has come now. Write it so that someone who does not know the work can understand it.)
 
 ## 작업 흐름
-(NOTES.md `## 지금까지의 흐름`을 최종 상태로 다듬어 옮긴다. 시간 순서대로, 바뀐 결정은 전과 후와 이유를 함께.)
+(Polish NOTES.md `## 지금까지의 흐름` into its final state and move it here. In chronological order; for changed decisions, the before, the after, and the reason together.)
 
 ## 실행과 검증
 - 설치: `...`
 - 실행: `...`
-- 테스트: `...` → 마지막 결과: 통과 12 / 실패 0 (시각)
+- 테스트: `...` → 마지막 결과: 통과 12 / 실패 0 (time)
 
 ## 끝난 일
-- T1 (무엇을 바꿨나, 그래서 사용자에게 무엇이 달라졌나) — 검증: (무엇을 실행해 어떤 결과를 봤나)
+- T1 (what was changed, and so what changed for the user) — 검증: (what was run and what result was seen)
   예: T3 소진 잠금 — 한 번 바닥나면 20까지 회복해야 다시 달릴 수 있게 했다. 0까지 쓴 뒤 19.99에서는 못 달리고 20에서 달리는 것을 테스트로 확인했다.
 
 ## 남은 일 (우선순위순)
 1. T5 ... — 다음에 할 첫 단계: ...
 
 ## 주요 결정
-- D2 (무엇을 무엇으로 정했나) — 이유: (한 문장) / 포기한 것: (한 문장) / 버린 안: (무엇, 왜) — 자세한 비교: NOTES.md D2
+- D2 (what was set to what) — 이유: (one sentence) / 포기한 것: (one sentence) / 버린 안: (what, and why) — 자세한 비교: NOTES.md D2
 
 ## 남은 위험과 알려진 문제
-- ... (재현 방법, 영향)
+- ... (how to reproduce, impact)
 
 ## 이어받는 사람에게
 - 먼저 읽을 파일: NOTES.md, ...
@@ -69,19 +71,19 @@ metadata:
 - (예) T5를 이어서 하려면 $task-breakdown, 넘기기 전에는 $session-handoff
 ```
 
-## 넘기기 직전 점검
+## Final check before handing off
 
-- 성공 기준마다 충족 여부와 근거(테스트 결과, 측정값, 화면)를 NOTES.md에 적었다.
-- 충족하지 못한 기준은 숨기지 않고 이유와 남은 작업을 적었다.
-- 성공 기준 문구가 problem-framing에서 정한 원문과 같다. 바뀌었다면 사용자 승인과 이유가 결정 로그에 있다.
-- 주요 결정마다 요약, 검토한 안, 고른 이유, 버린 안과 이유, 확신도가 결정 로그에 있다.
-- HANDOFF.md의 실행 방법을 방금 직접 실행해 봤고, 전체 테스트가 통과했다.
-- git 저장소가 있으면 커밋하지 않은 변경이 없다. 푸시는 하지 않았다.
-- 코드, 기록, 커밋에 비밀키나 개인정보가 들어 있지 않다.
-- 요구사항 문서는 묻지 않고 바꾸지 않았다. 결과물 형식은 문서가 정한 대로다.
-- NOTES.md의 작업 목록과 결정 로그를 순서대로 읽으면 작업 흐름과 결정마다의 트레이드오프가 보인다.
-- HANDOFF.md를 작업을 모르는 사람으로 처음부터 읽어 봤다. 풀어 쓰지 않은 용어, 내용 없이 번호만 쓴 곳, "참고"로만 끝난 곳이 없다.
+- For each success criterion, whether it was met and the evidence (test results, measurements, screens) are written in NOTES.md.
+- Criteria that were not met are not hidden; the reasons and the remaining work are written down.
+- The wording of the success criteria is the same as the original set in problem-framing. If it changed, the user's approval and the reason are in the decision log.
+- For each key decision, the summary, the options considered, the reason for the choice, the rejected options and why, and the confidence are in the decision log.
+- The run instructions in HANDOFF.md were just run directly, and the full test suite passed.
+- If there is a git repository, there are no uncommitted changes. Nothing was pushed.
+- No secret keys or personal data are in the code, records, or commits.
+- The requirements documents were not changed without asking. The deliverable format is as the documents specify.
+- Reading the task list and the decision log in NOTES.md in order shows the flow of the work and the trade-offs of each decision.
+- HANDOFF.md was read from the beginning as someone who does not know the work. There are no unexplained terms, no places with only a number and no content, and no places that end with only "참고".
 
-## 이어받을 때
+## When taking over
 
-새 세션의 첫 단계로 HANDOFF.md와 NOTES.md를 읽고, 이해한 현재 상태와 다음 작업을 3줄로 요약해 사용자에게 확인받은 뒤 시작한다. 문서와 코드가 다르면 코드를 기준으로 하고 그 차이를 기록한다.
+As the first step of a new session, read HANDOFF.md and NOTES.md, summarize your understanding of the current state and the next task in 3 lines, get the user's confirmation, and then start. If the documents and the code differ, go by the code and record the difference.

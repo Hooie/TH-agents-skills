@@ -8,7 +8,7 @@ metadata:
 
 # UE Project Context
 
-> **my-agent-skills에서 쓸 때:** 이 저장소에는 UE 스킬이 7개(ue-project-context, ue-cpp-foundations, ue-actor-component-architecture, ue-networking-replication, ue-testing-debugging, ue-module-build-system, ue-performance)만 있다. 본문이 이 밖의 ue-* 스킬을 가리키면 찾지 말고, 이 스킬의 내용과 엔진 문서·소스를 근거로 진행한다.
+> **When used in my-agent-skills:** this repository has only 7 UE skills (ue-project-context, ue-cpp-foundations, ue-actor-component-architecture, ue-networking-replication, ue-testing-debugging, ue-module-build-system, ue-performance). If the text points to ue-* skills other than these, do not look for them; proceed on the basis of this skill's content and the engine documentation and source.
 
 Target engine: **UE 5.8**. APIs below are verified against the 5.8 headers; older forms are listed under "Deprecated — do not use".
 
