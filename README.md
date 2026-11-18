@@ -113,6 +113,8 @@ bash TH-agents-skills/scripts/install-rules.sh codex    # ~/.codex/AGENTS.md
 bash TH-agents-skills/scripts/install-rules.sh claude   # ~/.claude/CLAUDE.md
 ```
 
+전역 지시 파일에 넣지 못하는 환경(스킬만 링크로 설치한 경우 등)도 있습니다. 그래서 같은 규칙의 사본이 `problem-framing`과 `task-breakdown` 폴더의 `references/rules.md`에 들어 있습니다. 두 스킬은 시작할 때 전역 규칙이 없으면 이 사본을 읽습니다. `templates/AGENTS.md`를 고쳤으면 `bash scripts/sync-rules.sh`로 사본을 맞추고 함께 커밋합니다(`--check`로 같은지만 확인할 수 있습니다).
+
 ## 사용
 
 - 스킬은 설명(description)과 맞는 요청을 하면 에이전트가 알아서 불러옵니다.
