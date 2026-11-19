@@ -4,7 +4,7 @@ description: Use whenever you propose a solution or change code. Present solutio
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.21.0"
+  version: "1.22.0"
 ---
 
 # Explain As You Go
@@ -100,6 +100,7 @@ NOTES.md and HANDOFF.md must let the user read them from the beginning and redra
 3. **Do not speak only in internal jargon and numbers.**
    - Words such as RED/GREEN, mutation, regression (회귀), dt, and latch are spelled out, or replaced with plain words in the user's language, the first time they appear. For example: "고치기 전에 테스트가 실패하는 것을 확인(RED)", "코드를 일부러 틀리게 바꿔 테스트가 잡아내는지 확인".
    - Write the content alongside D numbers and T numbers. Bad example: "D7로 구체화". Good example: "캐릭터마다 상한을 다르게 두기로 했다(D7). 이 결정은 나중에 모든 캐릭터 상한 100으로 바뀌었다(D9)."
+   - In the reading part of NOTES.md and in HANDOFF.md, do not cite a question number alone as a source; write the gist of the answer with it. Bad example: "(출처: Q5 답)". Good example: "(출처: 사용자 답 — 기존 `Skill(cooldown)` 호출은 그대로 둔다)".
 4. **Verification records have four parts.** What you meant to check → what you did (command or input) → the result (numbers) → what that tells you. For example: "소진 뒤 다시 달릴 수 있는지 보려고, 0까지 쓴 다음 100까지 회복시키고 4초 달려 봤다. 고치기 전에는 3.2초 만에 20에서 멈췄고, 고친 뒤에는 4초를 다 달려 0에서 멈췄다. 소진 표시가 회복 뒤에 풀린다는 뜻이다."
 5. **Write concrete values instead of abstract words.** "큰 dt" → "한 프레임이 10초일 때", "경계값" → "정확히 20일 때와 19.99일 때", "성능 개선" → "35ms에서 9ms로".
 6. **For things that changed, write the before and after together.** "회복 대기를 1초에서 0.5초로 바꿨다. 사용자가 요구사항을 바꿨기 때문이다(21:41)."
@@ -148,7 +149,7 @@ The decision log is **text the user reads, memorizes, and explains**, not someth
   | D8 | 회복 대기 0.5초 | 사용자 변경 지시 | 회복이 더 빨리 시작됨 | 중간 | 유효 |
   ```
 
-- **Write detailed entries only for decisions made by asking.** Only decisions the user chose, rules set by the requester's answers, and bugs fixed are written in detail as D entries. Decisions that were announced and carried out end with one line in the at-a-glance table.
+- **Write detailed entries only where there is something to explain.** Write a detailed D entry for decisions where alternatives were compared, decisions where the user chose against the recommendation or gave a reason that changes the design, rules set by the requester's answers, bugs fixed, and decisions that changed. Answers accepted as recommended ("질문 답") and decisions that were announced and carried out ("알림") end with one line in the at-a-glance table. Approving a plan or a task list is not a decision; record it only in `## 지금 상태`.
 - **Order:** the numbers (D1, D2…) are the order in which decisions were made. At the end of the title, write the task ID and the time (HH:MM). Check the time with a command (`date +%H:%M`, `Get-Date -Format HH:mm` in PowerShell).
 - **Title:** write it so the title alone tells what was set to what. Bad example: "D2. 비교 방식". Good example: "D2. 쿨다운 끝 판정은 허용 오차 없이 `<= 0`".
 - **Record the effect of a decision as before/after numbers.** For decisions that change behavior or performance, measure before and after applying them, under the same conditions and with the same metric, and write the result in the "검증" line. Do not end with "빨라졌다" (it got faster) or "고쳐졌다" (it got fixed). Also write the conditions (map, number of objects, frame rate, number of measurements) and the measurement command.

@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.19.0"
+  version: "1.20.1"
 ---
 
 # Problem Framing
@@ -62,6 +62,7 @@ This skill was written assuming the shared working rules (comparing alternatives
    - For options that require downloading external packages (NuGet, pip, vcpkg, etc.), first check whether downloading works. Check in a way that creates no files (such as connecting to the package server address), and if you could not check, write in the option "미확인 — 다운로드가 막혀 있으면 이 안은 실패한다" (unconfirmed — this option fails if downloads are blocked).
 4. **Choose this round's questions.** Put in this round only the decisions that can be answered right now without knowing the answers to other questions. Defer questions whose content changes depending on another answer to the next round. For example, do not ask about the test framework before the language is decided.
    - Choose only questions whose answer changes the decision. For each question you must be able to write one line on "what changes depending on this answer"; drop any question for which you cannot write that line. There is no fixed number of questions. If a lot of information is missing, there will be many questions; if little is missing, few.
+   - **Announce instead of asking when the answer is already settled.** This applies when the existing code, the environment, or the requirements document points to one option (for example, the existing code is Python); when these rules or the skills already decide it (for example, requirement documents are not edited); or when the choice is to not add features or future-proofing that the requirements do not ask for. Write these as one-line "알리고 진행: ..." items below the questions so that the user can overturn them. Ask only about behavior rules, success criteria, scope, hard-to-reverse structure, and interpretations of the requirements (explain-as-you-go "Decisions to ask vs. decisions to announce").
 5. **Send the questions.** Attach to each question a number, a recommendation, the evidence, 1–2 other possible answers, and one line on what changes depending on the answer. Write the questions so that answering just "예" (yes) accepts the recommendation. Send all of this round's questions at once. **End the response here.**
    - At the end of the first round of questions, add "문서 밖에서 알려 주실 내용(전달사항, 제약, 환경)이 있으면 함께 적어 주세요".
    - If the requester can be asked, group the requester questions separately as sentences the user can paste directly into a messenger or an issue comment. When the user relays the requester's answer, record its source as "요청자 답".
@@ -107,10 +108,10 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 7. **Record the answers.** Write the questions and answers as they are in NOTES.md. If an answer creates a new question, ask it in the next round as in item 6. If the answer has to be interpreted to settle the scope (for example, "잘못된 입력은 0으로" → only negative numbers, or NaN and infinity too?), do not apply your interpretation as is; confirm it with "이렇게 이해했는데 맞나요?".
    - Do the same confirmation for ambiguous sentences in the requirements document and for the requester's answers. If they can be read in two or more ways, show the possible interpretations side by side and ask again. Do not write success criteria or a plan on any interpretation before it is confirmed.
    - Attach a source to the facts and decisions you record: 요구사항 / 사용자 답 / 요청자 답 / 직접 확인(명령) / 승인된 추정. Content filled in from general knowledge or estimation is not put in the success criteria or the plan until the user approves it.
-   - Write the questions and answers in `## 확인 질문과 답` with their evidence. Answers that show up in the code, such as behavior rules, design, and scope, are also written as D entries in the decision log (including benefits and trade-offs), and only the number, like "→ D2", is left in `## 확인 질문과 답`. Simple choices such as language or tools are written only in `## 확인 질문과 답`.
+   - Write the questions and answers in `## 확인 질문과 답` with their evidence. Record every answer that shows up in the code (behavior rules, design, scope) as one line in `## 결정 한눈에 보기` with the status "질문 답", and leave only the number, like "→ D2", in `## 확인 질문과 답`. Write a detailed D entry only when alternatives with real trade-offs were compared (such as the approach comparison), when the user chose against the recommendation or gave a reason that changes the design, or when the answer is changed later. A simple rule accepted as "추천안대로" does not get a detailed entry. Simple choices such as language or tools are written only in `## 확인 질문과 답`.
    - Decision log entries use the template (### D번호) in the NOTES.md format below. Follow explain-as-you-go "How to write the decision log" for how to write them. Do not write the same decision twice.
 8. **For products with screens, decide the users and core flows first.** If the deliverable is a product people use through screens (web service, tool, app, game UI), decide the three things in "What to decide for products with screens" below before the success criteria, and write them in NOTES.md `## 사용자와 핵심 흐름`. For work with no screen flow, such as logic, algorithms, or engine-internal systems, skip this and write only "해당 없음 — 이유". If it is unclear whether it applies, ask the user.
-9. **Set the success criteria.** Write them in a checkable form: tests that must pass, numeric targets (ms, fps, memory, input size), symptoms that must not reproduce. Do not write criteria such as "잘 동작한다" (works well). Attach a source to each criterion: (요구사항 문서 7행), (사용자 전달), (요청자 답), (Q3 답), (추정 — Q5에서 사용자 확인).
+9. **Set the success criteria.** Write them in a checkable form: tests that must pass, numeric targets (ms, fps, memory, input size), symptoms that must not reproduce. Do not write criteria such as "잘 동작한다" (works well). Attach a source to each criterion: (요구사항 문서 7행), (사용자 전달), (요청자 답), (사용자 답 — 29번째 프레임에는 안 써진다), (추정 — 사용자 확인).
    - If the requester can be asked, prepare a confirmation message that summarizes what will be built, the completion criteria, and what will not be done in 3–5 lines. The user sends it to the requester for confirmation, and the reply received is recorded in NOTES.md as "요청자 확인".
 10. **Write what is out of scope.** Based on the scope the user answered, write what will not be done this time.
 11. **Pick the core problem.** Make the problem with the biggest impact on the success criteria the top priority, and write the reason in one line.
@@ -199,7 +200,7 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 - 직접: ...
 
 ## 결정 로그
-(Write in detail only decisions made by asking, rules set by the requester's answers, and bugs fixed. Decisions that were announced and carried out end with their one line in "결정 한눈에 보기". Number them D1, D2… in the order decided. For how to write them, see explain-as-you-go "How to write the decision log".)
+(Write in detail only decisions where alternatives were compared, decisions where the user chose against the recommendation or gave a reason that changes the design, rules set by the requester's answers, bugs fixed, and decisions that changed. Answers accepted as recommended and decisions that were announced and carried out end with their one line in "결정 한눈에 보기". Approving a plan or a task list is not a decision. Number them D1, D2… in the order decided. For how to write them, see explain-as-you-go "How to write the decision log".)
 
 ### D1. (what was set to what, in one line) — (접근 방식 / T1, etc.), (HH:MM)
 - 요약: (one sentence: what was decided, one key reason, one thing given up. Make it explainable from this line alone)

@@ -4,7 +4,7 @@ description: Use when you have finished one large piece of work, before wrapping
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # Independent Review
@@ -95,7 +95,7 @@ This skill is split into two roles.
 Apply the same principle as code review to documents. The session that wrote a document fills in missing explanations from its own memory as it reads, so it cannot find the gaps. Give only the documents to a session with no conversation history, and ask it for the information a first-time reader would look for.
 
 1. **Choose the documents.** Give only HANDOFF.md and the part of NOTES.md above `# 자세한 기록` (the reading part). Do not give the code, the conversation history, or the detailed comparisons in the decision log.
-2. **Choose the questions.** Always ask the five below, and add up to two more if there is something in this work that must get across. Do not put the answers you expect in the prompt; write them down separately.
+2. **Choose the questions.** Always ask the five below, and add up to two more if there is something in this work that must get across. Do not put the answers you expect in the prompt. Write them in a temporary file outside the repository, not in NOTES.md (the reader receives NOTES.md), and delete it after the comparison.
    1. 무엇을 왜 만들었고, 지금 어디까지 왔나 (what was built and why, and how far it has come)
    2. 가장 중요한 결정 하나는 무엇이고, 왜 그렇게 했으며, 무엇을 포기했나 (the single most important decision, why, and what was given up)
    3. 성공 기준을 각각 무엇으로 확인했나 (what each success criterion was checked with)
