@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.21.0"
+  version: "1.22.0"
 ---
 
 # Problem Framing
@@ -121,6 +121,8 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
    - Decision log entries use the template (### D번호) in the NOTES.md format below. Follow explain-as-you-go "How to write the decision log" for how to write them. Do not write the same decision twice.
 8. **For products with screens, decide the users and core flows first.** If the deliverable is a product people use through screens (web service, tool, app, game UI), decide the three things in "What to decide for products with screens" below before the success criteria, and write them in NOTES.md `## 사용자와 핵심 흐름`. For work with no screen flow, such as logic, algorithms, or engine-internal systems, skip this and write only "해당 없음 — 이유". If it is unclear whether it applies, ask the user.
 9. **Set the success criteria.** Write them in a checkable form: tests that must pass, numeric targets (ms, fps, memory, input size), symptoms that must not reproduce. Do not write criteria such as "잘 동작한다" (works well). Attach a source to each criterion: (요구사항 문서 7행), (사용자 전달), (요청자 답), (사용자 답 — 29번째 프레임에는 안 써진다), (추정 — 사용자 확인). For numeric criteria, also write the current value and where it is measured (for example, "두 번째 열기 35ms → 10ms 이하, `stat unit` 3회 평균").
+   - **Turn "never" and "always" into criteria.** When the requester or the user says something must never or always happen, write it as its own success criterion with its source. Under it, list three or more inputs that could break it, taken from the real data and from how that data is produced (blank lines, missing columns, empty or non-number values, every row invalid). For each input, write what should happen: 결과가 나온다 / 그 줄만 빼고 알린다 / 멈추고 오류를 낸다. If which one is unclear, ask. These inputs become test cases in task-breakdown.
+     예: "설정 파일에 잘못된 줄이 있어도 게임이 켜진다 (요청자 답 — 안 켜지는 건 절대 안 돼요). 깨뜨릴 입력: 중간 빈 줄 → 빼고 알림 / 칸이 모자란 줄 → 빼고 알림 / 값이 숫자가 아님 → 빼고 알림"
    - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then prepare an agreement message in this form for the user to send:
      ```text
      문제: …
@@ -136,7 +138,14 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 12. **Compare approaches.** Compare 2–3 ways to solve the top-priority problem on success criteria, risk, and time required, and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. Follow explain-as-you-go "When proposing solutions" for the format. If there is only one reasonable approach, write "대안 없음 — 이유". When the user chooses, write this comparison as a D entry in the decision log.
 13. **Write the plan and roles.** Keep the plan within 5 lines, with a check method for each step. Separate the work given to the AI from the judgments the user makes.
 14. **Create NOTES.md.** Create it at the root of the work folder in the format below.
-15. **Get confirmation.** Show the success criteria, out of scope, the top-priority problem, and the approach comparison, and ask what to change and which approach to take. **End the response here.**
+15. **Check, then get confirmation.** Before showing the results, check NOTES.md against this list and fill in what is missing. Do not show the list; show only what you filled in, one line each.
+   - Requester questions covered all six steps of the order, including operation (who maintains it, what changes often). If a step was skipped, add that question to this response.
+   - Every numeric criterion has the current value, the target, and where it is measured.
+   - `## 범위 밖` names what will not be built this time, including what the requester said is for later.
+   - Every "never/always" statement is a success criterion with the inputs that could break it.
+   - Detailed D entries exist only for the cases in item 7. Everything else is one line with the status "질문 답".
+
+   Then show the success criteria, out of scope, the top-priority problem, and the approach comparison, and ask what to change and which approach to take. **End the response here.**
 
 ### Step 3: Point to the next step and stop
 

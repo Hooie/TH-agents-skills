@@ -4,7 +4,7 @@ description: Use whenever you propose a solution or change code. Present solutio
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.23.0"
+  version: "1.24.0"
 ---
 
 # Explain As You Go
@@ -82,12 +82,12 @@ if self._exhausted and self.value >= 20.0:
     self._exhausted = False
 ```
 
+- **Language first.** Write comments in the language you use with the user (Korean when the user writes in Korean), even though these instructions are in English. If the file already has comments, follow their language and format (`#`, `//`, doc comments). Before committing, reread the comments you added and rewrite any that are in the wrong language.
 - **Where:** on functions, branches, conditions, and constants added or changed in this task. Not on existing code you did not touch.
 - **What:** do not restate what the code does; write the reason. Write why this condition, what happens without this line, why `>=` at the boundary (and not `>`), and where a number came from. Bad example: `# value가 20 이상이면 False로 바꾼다`.
 - **Write it so the comment alone is understandable.** Do not put in markers such as decision numbers (D11), task numbers (T3), or "NOTES.md 참고". Someone without NOTES.md must be able to learn the reason from the code alone. The link between comments and the decision log is handled by the "코드 위치" line in the decision log.
 - **Keep it short.** One or two lines is enough. Keep alternatives comparisons and long explanations in the decision log; do not move them into comments.
 - **Update it together with the code.** When the code changes, update the comment above it in the same change. If a decision changes (wait 1 second → 0.5 seconds), update the reason and the numbers in the comment too. A comment that does not match the code is worse than none.
-- **Follow the existing style.** The comment language and format (`#`, `//`, doc comments) follow what that file already uses. If there are no existing comments, write in the language you use with the user.
 - In tests, comment what the name alone does not reveal (how the expected value was computed, which bug it reproduces).
 - Do not add comments or notes to requirement documents maintained by others (specs, issues, etc.).
 

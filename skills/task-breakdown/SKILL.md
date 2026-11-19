@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.34.0"
+  version: "1.35.0"
 ---
 
 # Task Breakdown
@@ -117,7 +117,7 @@ Tasks whose method and completion criteria are settled are tasks where the human
    - Context: the parts of the goal and success criteria in NOTES.md that this task needs, the decided interfaces, the approved method and completion criteria, and the verification command
    - The list of files to create and change, and "이 목록 밖의 파일은 고치지 않는다" (do not change files outside this list)
    - "지시문에 없는 결정(동작 규칙, 인터페이스 변경, 범위)을 해야 하면 정하지 말고 멈추고 보고한다." (if a decision not in the instruction is needed, stop and report instead of deciding)
-   - "테스트를 지우거나 건너뛰게 하거나 기대값을 결과에 맞춰 바꾸지 않는다." And the comment rule (write the reasons; no decision or task numbers)
+   - "테스트를 지우거나 건너뛰게 하거나 기대값을 결과에 맞춰 바꾸지 않는다." And the comment rule (write the reasons in Korean or the file's existing comment language; no decision or task numbers)
    - "NOTES.md는 고치지 않는다. 결정과 검증 결과는 `notes/T4.md`에 NOTES.md 결정 로그와 같은 틀로 쓴다. 번호는 T4-1, T4-2…로 하고 제목에 시각을 쓴다."
    - Use a separate build output folder (for example, `build-T4`). If they share the same folder, files get locked or overwritten when building at the same time.
    - Do not commit. If several parties commit to the same repository at the same time, they conflict. Commits are made in this session after merging.
@@ -151,7 +151,7 @@ Tasks whose method and completion criteria are settled are tasks where the human
 3. **The user decides.** If the user picks an option and sends back an edited instruction, follow that instruction. Record the reasons and direction the user attached in the decision log in the user's own words. If the user says only "진행" (go ahead), do this one task according to the recommendation and the draft. Do not polish or change an instruction the user edited; follow it as is.
 4. **Write the tests first.** If the verification method is automated tests, follow the test-driven-development order: write the test, confirm it fails, then implement. Write tests one at a time from the list set in Procedure 4 (the groups in "Test design"). Repeat in the order one test → implement just enough to pass → next test, and do not write all of the task's tests up front at once.
    - **Do not fill in unknown values.** If, during implementation, you need a value or rule that is not in the requirements (numbers, whether to include a boundary value, exception handling, processing order), do not fill it in with a plausible value. Stop and ask, attaching a proposed answer and its evidence. Set the task's status in the table to `보류(질문 대기)`. Choices that do not change behavior, such as names or file locations, are announced and carried out.
-   - **Add comments.** Add comments that give the reasons to code you added or changed (explain-as-you-go "How to write comments"). Do not put decision numbers or task numbers in comments.
+   - **Add comments.** Add comments that give the reasons to code you added or changed, in Korean or in the language of the file's existing comments (explain-as-you-go "How to write comments"). Do not put decision numbers or task numbers in comments.
    - **Pin the behavior before changing it.** If the existing code to be changed has no tests, first write one test that checks the current behavior as it is and see it pass. If this test breaks after the change, confirm whether the change was intended, and if it was, record the reason for changing the test in the decision log.
    - A task whose verification is "수동" is the TDD exception confirmed in Procedure 6, so implement it directly and record the manual check result.
 5. **Check the result.** Read the diff and strip out changes nobody asked for. Then check the eight items below and record the result in `## 검증 결과` as a list of findings or as "지적 없음(확인한 항목: ...)". Do this for every task regardless of language, and do not skip it.
