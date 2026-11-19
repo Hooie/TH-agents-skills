@@ -4,7 +4,7 @@ description: Use when you have finished one large piece of work, before wrapping
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.4.0"
+  version: "1.5.0"
 ---
 
 # Independent Review
@@ -42,7 +42,7 @@ This skill is split into two roles.
    4. **잡음 (noise):** code that is correct in a context the reviewer did not have. Write the reason for not accepting it with evidence (code location, run result, requirement sentence). Also note whether this finding would have come up if that context had been in the prompt.
    - "고치면 좋은 것" (nice to fix) is classified by default as 3 (감수할 트레이드오프) or 4 (잡음), with the reason recorded. Fix it only when it passes the over-engineering check in task-breakdown Execution loop 5 and the cost of fixing it is small. Following every reviewer finding leads to over-engineering.
    - Also go through the "판단하지 않고 넘긴 것" (passed over without judgment) list one by one. Handle the ones that need handling the same way as findings; otherwise move them to `## 남은 위험` with the reason.
-5. **Decide whether to review again.** If you fixed "고칠 것" items or fixed the prompt, ask the user whether to get one more review the same way. Review at most 3 times.
+5. **Decide whether to review again.** If you fixed "고칠 것" items or fixed the prompt, ask the user whether to get one more review the same way. Review at most 3 times. When a working time is set, review once by default, and offer a second round only if there is time left before the wrap-up checkpoint.
    - If the next review brings up only trivial findings or ones already handled, stop.
    - If important findings keep coming after 3 reviews, do not run more; tell the user. It is a sign that the deliverable is not ready yet, so decide whether to reduce the scope or split the work again.
    - If the user says "그만해도 된다" (it is fine to stop), stop.

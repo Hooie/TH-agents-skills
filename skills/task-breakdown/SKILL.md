@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.33.0"
+  version: "1.34.0"
 ---
 
 # Task Breakdown
@@ -55,7 +55,7 @@ At each point below, this skill ends its response and waits for the user's answe
 5. **Write the task list in NOTES.md.** Put the table below in the `## 작업 목록` section. If you set up a separate task for the final overall verification (for example, "T4 통합 검증"), always put "성공 기준 대조표 작성(마치며 3단계 형식)" in that task's completion criteria. Splitting verification off into a task does not mean skipping the checklist at wrap-up. If there are candidates for simultaneous work, write the batch and its rationale in one line below the table.
 6. **Get the user's confirmation.** Show the priorities, the task list, and the points to test for each task, and ask what to remove or change. For tasks whose verification is "수동", also get confirmation at this point that their tests are not written first (a TDD exception). If there are candidates for simultaneous work, also ask at this point whether to run them simultaneously ("Simultaneous work", step 2). Apply the answers and record the reasons for the changes in the decision log.
 7. **Run one task at a time.** Go through the execution loop below for each task.
-8. **Handle bugs and changes that come in midway as tasks too.** When the user reports a bug or a requirement change midway, add it to the task table as a new task (T number) and run the same execution loop. Even if it looks urgent, do not cut down the method proposal, writing a failing test first, the four-line report, or the commit message format (task ID and verification result).
+8. **Handle bugs and changes that come in midway as tasks too.** When the user reports a bug or a requirement change midway, add it to the task table as a new task (T number) and run the same execution loop. Even if it looks urgent, do not cut down the method proposal, writing a failing test first, the five-line report, or the commit message format (task ID and verification result).
 9. **Stop when spinning in place.** If the same failure (the same test fails or the same symptom remains) is not resolved after **two** fixes, do not attempt a third fix. If you keep fixing, the conversation fills up with failed attempts and blurs the next attempt as well.
    - Write what was tried and why each attempt failed in NOTES.md, and update "막힌 것" in `## 지금 상태`.
    - Question the initial assumptions and form the root-cause hypotheses again (from systematic-debugging Phase 1). Compare new approaches as alternatives, show them to the user, and stop.
@@ -121,11 +121,11 @@ Tasks whose method and completion criteria are settled are tasks where the human
    - "NOTES.md는 고치지 않는다. 결정과 검증 결과는 `notes/T4.md`에 NOTES.md 결정 로그와 같은 틀로 쓴다. 번호는 T4-1, T4-2…로 하고 제목에 시각을 쓴다."
    - Use a separate build output folder (for example, `build-T4`). If they share the same folder, files get locked or overwritten when building at the same time.
    - Do not commit. If several parties commit to the same repository at the same time, they conflict. Commits are made in this session after merging.
-   - When done, report with the four lines from Execution loop 8 and stop.
+   - When done, report with the five lines from Execution loop 8 and stop.
 4. **Delegate.** For subagents, this session launches them with the instructions. For another terminal, show the instruction as a code block and say "새 터미널에서 이 폴더로 새 세션을 열고 붙여 넣어 주세요. 끝나면 보고를 여기에 붙여 주세요". If the batch includes a task this session takes on, proceed with it as usual in the meantime.
 5. **Do not accept the results as they are.** When the reports come, read the diff for each task and do the checks of Execution loop 5 (all eight) and the verification of step 6 in this session. For a task that did "멈추고 보고" (stopped and reported), ask the user about that decision.
 6. **Merge.** When the whole batch is done, move the entries in `notes/T*.md` into the NOTES.md decision log. Continue the D numbers in time order, and write "NOTES.md D7~D9로 옮김" at the top of each moved file. Update the task table statuses and `## 지금 상태`, then run the full build and the full test suite once, and run counterexamples where the tasks meet (using two features together, changing the order). If they pass, commit split by task. If conflicts or failures appear, find the cause with systematic-debugging.
-7. **Report.** Give the four-line report for each task, report the merged result (full tests, counterexamples where the tasks meet) once more in four lines, and stop. Record in one line in the decision log what was delegated to whom (subagent / another terminal / this session) and why.
+7. **Report.** Give the five-line report for each task, report the merged result (full tests, counterexamples where the tasks meet) once more in five lines, and stop. Record in one line in the decision log what was delegated to whom (subagent / another terminal / this session) and why.
 
 - Do not delegate requirement interpretation or design decisions. The user and this session make them.
 - Use git branches or worktrees to split the work only when the user directly asks for it.
@@ -181,17 +181,20 @@ Tasks whose method and completion criteria are settled are tasks where the human
    - Do not write the same decision twice. New news about the same decision, such as approval, the choice, or the implementation result, is reflected by updating that decision's entry. Write a new entry only when the decision switched to another option, and add "바뀜: → D번호" to the original entry.
    - Also record the counterexamples found and the bugs fixed in this task as entries in the decision log.
    - For tasks that changed behavior or performance, record the numbers measured before and after under the same conditions and metric in the "검증" line of the decision log (explain-as-you-go "Record the effect of a decision as before/after numbers"). For performance tasks, measure before changing anything.
-8. **Report and stop.** Report this task's result in the four lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If any of the four lines is missing, the report is not finished. If you did not do the checks, go back to step 5 and do them before reporting.
+8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If any of the five lines is missing, the report is not finished. If you did not do the checks, go back to step 5 and do them before reporting.
 
    ```text
+   흐름: 입력 dt → `Skill.update()`에서 남은 시간에서 뺌 → `try_use()`가 남은 시간 1e-9초 이하면 사용 · 정한 값: 허용 오차 1e-9초(D14)
    검증: 전체 테스트 24건 통과(이번 작업 7건 — 경계 3, 잘못된 입력 2, 누적 1, 회귀 1), 빌드 경고 0 (명령: ...)
    점검: 정확성 — 1/30·1/60·1/144초 누적 확인 / 과잉 설계 — 지적 없음 / 스펙 대조 — 지적 없음(성공 기준 2, 3) / API — 지적 없음(std::isfinite 확인) / 충돌 — 호출부 3곳 확인, 지적 없음 / 반례 — 4개 실행, 1건 실패(음수 dt) → 회귀 테스트 추가 후 고침(D5) / 테스트 약화 — 없음(테스트 삭제·skip·기대값 변경 없음) / 보안 — 해당 없음(밖에서 들어오는 입력과 비밀값이 없음)
    직접 확인: `ctest --test-dir build -R cooldown` → 7건 통과가 보이면 정상 / `./build/demo 1.0` → 60번째 줄에 READY
    남은 것: 없음 (또는 다음 작업으로 넘긴 것과 이유) · 커밋 a1b2c3d
    ```
 
+   - "흐름" is one line on how input becomes output through the files and functions changed in this task, with the values that were decided, so that the user can explain the task without reading the code.
    - **Do not write sentences without evidence.** Attach evidence in parentheses to the facts written in reports and NOTES.md. The evidence is one of three: a command run this time and its output, a code location (file and function or line), or a document quote (a line in the requirements document, a user answer). Numbers such as counts, measurements, and line numbers are copied as-is from output run this time. Do not write numbers remembered or guessed. Without evidence, write "추정" or "미확인". Replace sentences such as "통과할 것이다" (it will pass) or "문제없어 보인다" (it looks fine) with run results, or delete them.
    - "직접 확인" (check it yourself) is 1–2 commands the user can run on their own, with the expected results. When the user tells you the results they got, record them in `## 검증 결과` as "직접 확인(사용자)". If the results differ, do not move on to the next task; find the cause first.
+   - **Suggest a fresh session when the context is getting full.** If the tool shows you how full the context is and it is above about 60%, or this conversation has already been compacted once, and more than one task remains, add to the report: "대화가 길어졌습니다. `$session-handoff`로 인계 문서를 만들고 새 세션에서 이어 가기를 권합니다." Do not write the handoff document yourself.
 
 ## Instruction format
 
@@ -215,12 +218,12 @@ Things that are easy to leave out: concrete context such as measurements or file
 - With the time you checked, update the "시간" line in `## 지금 상태` (elapsed / remaining / next checkpoint). If a checkpoint has passed, do the comparison below on the spot.
 - The default allocation is as follows. If the user decides otherwise, follow that.
 
-  | Phase | What to do | For a day (8 hours) |
-  | --- | --- | --- |
-  | First 25% | Problem definition, questions, task list | First 2 hours |
-  | 25–75% | Run tasks one at a time | 2–6 hours |
-  | 75–92% | Full tests and counterexamples, polishing records | 6 hours – 7 hours 20 minutes |
-  | Last 8% | Handoff document, last commit | Last 40 minutes |
+  | Phase | What to do |
+  | --- | --- |
+  | First 25% | Problem definition, questions, task list |
+  | 25–75% | Run tasks one at a time |
+  | 75–92% | Full tests and counterexamples, polishing records |
+  | Last 8% | Handoff document, last commit |
 
 - At each checkpoint, compare the remaining tasks with the remaining time. If time is short, move low-priority tasks out of scope and record the reason.
 - From the 75% point on, do not start new tasks. Spend the remaining time on full tests and counterexample hunting, polishing records, and session-handoff.

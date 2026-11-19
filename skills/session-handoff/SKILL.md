@@ -4,7 +4,7 @@ description: Use before switching to a new session, before summarizing the conve
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.9.0"
+  version: "1.10.0"
 ---
 
 # Session Handoff
@@ -60,8 +60,12 @@ Make it so that even when the session changes or the work passes to someone else
 ## 주요 결정
 - D2 (what was set to what) — 이유: (one sentence) / 포기한 것: (one sentence) / 버린 안: (what, and why) — 자세한 비교: NOTES.md D2
 
+## 직접 정하고 바꾼 것
+(From the decision log and the conversation, one line each: options the user chose against the AI's recommendation, instructions the user edited, over-engineering the user rejected, and review findings that were not accepted. Write what the AI proposed, what the user decided instead, and the user's reason.)
+- D5 — AI 추천: … / 사용자: … / 이유: (사용자의 말)
+
 ## 남은 위험과 알려진 문제
-- ... (how to reproduce, impact)
+- (weakness) → (impact if it happens) → (how to check or respond; how to reproduce, if known)
 
 ## 이어받는 사람에게
 - 먼저 읽을 파일: NOTES.md, ...
