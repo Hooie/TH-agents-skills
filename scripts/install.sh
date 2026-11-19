@@ -5,8 +5,8 @@
 #   bash scripts/install.sh <세트> [설치 폴더]
 #
 # 세트 (쉼표로 여러 개 가능, 예: core,cpp)
-#   core    작업 진행 공통: problem-framing, task-breakdown, explain-as-you-go, session-handoff,
-#           verification-before-completion, systematic-debugging, test-driven-development
+#   core    작업 진행 공통: problem-framing, task-breakdown, explain-as-you-go, independent-review,
+#           session-handoff, verification-before-completion, systematic-debugging, test-driven-development
 #   cpp     C++ 코드 리뷰: game-client-review
 #   cp      알고리즘 문제 풀이: cpp-stress-test, cp-skills-cpp
 #   unreal  언리얼 엔진 5: ue-* 스킬 7개
