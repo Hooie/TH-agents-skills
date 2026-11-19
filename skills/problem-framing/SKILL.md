@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.22.0"
+  version: "1.23.0"
 ---
 
 # Problem Framing
@@ -26,9 +26,9 @@ If the user invoked this skill directly, follow the whole procedure below even i
 
 ## Hard rules
 
-- **Do not decide on your own.** Anything not in the original request is undecided. The AI does not pick the language, version, build tool, test approach, folder structure, behavior rules, or scope. Instead, find evidence in the original text, build a proposed answer, and get the user's confirmation (Step 1, items 2–5).
+- **Do not decide on your own.** Anything not in the original request is undecided. The AI does not pick what is in the "Ask" column of the explain-as-you-go table "Decisions to ask vs. decisions to announce": the language, version, build tool, test framework, folder structure of a new project, behavior rules, or scope. Instead, find evidence in the original text, build a proposed answer, and get the user's confirmation (Step 1, items 2–5).
 - **The requirements document belongs to the requester.** Do not mix your notes or decisions into requirement documents written by others, such as specs, issues, or READMEs. Write run instructions, notes, and decisions in NOTES.md and HANDOFF.md. If a reason to change the document itself comes up, ask first.
-- **Do not build anything before the answers arrive.** Until the user's answers come, do not create or change files and do not run commands that create a project. NOTES.md is also created only after the answers. There is one exception: building and running the existing code and tests as they are, to check the initial state, is done before the answers.
+- **Do not build anything before the answers arrive.** Until the user's answers come, do not create or change files and do not run commands that create a project. NOTES.md is also created only after the answers. There are two exceptions. First, building and running the existing code and tests as they are, to check the initial state, is done before the answers. Second, after sending the first round of questions, you may create NOTES.md with only `## 지금 상태` and `## 확인 질문과 답`, so that the questions sent, the answers received, and what is still unknown survive compaction while the questions go back and forth.
 - **Use the environment only to build options.** Reading the folder contents or the installed tools is fine. But do not decide from the result; show it as options, such as "설치된 것: .NET 9, MSVC 19.44. 어느 것으로 할까요?".
 - **Do not decide on your own to "skip it because it is small".** To skip any of the confirmation questions, the approach comparison, or task-breakdown, ask the user first.
 - Proceed on assumptions only when the user says so directly, such as "알아서 정해" or "가정하고 진행해". Even then, write "가정(사용자가 위임)" in NOTES.md for each assumption.
@@ -52,7 +52,7 @@ This skill was written assuming the shared working rules (comparing alternatives
    - Give notes the user passes on the same weight as the original text, and prefer them over estimates. In NOTES.md, record their source as "사용자 전달".
    - **If there is existing code and tests, build it and run the tests as they are before changing anything, to check the initial state.** Write the pass/fail counts, warnings, and the commands run above the questions as "처음 상태" (initial state). This is a fact check, so do it without asking. Do not create or change any files other than build outputs. If you could not run it, write "미확인 — 이유".
 2. **Find everything that is undecided.** Read the original line by line and note what cannot be answered from the original alone. Also find things that are not written in the original but must be decided to implement it. Check every one of the following groups.
-   - Environment: language and version, build tool, test approach, folder structure, runtime environment, version control (whether a git repository already exists, and if not, whether to create one)
+   - Environment: language and version, build tool, test framework, folder structure, runtime environment, version control (whether a git repository already exists, and if not, whether to create one)
    - Behavior rules: boundary values (exactly 0, the maximum), when the same action repeats, when two features apply at once or their order changes (for example, does a shield also block poison damage), invalid input
    - External context: who uses it and in what situation, where it runs (platform, device, frame rate), data size and call frequency, other systems that work alongside it, what is likely to change or grow later, the impact of a failure
    - Deliverable: what is built and handed over, what counts as done, numeric performance targets
@@ -69,10 +69,10 @@ This skill was written assuming the shared working rules (comparing alternatives
    - If the requester can be asked, group the requester questions separately as sentences the user can paste directly into a messenger or an issue comment. When the user relays the requester's answer, record its source as "요청자 답".
    - **Ask the requester one or two questions at a time, from small context to depth.** Requesters often do not state all the requirements at once, and each good question tends to uncover one more requirement. Follow this order, and dig into each answer once more ("왜 그런가요?", "그럼 이런 경우는요?") before moving on:
      1. A recent concrete case: when and in what situation this happens
-     2. How they handle it now, and the workaround or know-how they use
+     2. How they handle it now, and the workaround or know-how they use. Ask whether they can send what they use now (a sheet, a screenshot, a log, an example input with the expected result); real material is the cheapest way to find unstated rules.
      3. Numbers: what number tells them it went well, its current value, and where it is measured
      4. Who is affected, and what it costs them when it goes wrong
-     5. Exceptions and boundaries: unusual cases, limits (budget, count, time), things that must never change
+     5. Exceptions and boundaries: unusual cases, limits (budget, count, time), things that must never change, and, if there is a set working time, what matters most if not everything fits
      6. Operation: who maintains it, and what changes often
      Start with questions that seem trivial. Build the next question from new facts in the last answer (for example, "매주 엑셀로 따로 정리하신다고 하셨는데, 그 표에는 어떤 항목이 들어가나요?"). Ask about completion criteria and things not to do after the context has been gathered.
    - Do not ask the requester for a solution or a to-do list. Do not write questions such as "무엇을 만들면 되나요?" or "할 일을 순서대로 알려 주세요". Ask the requester about situations and criteria, and decide what to build and how with the user, based on those answers.
@@ -103,7 +103,7 @@ Q3. 캐릭터 하나가 가진 스킬을 많아야 수십 개로 보고 설계�
     다른 안: 수천 개 → 조회 구조와 성능 테스트가 달라집니다.
     추천: 예
 
-테스트 방식은 Q1이 정해진 뒤 다음 차례에 묻겠습니다.
+테스트 프레임워크는 Q1이 정해진 뒤 다음 차례에 묻겠습니다.
 문서 밖에서 알려 주실 내용(전달사항, 제약, 환경)이 있으면 함께 적어 주세요.
 
 요청하신 분께 물을 수 있다면 아래를 메신저나 이슈에 그대로 붙여 보내 보세요. 물을 곳이 없으면 알려 주세요. 제가 추정안으로 다시 묻겠습니다.
@@ -139,7 +139,7 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 13. **Write the plan and roles.** Keep the plan within 5 lines, with a check method for each step. Separate the work given to the AI from the judgments the user makes.
 14. **Create NOTES.md.** Create it at the root of the work folder in the format below.
 15. **Check, then get confirmation.** Before showing the results, check NOTES.md against this list and fill in what is missing. Do not show the list; show only what you filled in, one line each.
-   - Requester questions covered all six steps of the order, including operation (who maintains it, what changes often). If a step was skipped, add that question to this response.
+   - Requester questions covered all six steps of the order, including operation (who maintains it, what changes often). If a step was skipped, do not add more requester questions to this response: put it first in the next round, or, if there is no time for another round, write it under `## 남은 위험` as not asked.
    - Every numeric criterion has the current value, the target, and where it is measured.
    - `## 범위 밖` names what will not be built this time, including what the requester said is for later.
    - Every "never/always" statement is a success criterion with the inputs that could break it.
@@ -187,7 +187,7 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 ## 결정 한눈에 보기
 | 번호 | 정한 것 | 이유 | 포기한 것 | 확신 | 상태 |
 | --- | --- | --- | --- | --- | --- |
-| D1 | ... | ... | ... | 높음 / 중간 / 낮음 | 유효 / 바뀜 → Dn / 알림 |
+| D1 | ... | ... | ... | 높음 / 중간 / 낮음 | 유효 / 바뀜 → Dn / 질문 답 / 알림 / 버그 |
 
 ## 남은 위험
 - (weakness) → (impact if it happens: who is affected, how) → (how to check or respond)
@@ -267,7 +267,7 @@ If you start from a feature list, it is easy to end up with many screens that do
 
 ## What not to do
 
-- Do not create implementation code, project files, or NOTES.md before receiving the user's answers.
+- Do not create implementation code, project files, or NOTES.md before receiving the user's answers (except the NOTES.md with only `## 지금 상태` and `## 확인 질문과 답` allowed in the hard rules).
 - Do not decide the language or structure from installed tools or folder state.
 - Do not edit or overwrite requirement documents written by others without asking.
 - Do not recommend based only on "보통 이렇다" (it is usually like this) without evidence. If there is no evidence in the original, say there is none.

@@ -4,7 +4,7 @@ description: Use whenever you propose a solution or change code. Present solutio
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.24.0"
+  version: "1.25.0"
 ---
 
 # Explain As You Go
@@ -46,8 +46,9 @@ C를 버리는 이유: 비용이 사라지지 않고 로딩 시간과 상주 메
 
 | Ask (the user chooses) | Announce and proceed (do not ask) |
 | --- | --- |
-| Behavior rules (whether to include a boundary value, exception handling, processing order) | How to write tests (integration tests / unit tests) |
-| Success criteria and how they are judged | Whether to split functions, names, file locations |
+| Environment: language and version, build tool, test framework, new dependencies, folder structure of a new project | How to split tests (unit / integration) once the test framework is set |
+| Behavior rules (whether to include a boundary value, exception handling, processing order) | Test names and how test files are laid out within the set framework |
+| Success criteria and how they are judged | Whether to split functions, names, file locations within the existing structure |
 | Scope (what goes in, what stays out) | Number of measurements, output format, log wording |
 | Hard-to-reverse structure (data formats, public interfaces, new dependencies, large structural changes) | Picking one of several implementations that give the same result (a loop / a built-in function) |
 | Things that can only be decided by interpreting the requirements | How to carry an already-decided rule into code |
@@ -64,7 +65,7 @@ Do this right after changing code, before moving on to the next change.
 
 1. **Two-line explanation.** Tell the user in two lines what you changed and why, and which option you rejected and why.
 2. **Add comments.** Add a comment right above the code you added or changed. For how to write them, follow "How to write comments" below.
-3. **Record in the decision log.** Add one entry to `## 결정 로그` in NOTES.md. If there is no NOTES.md, create just that section. For how to write it, follow "How to write the decision log" below.
+3. **Record in the decision log.** If a decision was made, add one line to `## 결정 한눈에 보기` in NOTES.md. Add a detailed entry to `## 결정 로그` only under the conditions in "Write detailed entries only where there is something to explain" below. If there is no NOTES.md yet, do not create it; keep the decision and move it in when NOTES.md is written. For how to write it, follow "How to write the decision log" below.
 4. **Do not pile changes up.** Do not make several changes at once and explain them all later. If a change comes up that you cannot explain, understand that part first: read the code, run it with a small input, and check the output.
 
 ## How to write comments
@@ -82,7 +83,7 @@ if self._exhausted and self.value >= 20.0:
     self._exhausted = False
 ```
 
-- **Language first.** Write comments in the language you use with the user (Korean when the user writes in Korean), even though these instructions are in English. If the file already has comments, follow their language and format (`#`, `//`, doc comments). Before committing, reread the comments you added and rewrite any that are in the wrong language.
+- **Language first.** Write every comment you add in Korean, even though these instructions are in English and even if the file's existing comments are in another language. Follow the file's existing comment format (`#`, `//`, doc comments). Before committing, reread the comments you added and rewrite any that are not in Korean.
 - **Where:** on functions, branches, conditions, and constants added or changed in this task. Not on existing code you did not touch.
 - **What:** do not restate what the code does; write the reason. Write why this condition, what happens without this line, why `>=` at the boundary (and not `>`), and where a number came from. Bad example: `# value가 20 이상이면 False로 바꾼다`.
 - **Write it so the comment alone is understandable.** Do not put in markers such as decision numbers (D11), task numbers (T3), or "NOTES.md 참고". Someone without NOTES.md must be able to learn the reason from the code alone. The link between comments and the decision log is handled by the "코드 위치" line in the decision log.
