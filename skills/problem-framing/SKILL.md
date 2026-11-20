@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.29.0"
+  version: "1.30.0"
 ---
 
 # Problem Framing
@@ -63,6 +63,7 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
    - Deliverable: what is built and handed over, what counts as done, numeric performance targets
    - Scope: what is not done this time
 3. **Separate facts from decisions.** Things that can be found by looking (installed tools, folder structure, behavior of existing code) are **facts**. The agent checks facts directly without asking the user, and records how they were checked. Ask the user only about **decisions** (what to use, how it should behave).
+   - Rules about the data's own values (negative or zero values, duplicates, rows to drop or keep) belong to whoever maintains the data. Ask the requester, not the user, and do not recommend editing the data file.
    - **Separate out what to ask the requester.** Some things only the person who gave the requirements (planner, lead, the colleague who asked) can answer: how they work now, what is inconvenient, what they will look at to judge it done, hidden constraints. If you do not know whether there is a way to ask the requester (messenger, issue comments, etc.), ask the user in the first round. If there is no way to ask, skip this split and ask the user everything as proposed answers.
    - **Check a cause against the numbers.** Before writing a cause as 확인됨, work out what would be observed if this cause alone were true, and compare it with what was actually observed (the initial run, the data count). Write both numbers. If they differ, this cause explains only part of it: keep looking, and add another 원인 line marked 미확인. A cause read from the code is a 가설 until the numbers match. Write only causes on 원인 lines; evidence and effects (probabilities, how many people were hit) go in the parentheses or elsewhere. Write every 확인됨 line as "확인됨 — (cause) (예측 … = 관측 …, evidence)".
      예: "반올림이 원인이면 재고 차이는 하루 최대 1개 → 관측은 하루 3개 → 다른 원인 있음(미확인)"
@@ -94,9 +95,9 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
      ```text
      이번 답으로 알게 된 것: …
      아직 모르는 것: …
-     질문 단계: 사례 ✓ / 방식·자료 ✗ / 숫자 ✓ / 영향 ✗ / 예외 ✓ / 운영 ✗
+     질문 단계: 사례 ✓(A1) / 방식·자료 ✓(A2) / 숫자 ✗ / 영향 ✗ / 예외 ✓(A5) / 운영 ✗
      ```
-     A step gets ✓ only when the requester answered a question about it; something you announced or assumed does not count. While any step is ✗, pick this round's requester questions from the ✗ steps, in the order above. Do not write "질문을 모두 마쳤다" while a ✗ remains.
+     A step gets ✓ only with the number of the requester question that asked about it, as in "✓(A1)". A ✓ without a question number does not count; something the requester mentioned in passing, or something you announced or assumed, stays ✗ until you ask about it. While any step is ✗, pick this round's requester questions from the ✗ steps, in the order above. Do not write "질문을 모두 마쳤다" while a ✗ remains.
    - If an answer covered only part of a question (for example, the user answered only "추천안" but the question contained an item they were asked to decide separately), ask the remaining decision again in the next round.
    - Keep the six-step order for requester questions. Use the "미확인" lines in `## 문제 정의` only to find what the order has not reached yet, not to choose what to ask first.
    - Before moving on to Step 2, confirm that no undecided decision remains. If even one remains, do not say "결정이 끝났다" (the decisions are done).
