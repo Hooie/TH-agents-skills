@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.24.0"
+  version: "1.25.0"
 ---
 
 # Problem Framing
@@ -46,7 +46,7 @@ This skill was written assuming the shared working rules (comparing alternatives
      - If it is 2,500 lines or fewer, read all of it.
      - If it is more, look at the folder structure, entry points (main, game mode, app startup), test locations, and build settings, then search for names that appear in the requirements (features, classes, screens) to pick the related files, and read those first, within 2,500 lines in total. Read the rest when it becomes needed.
      - Record the counted line total, the chosen files, and the search commands as "읽은 범위" (range read).
-   - **If data files are provided** (CSV, JSON, logs, tables), profile them with a short script in a temporary folder before asking questions: row and column counts, empty values, duplicates, values outside the expected range, and values that disagree between files. Turn each anomaly into a question for the user or the requester (for example, "주문 3건의 수량이 음수인데, 취소 건인가요?"), because hidden rules often show up as odd data.
+   - **If data files are provided** (CSV, JSON, logs, tables), profile them with a short script in a temporary folder before asking questions: row and column counts, empty values, duplicates, values outside the expected range, and values that disagree between files. Run the script; reading the file by eye does not count. If existing code loads the file, also load it with that code as it is (`python -B`, from the temporary folder) and compare what the code read with the raw file: row counts, the list of keys, totals. A difference between the file and what the code sees is a finding in itself; write it under 처음 상태. Turn each anomaly into a question for the user or the requester (for example, "주문 3건의 수량이 음수인데, 취소 건인가요?"), because hidden rules often show up as odd data.
    - If the tool supports subagents, you may offer, as an option, delegating exploration to a subagent and receiving only the list of related files and a summary. Anything from the summary that a decision relies on is checked directly by this session in the original files.
    - Find what can be read from the original text in the original, and ask the user about information that is needed but missing or ambiguous in it. The user may separately know information outside the document (notes passed on, constraints, environment, intent).
    - Give notes the user passes on the same weight as the original text, and prefer them over estimates. In NOTES.md, record their source as "사용자 전달".
@@ -59,6 +59,8 @@ This skill was written assuming the shared working rules (comparing alternatives
    - Scope: what is not done this time
 3. **Separate facts from decisions.** Things that can be found by looking (installed tools, folder structure, behavior of existing code) are **facts**. The agent checks facts directly without asking the user, and records how they were checked. Ask the user only about **decisions** (what to use, how it should behave).
    - **Separate out what to ask the requester.** Some things only the person who gave the requirements (planner, lead, the colleague who asked) can answer: how they work now, what is inconvenient, what they will look at to judge it done, hidden constraints. If you do not know whether there is a way to ask the requester (messenger, issue comments, etc.), ask the user in the first round. If there is no way to ask, skip this split and ask the user everything as proposed answers.
+   - **Check a cause against the numbers.** Before writing a cause as 확인됨, work out what would be observed if this cause alone were true, and compare it with what was actually observed (the initial run, the data count). Write both numbers. If they differ, this cause explains only part of it: keep looking, and add another 원인 line marked 미확인. A cause read from the code is a 가설 until the numbers match.
+     예: "반올림이 원인이면 재고 차이는 하루 최대 1개 → 관측은 하루 3개 → 다른 원인 있음(미확인)"
    - Do not conclude "없음" (not present) for a tool that was not found on the command path (PATH). Check the standard install locations too. For example, on Windows look for Visual Studio and MSVC with `vswhere.exe`, and look for CMake inside the Visual Studio install folder. If you could not confirm it after all, write "미확인" and do not base a recommendation on it.
    - For options that require downloading external packages (NuGet, pip, vcpkg, etc.), first check whether downloading works. Check in a way that creates no files (such as connecting to the package server address), and if you could not check, write in the option "미확인 — 다운로드가 막혀 있으면 이 안은 실패한다" (unconfirmed — this option fails if downloads are blocked).
 4. **Choose this round's questions.** Put in this round only the decisions that can be answered right now without knowing the answers to other questions. Defer questions whose content changes depending on another answer to the next round. For example, do not ask about the test framework before the language is decided.
@@ -134,7 +136,7 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
    - Requester questions covered all six steps of the order, including operation (who maintains it, what changes often). If a step was skipped, do not add more requester questions to this response: put it first in the next round, or, if there is no time for another round, write it under `## 남은 위험` as not asked.
    - Every numeric criterion has the current value, the target, and where it is measured.
    - The "만들지 않을 것" line of `## 문제 정의` names what will not be built this time, including what the requester said is for later.
-   - Every line of `## 문제 정의` has a source or "미확인", and each 원인 line says 확인됨, 가설, or 미확인. Do not fill a line with a guess to make it look complete.
+   - Every line of `## 문제 정의` has a source or "미확인", and each 원인 line says 확인됨, 가설, or 미확인. Each 확인됨 shows predicted and observed numbers that match. Do not fill a line with a guess to make it look complete.
    - Send `## 문제 정의` as the agreement message only after the six-step order is done. A block with every line filled does not mean the questions are finished.
    - Every "never/always" statement is a success criterion with the inputs that could break it.
    - Detailed D entries exist only for the cases in item 7. Everything else is one line with the status "질문 답".
@@ -160,7 +162,7 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 (Fill this in as a draft once NOTES.md exists. Write "미확인" on lines not yet known. When the six-step order of requester questions is done, this block is sent as the agreement message as it is.)
 - 문제: (who, when, what goes wrong — source)
 - 원인: (one line per cause — there can be several. Each anomaly found in the data or code is its own line. For new builds, write "지금 방식의 불편" instead)
-  - 확인됨 — … (command or evidence) / 가설 — … / 미확인
+  - 확인됨 — … (evidence; predicted … = observed …) / 가설 — … / 미확인
 - 성공 기준: (core metric) — 지금 값 … / 목표 … / 재는 곳 … (the full list is in `## 성공 기준`)
 - 만들 것: …
 - 만들지 않을 것: … (include what the requester said is for later)
@@ -171,7 +173,7 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 예 (문제 해결형):
 - 문제: 120칸 인벤토리를 두 번째 열 때 화면이 잠깐 멈춘다 (요청자 답 — QA 보고)
 - 원인:
-  - 확인됨 — 열 때마다 슬롯 위젯을 120개 새로 만든다 (Unreal Insights, CreateWidget 120회)
+  - 확인됨 — 열 때마다 슬롯 위젯을 120개 새로 만든다 (Unreal Insights: 예측 CreateWidget 120회 = 관측 120회)
   - 가설 — 아이콘 텍스처를 매번 동기 로드한다 (확인 전)
 - 성공 기준: 두 번째 열기 시간 — 지금 값 35ms / 목표 10ms 이하 / 재는 곳 `stat unit` 3회 평균
 - 만들 것: 슬롯 위젯을 풀에서 다시 쓰기

@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.37.0"
+  version: "1.38.0"
 ---
 
 # Task Breakdown
@@ -18,17 +18,17 @@ The AI drafts the breakdown, the priorities, and the method for each task, and *
 ## Preconditions
 
 - NOTES.md must have `## 문제 정의`, success criteria, and an approach. If not, start with problem-framing.
-- If starting in a new session, read HANDOFF.md first if it exists, then read NOTES.md from beginning to end and check the requirements document and the last commit in `## 지금 상태`. Summarize the current state and the next task in three lines, and start after the user confirms.
+- If starting in a new session, read HANDOFF.md first if it exists, then read NOTES.md from beginning to end and check the requirements document and the last commit in `## 지금 상태`. Summarize the current state and the next task in three lines, and start after the user confirms. If `## 지금 상태` says the task list was approved, do not build it again; continue from the next task in the execution loop.
 - Even if the work looks like it ends in one or two steps, do not skip this on your own. If the user invoked this skill, follow it as is; if you think skipping would be better, ask the user first.
 - If, while building the task list, you find something undecided (language, tools, behavior rules), do not decide it alone; ask with a proposed answer backed by evidence, as in problem-framing. If the requirements document would need to be changed, ask first.
 - If the user's answer has to be interpreted to set the scope (for example, what counts as "잘못된 입력"), show the interpretation, get it confirmed, and then put it into the success criteria.
-- When starting, read the explain-as-you-go, test-driven-development, and verification-before-completion skill files. Skip any that are not installed. This skill's execution loop follows those three skills as they are.
+- Read the explain-as-you-go, test-driven-development, and verification-before-completion skill files right before the first task of the execution loop, not while building the task list. In a new session, read them before its first task. Skip any that are not installed. This skill's execution loop follows those three skills as they are.
 
 ## Stop points
 
 At each point below, this skill ends its response and waits for the user's answer. Do not start the next step before the answer arrives.
 
-1. After showing the task list (Procedure 6). Also ask at this point whether to do simultaneous work.
+1. After showing the task list (Procedure 6). Also ask at this point whether to do simultaneous work, and whether to run the tasks in this session or a new session.
 2. For each task (for each batch, in simultaneous work), after showing the method proposal and the instruction draft (Execution loop 2, Simultaneous work 2)
 3. After finishing the final check, summarizing the results, and pointing to the independent review and session-handoff (Wrapping up)
 
@@ -54,6 +54,14 @@ At each point below, this skill ends its response and waits for the user's answe
 4. **Decide the verification method.** For tasks that can be checked with automated tests, write the run command or test file (individual test names are written in the "검증" line of the decision log after implementation), and write one line each on where to test (through which public function or interface) and on what that test catches and misses. Pick the test list from the groups in "Test design" below, and write a one-line reason for each group not picked. Do not pick points that test internal implementation (private functions, internal state) directly. For tasks that are hard to test automatically (UI layout, editor operations, feel checks), write a manual check procedure and mark it "수동" (manual). In NOTES.md, write at most three lines per task for this (the groups picked, the groups skipped and why, the run command); the individual test cases live in the test files, not in NOTES.md.
 5. **Write the task list in NOTES.md.** Put the table below in the `## 작업 목록` section. If you set up a separate task for the final overall verification (for example, "T4 통합 검증"), always put "성공 기준 대조표 작성(마치며 3단계 형식)" in that task's completion criteria. Splitting verification off into a task does not mean skipping the checklist at wrap-up. If there are candidates for simultaneous work, write the batch and its rationale in one line below the table.
 6. **Get the user's confirmation.** Show the priorities, the task list, and the points to test for each task, and ask what to remove or change. For tasks whose verification is "수동", also get confirmation at this point that their tests are not written first (a TDD exception). If there are candidates for simultaneous work, also ask at this point whether to run them simultaneously ("Simultaneous work", step 2). Apply the answers and record the reasons for the changes in the decision log.
+   - **Ask where to run the tasks.** In the same response, offer two options with a recommendation:
+     - 이 세션에서 이어 가기 — the conversation with the questions stays, so nothing needs carrying over. Recommend it when the tool shows the context is less than about 30% used and time is short.
+     - 새 세션에서 T1부터 — the execution loop starts with an empty context, so compaction comes later. Recommend it when more than about 30% is used, the conversation was compacted, or many tasks remain. In exchange, anything not in NOTES.md does not carry over.
+   - **If the user chooses a new session,** before stopping: write into NOTES.md what is only in the conversation (the user's reasons, the requester's words, answers from others, confirmed interpretations, run commands). Write in `## 지금 상태` "작업 목록 승인, 다음은 T1 방법 제안". Commit only NOTES.md as `정리: 문제 정의와 작업 목록`. Then show the first message for the new session and stop:
+     ```text
+     $task-breakdown 승인된 작업 목록의 T1부터 이어서 해. NOTES.md를 끝까지 읽고 목표, 성공 기준, 다음 작업을 세 줄로 요약해. 확인 전엔 시작하지 마.
+     ```
+     (Claude Code: `/task-breakdown`.) Do not write HANDOFF.md for this; NOTES.md is enough at this point.
 7. **Run one task at a time.** Go through the execution loop below for each task.
 8. **Handle bugs and changes that come in midway as tasks too.** When the user reports a bug or a requirement change midway, add it to the task table as a new task (T number) and run the same execution loop. Even if it looks urgent, do not cut down the method proposal, writing a failing test first, the five-line report, or the commit message format (task ID and verification result).
 9. **Stop when spinning in place.** If the same failure (the same test fails or the same symptom remains) is not resolved after **two** fixes, do not attempt a third fix. If you keep fixing, the conversation fills up with failed attempts and blurs the next attempt as well.
