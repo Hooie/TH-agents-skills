@@ -82,7 +82,7 @@
 
 ### Stopping and waiting
 
-- When starting a new session, if HANDOFF.md exists, read it first, then NOTES.md `## 지금 상태`. Summarize the current state and the next task in three lines and get the user's confirmation before starting.
+- When starting a new session, if HANDOFF.md exists, read it first, then NOTES.md from beginning to end (`## 지금 상태` shows where to continue). Summarize the current state and the next task in three lines and get the user's confirmation before starting.
 - Right before ending a response to wait for the user, if NOTES.md exists, update `## 지금 상태` (in progress, next step, last commit and tests, questions awaiting an answer, blockers, time). Write the handoff document (HANDOFF.md) only when the user invokes it.
 - Keep the front part of NOTES.md (problem definition, current state, story so far, success criteria and checklist, decisions at a glance, remaining risks) short, and put the details in the back part. Do not repeat the same fact in several sections.
 - When one step (skill) ends, do not start the next skill on your own. Tell the user the next command and wait for the user's command.

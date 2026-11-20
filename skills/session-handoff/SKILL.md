@@ -4,7 +4,7 @@ description: Use when the user invokes it to hand off unfinished or finished wor
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.12.0"
+  version: "1.13.0"
 ---
 
 # Session Handoff
@@ -82,7 +82,7 @@ Only when the user invokes it (`$session-handoff`, `/session-handoff`):
 - Criteria that were not met are not hidden; the reasons and the remaining work are written down.
 - The wording of the success criteria is the same as the original set in problem-framing. If it changed, the user's approval and the reason are in the decision log.
 - For each key decision, the summary, the options considered, the reason for the choice, the rejected options and why, and the confidence are in the decision log.
-- The run instructions in HANDOFF.md were just run directly, and the full test suite passed.
+- The run instructions in HANDOFF.md were just run directly, and the full test suite passed. When handing off mid-task, write the last test result and the failing tests instead.
 - If there is a git repository, there are no uncommitted changes. Nothing was pushed.
 - No secret keys or personal data are in the code, records, or commits.
 - The requirements documents were not changed without asking. The deliverable format is as the documents specify.

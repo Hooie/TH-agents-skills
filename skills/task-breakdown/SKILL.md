@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.44.0"
+  version: "1.45.0"
 ---
 
 # Task Breakdown
@@ -212,7 +212,7 @@ Things that are easy to leave out: concrete context such as measurements or file
   | Last 8% | Last commit, then tell the user to invoke session-handoff for the handoff document |
 
 - At each checkpoint, compare the remaining tasks with the remaining time. If time is short, move low-priority tasks out of scope and record the reason.
-- From the 75% point on, do not start new tasks. Spend the remaining time on full tests and counterexample hunting, polishing records, and session-handoff.
+- From the 75% point on, do not start new tasks, except fixes from the independent review (Wrapping up 4). Spend the remaining time on full tests and counterexample hunting, polishing records, and session-handoff.
 - If simultaneous work can save time, you may propose it at a checkpoint. Even then, split only after getting permission.
 
 ## What not to do
@@ -248,7 +248,7 @@ When every task is `완료` or a `보류` with a reason written down, finish in 
    - **Actually run the deliverable.** Separately from the tests passing, run the deliverable exactly the way the user uses it. If it has screens (web page, game, tool), run it, follow the core flow in NOTES.md `## 사용자와 핵심 흐름` from start to finish while checking the screens, and leave screenshots if possible. If it is an executable program or a server, run it with real input and check the output, logs, errors, and exit status. Record what you saw as commands and results on the "실제 실행" line below the checklist. If the environment cannot run it, write "미확인 — 이유".
    - Read `## 남은 위험`, and ask, as questions here, about the items the user could resolve by deciding (for example, how to handle invalid input). Do not finish with them left noted as "확인해야 함". If the user answers "다루지 않는다", record that answer.
 4. **Polish the records and point the way.** Polish NOTES.md and the comments and summarize the results as in explain-as-you-go "When finishing the work". Then point to the two things below and stop.
-   - Independent review: "대화 기록이 없는 새 세션에게 결과물을 검토받겠습니까? `$independent-review`(Claude Code는 `/independent-review`)로 리뷰 지시문을 만들 수 있습니다." If the independent review leads to fixes, do this step again.
+   - Independent review: "대화 기록이 없는 새 세션에게 결과물을 검토받겠습니까? `$independent-review`(Claude Code는 `/independent-review`)로 리뷰 지시문을 만들 수 있습니다." If the independent review leads to fixes, handle each one as a task in the execution loop, even after the 75% point, then do steps 3 and 4 again.
    - Handoff: session-handoff (`/session-handoff` in Claude Code, `$session-handoff` in Codex).
 
 Do not start session-handoff on your own. Even if the user only asks in words, such as "인계 문서 정리해 줘", do not write it yourself; point to the session-handoff command.

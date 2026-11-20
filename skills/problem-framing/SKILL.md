@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.32.0"
+  version: "1.33.0"
 ---
 
 # Problem Framing
@@ -64,7 +64,7 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
    - Scope: what is not done this time
 3. **Separate facts from decisions.** Things that can be found by looking (installed tools, folder structure, behavior of existing code) are **facts**. The agent checks facts directly without asking the user, and records how they were checked. Ask the user only about **decisions** (what to use, how it should behave).
    - Rules about the data's own values (negative or zero values, duplicates, rows to drop or keep) belong to whoever maintains the data. Ask the requester, not the user, and do not recommend editing the data file.
-   - **Separate out what to ask the requester.** Some things only the person who gave the requirements (planner, lead, the colleague who asked) can answer: how they work now, what is inconvenient, what they will look at to judge it done, hidden constraints. If you do not know whether there is a way to ask the requester (messenger, issue comments, etc.), ask the user in the first round. If there is no way to ask, skip this split and ask the user everything as proposed answers.
+   - **Separate out what to ask the requester.** Some things only the person who gave the requirements (planner, lead, the colleague who asked) can answer: how they work now, what is inconvenient, what they will look at to judge it done, hidden constraints. If you do not know whether there is a way to ask the requester (messenger, issue comments, etc.), ask the user in the first round. If there is no way to ask, skip this split and ask the user everything as proposed answers, including the six-step order below.
    - **Check a cause against the numbers.** Before writing a cause as 확인됨, work out what would be observed if this cause alone were true, and compare it with what was actually observed (the initial run, the data count). Write both numbers. If they differ, this cause explains only part of it: keep looking, and add another 원인 line marked 미확인. A cause read from the code is a 가설 until the numbers match. Write only causes on 원인 lines; evidence and effects (probabilities, how many people were hit) go in the parentheses or elsewhere. Write every 확인됨 line as "확인됨 — (cause) (예측 … = 관측 …, evidence)".
      예: "반올림이 원인이면 재고 차이는 하루 최대 1개 → 관측은 하루 3개 → 다른 원인 있음(미확인)"
    - Do not conclude "없음" for a tool that was not found on the command path (PATH). Check the standard install locations too. For example, on Windows look for Visual Studio and MSVC with `vswhere.exe`, and look for CMake inside the Visual Studio install folder. If you could not confirm it after all, write "미확인" and do not base a recommendation on it.
@@ -85,7 +85,7 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
      Start with questions that seem trivial. Build the next question from new facts in the last answer (for example, "매주 엑셀로 따로 정리하신다고 하셨는데, 그 표에는 어떤 항목이 들어가나요?"). Ask about completion criteria and things not to do after the context has been gathered.
    - Do not ask the requester for a solution or a to-do list. Do not write questions such as "무엇을 만들면 되나요?" or "할 일을 순서대로 알려 주세요". Ask the requester about situations and criteria, and decide what to build and how with the user, based on those answers.
    - If the requester's answer is short or covers only part, do not treat it as a failure. Record the answer received in `## 확인 질문과 답`, and turn what is still unknown into the next round's questions.
-   - **When the requester's answers stall,** try in this order: ask what they can answer ("어떤 부분을 알려 주실 수 있을까요?"), offer a closed question with 2–3 options, then confirm an interpretation ("그럼 X로 이해해도 될까요?"). If there is still no answer, write an estimate marked "추정 — 요청자 답 없음", show it to the user, and hold only the parts that depend on it.
+   - **When the requester's answers stall,** try in this order: ask what they can answer ("어떤 부분을 알려 주실 수 있을까요?"), offer a closed question with 2–3 options, then confirm an interpretation ("그럼 X로 이해해도 될까요?"). If there is still no answer, ask the user the same question in the next round, with an estimate marked "추정 — 요청자 답 없음" as the recommendation.
    - The recommendation is a proposed answer built from evidence found in the original. Write the evidence as a quote from the original (for example, "요구사항 문서 12행: 매 프레임 호출된다"), and if the original has no evidence, write "원문에 없음 — (일반적인 경우나 비슷한 시스템 기준)". Say so when an estimate rests on weak evidence.
    - Put only one decision in each question. Do not bundle several decisions into one question, such as "0과 음수는 무시하고, 미등록 스킬은 예외로 할까요?". If they are bundled, a one-word "추천안" answer lets some of the decisions pass without being decided.
    - If the recommendation differs from the original request or reads it broadly, say so. For example: "원문은 '콘솔 프로젝트 하나에 테스트까지'인데, 별도 테스트 프로젝트를 추천합니다. 이유: ...".
@@ -98,11 +98,11 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
      질문 단계: 사례 ✓(A1) / 방식·자료 ✓(A2) / 숫자 ✗ / 영향 ✗ / 예외 ✓(A5) / 운영 ✗
      미룬 질문: 테스트 프레임워크(Q1 답 뒤) / 빈 표일 때 처리(A5 답 뒤)
      ```
-     A step gets ✓ only with the number of the requester question that asked about it, as in "✓(A1)". A ✓ without a question number does not count; something the requester mentioned in passing, or something you announced or assumed, stays ✗ until you ask about it. While any step is ✗, pick this round's requester questions from the ✗ steps, in the order above. On "미룬 질문", list every question you deferred (item 4) and the answer it waits on; when that answer arrives, ask it in the next round and take it off the line. Do not write "질문을 모두 마쳤다" while a ✗ remains or while "미룬 질문" is not "없음".
+     A step gets ✓ only with the number of the question that asked about it, as in "✓(A1)". Use the requester's question number; use the user's question number (as in "✓(Q4)") only when there is no way to ask the requester, or when the requester still did not answer after "When the requester's answers stall" above. A ✓ without a question number does not count; something the requester mentioned in passing, or something you announced or assumed, stays ✗ until you ask about it. While any step is ✗, pick this round's requester questions from the ✗ steps, in the order above. On "미룬 질문", list every question you deferred (item 4) and the answer it waits on; when that answer arrives, ask it in the next round and take it off the line. Do not write "질문을 모두 마쳤다" while a ✗ remains or while "미룬 질문" is not "없음".
    - If an answer covered only part of a question (for example, the user answered only "추천안" but the question contained an item they were asked to decide separately), ask the remaining decision again in the next round.
    - Keep the six-step order for requester questions. Use the "미확인" lines in `## 문제 정의` only to find what the order has not reached yet, not to choose what to ask first.
    - Before moving on to Step 2, confirm that no undecided decision remains. If even one remains, do not say "결정이 끝났다".
-   - If there is a set working time, aim to finish the questions before 25% of the total time has passed. If it looks like it will go over, show the remaining questions in order of importance and ask the user whether to keep asking.
+   - Do not cut the questions short because of the working time: the problem definition comes first, and time is managed from task-breakdown on. If a working time is set, only record the start time: check it with `date` in the first response and write it on the "시간" line of `## 지금 상태` when NOTES.md is created.
 
 ```text
 problem-framing으로 시작합니다. 요구사항 문서를 끝까지 읽었습니다. 이번 차례에 정할 것이 3가지 있습니다.
@@ -125,9 +125,14 @@ Q3. 캐릭터 하나가 가진 스킬을 많아야 수십 개로 보고 설계�
 문서 밖에서 알려 주실 내용(전달사항, 제약, 환경)이 있으면 함께 적어 주세요.
 
 요청하신 분께 물을 수 있다면 아래를 메신저나 이슈에 그대로 붙여 보내 보세요. 물을 곳이 없으면 알려 주세요. 제가 추정안으로 다시 묻겠습니다.
-A1. 지금은 스킬을 다시 쓸 수 있는지 어디에서, 어떤 순서로 확인하고 계신가요?
-A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인가요?
-(완료 판단 기준은 이 답을 받은 뒤 다음 차례에 묻겠습니다.)
+A1. 최근에 스킬을 다시 쓸 수 있는지 판단이 틀렸던 일이 있었나요? 언제, 어떤 상황이었는지 알려 주세요.
+A2. 지금은 그걸 어디에서, 어떤 순서로 확인하고 계신가요?
+(숫자 기준과 영향은 이 답을 받은 뒤 다음 차례에 묻겠습니다.)
+
+이번 답으로 알게 된 것: 없음 (첫 차례)
+아직 모르는 것: C++ 표준(Q1), 끝나는 프레임 처리(Q2), 스킬 규모(Q3), 요청자가 겪은 사례와 지금 방식(A1, A2)
+질문 단계: 사례 ✗ / 방식·자료 ✗ / 숫자 ✗ / 영향 ✗ / 예외 ✗ / 운영 ✗
+미룬 질문: 테스트 프레임워크(Q1 답 뒤) / 숫자·영향(A1·A2 답 뒤)
 ```
 
 ### Step 2: After the answers, organize and stop
@@ -158,7 +163,7 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 13. **Write the plan and roles.** Keep the plan within 5 lines, with a check method for each step. Separate the work given to the AI from the judgments the user makes.
 14. **Create NOTES.md.** Create it at the root of the work folder in the format below.
 15. **Check, then get confirmation.** Before showing the results, check NOTES.md against this list and fill in what is missing. Do not show the list; show only what you filled in, one line each.
-   - Requester questions covered all six steps of the order (every mark in the last round's six-step line is ✓), including operation (who maintains it, what changes often). If a step was skipped, do not add more requester questions to this response: put it first in the next round, or, if there is no time for another round, write it under `## 남은 위험` as not asked.
+   - Questions covered all six steps of the order (every mark in the last round's six-step line is ✓), including operation (who maintains it, what changes often). If a step was skipped, do not add more requester questions to this response: put it first in the next round.
    - Every numeric criterion has the current value, the target, and where it is measured.
    - The success criteria do not contradict each other or the "만들 것" line (for example, "모든 줄이 읽힌다" against "문제 줄은 빼고 알린다"). If they do, rewrite them now into one consistent statement, such as "파일의 7줄을 모두 읽고, 문제 줄 2개는 빼고 알린다 → 남는 줄 5개". A contradiction left here later forces a test to be deleted or its expected value changed.
    - The "만들지 않을 것" line of `## 문제 정의` names what will not be built this time, including what the requester said is for later.
