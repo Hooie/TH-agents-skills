@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.41.0"
+  version: "1.42.0"
 ---
 
 # Task Breakdown
@@ -31,6 +31,7 @@ At each point below, this skill ends its response and waits for the user's answe
 1. After showing the task list (Procedure 6). Also ask at this point whether to do simultaneous work, and whether to run the tasks in this session or a new session.
 2. For each task (for each batch, in simultaneous work), after showing the method proposal and the instruction draft (Execution loop 2, Simultaneous work 2)
 3. After finishing the final check, summarizing the results, and pointing to the independent review and session-handoff (Wrapping up)
+4. Any other time the response asks the user something that must be answered before you can go on: an unknown value (Execution loop 4), being stuck (Procedure 9, 10), the questions in Wrapping up 2 and 3.
 
 - Right before stopping, update NOTES.md `## 지금 상태` (task in progress, next step, last commit and tests, questions awaiting an answer, blockers, time). This way the work can continue from these few lines even if the conversation is compacted. Write HANDOFF.md only when the user invokes `$session-handoff`.
 - Approval of the task list is not approval to execute. Tasks are approved one at a time, or per approved batch of simultaneous tasks (at most 3).
@@ -141,7 +142,7 @@ Tasks whose method and completion criteria are settled are tasks where the human
 ## Execution loop (per task)
 
 1. **Pick.** Among the tasks whose prerequisites are done, pick the one with the highest priority and change its status to `진행 중`.
-2. **Propose the method.** If the task fixes a bug of unknown cause, first find the cause with systematic-debugging, then compare ways to fix it. If there are several ways to implement it and the choice changes the behavior, success criteria, scope, or hard-to-reverse structure, compare 2–3 alternatives in explain-as-you-go format and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. If there is only one method, write one line: "대안 없음 — 이유". Choices with the same result that differ only in implementation (how tests are written, how functions are split, number of measurements, output format) are not asked; write them as a one-line "알리고 진행: ..." (explain-as-you-go "Decisions to ask vs. decisions to announce"). If there is no decision to ask, show only the instruction draft and ask "이대로 진행할까요?". Below that, attach the instruction draft based on the recommendation and show everything at once. At the end, add "고를 때 고른 이유나 바꿀 점을 한 줄 함께 적어 주세요(예: "A로 해. 읽기만 하니까 쓰기 방어는 빼고")." and **end the response here.**
+2. **Propose the method.** First check the fast path below; if every condition is met, take it instead of proposing. Otherwise, survey the scope of impact and consider an experiment (both below) before writing the proposal. If the task fixes a bug of unknown cause, first find the cause with systematic-debugging, then compare ways to fix it. If there are several ways to implement it and the choice changes the behavior, success criteria, scope, or hard-to-reverse structure, compare 2–3 alternatives in explain-as-you-go format and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. If there is only one method, write one line: "대안 없음 — 이유". Choices with the same result that differ only in implementation (how tests are split once the framework is set, how functions are split, number of measurements, output format) are not asked; write them as a one-line "알리고 진행: ..." (explain-as-you-go "Decisions to ask vs. decisions to announce"). If there is no decision to ask, show only the instruction draft and ask "이대로 진행할까요?". Below that, attach the instruction draft based on the recommendation and show everything at once. At the end, add "고를 때 고른 이유나 바꿀 점을 한 줄 함께 적어 주세요(예: "A로 해. 읽기만 하니까 쓰기 방어는 빼고")."
    - **Take the fast path for small fixes.** If **all** of the conditions below are met, announce "빠른 길: (what you change and how, in one sentence)" and proceed right away, without the alternatives comparison or instruction.
      - The change can be explained in one sentence.
      - Behavior rules, success criteria, scope, and public interfaces do not change.
@@ -156,6 +157,7 @@ Tasks whose method and completion criteria are settled are tasks where the human
      - Record the result in the `검증` line of the decision record as "실험: (what you tried) → (result, numbers)", and adjust the confidence accordingly.
      - If the result supports the recommendation, announce "실험 결과 A로 진행" and proceed. Otherwise, go back to the alternatives comparison, show it, and stop.
      - Run at most one experiment per task.
+   - **Stop:** after showing the method proposal and the instruction draft, end the response here.
 3. **The user decides.** If the user picks an option and sends back an edited instruction, follow that instruction. Record the reasons and direction the user attached in the decision log in the user's own words. If the user says only "진행" (go ahead), do this one task according to the recommendation and the draft. Do not polish or change an instruction the user edited; follow it as is.
 4. **Write the tests first.** If the verification method is automated tests, follow the test-driven-development order: write the test, confirm it fails, then implement. Write tests one at a time from the list set in Procedure 4 (the groups in "Test design"). Repeat in the order one test → implement just enough to pass → next test, and do not write all of the task's tests up front at once.
    - **Do not fill in unknown values.** If, during implementation, you need a value or rule that is not in the requirements (numbers, whether to include a boundary value, exception handling, processing order), do not fill it in with a plausible value. Stop and ask, attaching a proposed answer and its evidence. Set the task's status in the table to `보류(질문 대기)`. Choices that do not change behavior, such as names or file locations, are announced and carried out.

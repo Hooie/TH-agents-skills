@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.27.0"
+  version: "1.28.0"
 ---
 
 # Problem Framing
@@ -52,9 +52,12 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
    - If the tool supports subagents, you may offer, as an option, delegating exploration to a subagent and receiving only the list of related files and a summary. Anything from the summary that a decision relies on is checked directly by this session in the original files.
    - Find what can be read from the original text in the original, and ask the user about information that is needed but missing or ambiguous in it. The user may separately know information outside the document (notes passed on, constraints, environment, intent).
    - Give notes the user passes on the same weight as the original text, and prefer them over estimates. In NOTES.md, record their source as "사용자 전달".
+   - If the document, the existing code, and an answer disagree, quote them side by side and ask which one holds. Do not pick one yourself.
    - **If there is existing code and tests, build it and run the tests as they are before changing anything, to check the initial state.** Write the pass/fail counts, warnings, and the commands run above the questions as "처음 상태" (initial state). This is a fact check, so do it without asking. Do not create or change any files other than build outputs. If you could not run it, write "미확인 — 이유".
+   - Read the existing tests and history for unstated rules: test names and expected values, `git log --oneline`, and TODO/FIXME comments. Write each rule candidate under 처음 상태 with where it came from. These are facts; ask about one only if it conflicts with the document or an answer.
 2. **Find everything that is undecided.** Read the original line by line and note what cannot be answered from the original alone. Also find things that are not written in the original but must be decided to implement it. Check every one of the following groups.
    - Environment: language and version, build tool, test framework, folder structure, runtime environment, version control (whether a git repository already exists, and if not, whether to create one)
+   - Wording in the document: terms used without a definition, numbers without a unit or a reference point, sentences that contradict each other, and unstated handling of ties, rounding, ordering, and duplicates
    - Behavior rules: boundary values (exactly 0, the maximum), when the same action repeats, when two features apply at once or their order changes (for example, does a shield also block poison damage), invalid input
    - External context: who uses it and in what situation, where it runs (platform, device, frame rate), data size and call frequency, other systems that work alongside it, what is likely to change or grow later, the impact of a failure
    - Deliverable: what is built and handed over, what counts as done, numeric performance targets
@@ -68,12 +71,12 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
 4. **Choose this round's questions.** Put in this round only the decisions that can be answered right now without knowing the answers to other questions. Defer questions whose content changes depending on another answer to the next round. For example, do not ask about the test framework before the language is decided.
    - Choose only questions whose answer changes the decision. For each question you must be able to write one line on "what changes depending on this answer"; drop any question for which you cannot write that line. There is no fixed number of questions. If a lot of information is missing, there will be many questions; if little is missing, few.
    - **Announce instead of asking when the answer is already settled.** This applies when the existing code, the environment, or the requirements document points to one option (for example, the existing code is Python); when these rules or the skills already decide it (for example, requirement documents are not edited); or when the choice is to not add features or future-proofing that the requirements do not ask for. Write these as one-line "알리고 진행: ..." items below the questions so that the user can overturn them. Ask only about behavior rules, success criteria, scope, hard-to-reverse structure, and interpretations of the requirements (explain-as-you-go "Decisions to ask vs. decisions to announce").
-5. **Send the questions.** Attach to each question a number, a recommendation, the evidence, 1–2 other possible answers, and one line on what changes depending on the answer. Write the questions so that answering just "예" (yes) accepts the recommendation. Send all of this round's questions at once. **End the response here.**
+5. **Send the questions.** Attach to each question a number, a recommendation, the evidence, 1–2 other possible answers, and one line on what changes depending on the answer. Write the questions so that answering just "예" (yes) accepts the recommendation. Send all of this round's questions at once.
    - At the end of the first round of questions, add "문서 밖에서 알려 주실 내용(전달사항, 제약, 환경)이 있으면 함께 적어 주세요".
    - If the requester can be asked, group the requester questions separately as sentences the user can paste directly into a messenger or an issue comment. When the user relays the requester's answer, record its source as "요청자 답".
    - **Ask the requester one or two questions at a time, from small context to depth.** Requesters often do not state all the requirements at once, and each good question tends to uncover one more requirement. Follow this order, and dig into each answer once more ("왜 그런가요?", "그럼 이런 경우는요?") before moving on:
      1. A recent concrete case: when and in what situation this happens
-     2. How they handle it now, and the workaround or know-how they use. Ask whether they can send what they use now (a sheet, a screenshot, a log, an example input with the expected result); real material is the cheapest way to find unstated rules.
+     2. How they handle it now, and the workaround or know-how they use. Ask whether they can send what they use now (a sheet, a screenshot, a log, an example input with the expected result); real material is the cheapest way to find unstated rules. Where you can, also show one example input with the result you expect and ask what is wrong with it ("이 입력이면 이렇게 나오는 게 맞나요?"); a concrete example draws out unstated rules faster than an abstract question.
      3. Numbers: what number tells them it went well, its current value, and where it is measured
      4. Who is affected, and what it costs them when it goes wrong
      5. Exceptions and boundaries: unusual cases, limits (budget, count, time), things that must never change, and, if there is a set working time, what matters most if not everything fits
@@ -85,6 +88,7 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
    - The recommendation is a proposed answer built from evidence found in the original. Write the evidence as a quote from the original (for example, "요구사항 문서 12행: 매 프레임 호출된다"), and if the original has no evidence, write "원문에 없음 — (일반적인 경우나 비슷한 시스템 기준)". Say so when an estimate rests on weak evidence.
    - Put only one decision in each question. Do not bundle several decisions into one question, such as "0과 음수는 무시하고, 미등록 스킬은 예외로 할까요?". If they are bundled, a one-word "추천안" (recommendation) answer lets some of the decisions pass without being decided.
    - If the recommendation differs from the original request or reads it broadly, say so. For example: "원문은 '콘솔 프로젝트 하나에 테스트까지'인데, 별도 테스트 프로젝트를 추천합니다. 이유: ...".
+   - **Stop:** after sending this round's questions, end the response here.
 6. **Repeat for the next round.** When answers come, ask the questions that have now become askable in the next round, in the same way. Repeat until no undecided decision remains.
    - If an answer covered only part of a question (for example, the user answered only "추천안" but the question contained an item they were asked to decide separately), ask the remaining decision again in the next round.
    - Keep the six-step order for requester questions. Use the "미확인" lines in `## 문제 정의` only to find what the order has not reached yet, not to choose what to ask first.
@@ -119,7 +123,7 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 
 ### Step 2: After the answers, organize and stop
 
-7. **Record the answers.** Write the questions and answers as they are in NOTES.md. If an answer creates a new question, ask it in the next round as in item 6. If the answer has to be interpreted to settle the scope (for example, "잘못된 입력은 0으로" → only negative numbers, or NaN and infinity too?), do not apply your interpretation as is; confirm it with "이렇게 이해했는데 맞나요?".
+7. **Record the answers.** Write the questions and answers as they are in NOTES.md. If an answer creates a new question, ask it in the next round as in item 6. If the answer has to be interpreted to settle the scope (for example, "잘못된 입력은 0으로" → only negative numbers, or NaN and infinity too?), do not apply your interpretation as is; confirm it with "이렇게 이해했는데 맞나요?". This confirmation is a question: send it as the next round of item 6 and stop there.
    - Do the same confirmation for ambiguous sentences in the requirements document and for the requester's answers. If they can be read in two or more ways, show the possible interpretations side by side and ask again. Do not write success criteria or a plan on any interpretation before it is confirmed.
    - Attach a source to the facts and decisions you record: 요구사항 / 사용자 답 / 요청자 답 / 직접 확인(명령) / 승인된 추정. Content filled in from general knowledge or estimation is not put in the success criteria or the plan until the user approves it.
    - Write the questions and answers in `## 확인 질문과 답` with their evidence. Record every answer that shows up in the code (behavior rules, design, scope) as one line in `## 결정 한눈에 보기` with the status "질문 답", and leave only the number, like "→ D2", in `## 확인 질문과 답`. Write a detailed D entry only when alternatives with real trade-offs were compared (such as the approach comparison), when the user chose against the recommendation or gave a reason that changes the design, or when the answer is changed later. A simple rule accepted as "추천안대로" does not get a detailed entry. Simple choices such as language or tools are written only in `## 확인 질문과 답`.
@@ -128,7 +132,7 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 9. **Set the success criteria.** Write them in a checkable form: tests that must pass, numeric targets (ms, fps, memory, input size), symptoms that must not reproduce. Do not write criteria such as "잘 동작한다" (works well). Attach a source to each criterion: (요구사항 문서 7행), (사용자 전달), (요청자 답), (사용자 답 — 29번째 프레임에는 안 써진다), (추정 — 사용자 확인). For numeric criteria, also write the current value and where it is measured (for example, "두 번째 열기 35ms → 10ms 이하, `stat unit` 3회 평균").
    - **Turn "never" and "always" into criteria.** When the requester or the user says something must never or always happen, write it as its own success criterion with its source. Under it, list three or more inputs that could break it, taken from the real data and from how that data is produced (blank lines, missing columns, empty or non-number values, every row invalid). For each input, write what should happen: 결과가 나온다 / 그 줄만 빼고 알린다 / 멈추고 오류를 낸다. If which one is unclear, ask. These inputs become test cases in task-breakdown.
      예: "설정 파일에 잘못된 줄이 있어도 게임이 켜진다 (요청자 답 — 안 켜지는 건 절대 안 돼요). 깨뜨릴 입력: 중간 빈 줄 → 빼고 알림 / 칸이 모자란 줄 → 빼고 알림 / 값이 숫자가 아님 → 빼고 알림"
-   - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then send the `## 문제 정의` block in NOTES.md as the agreement message, with one change only: on the 원인 lines, drop the 확인됨/가설/미확인 marks and the predicted/observed numbers, and write each cause in plain words the requester can read. Do not add or remove anything else, and do not write a separate message. Record the requester's reply, quoted, on its "요청자 확인" line, and fix the lines the reply corrects.
+   - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then send the `## 문제 정의` block in NOTES.md as the agreement message, with one change only: on the 원인 lines, drop the 확인됨/가설/미확인 marks and the predicted/observed numbers, and write each cause in plain words the requester can read. Do not add or remove anything else, and do not write a separate message. Record the requester's reply, quoted, on its "요청자 확인" line, and fix the lines the reply corrects. The agreement message goes out in the same response as item 15; there is no separate stop for it.
 10. **Write what will not be built.** Based on the scope the user answered, fill in the "만들지 않을 것" line of `## 문제 정의`.
 11. **Pick the core problem.** Make the problem with the biggest impact on the success criteria the top priority, and write the reason in one line.
 12. **Compare approaches.** Compare 2–3 ways to solve the top-priority problem on success criteria, risk, and time required, and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. Follow explain-as-you-go "When proposing solutions" for the format. If there is only one reasonable approach, write "대안 없음 — 이유". When the user chooses, write this comparison as a D entry in the decision log.
@@ -256,17 +260,7 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 ## 결정 로그
 (Write in detail only decisions where alternatives were compared, decisions where the user chose against the recommendation or gave a reason that changes the design, rules set by the requester's answers, bugs fixed, and decisions that changed. Answers accepted as recommended and decisions that were announced and carried out end with their one line in "결정 한눈에 보기". Approving a plan or a task list is not a decision. Number them D1, D2… in the order decided. For how to write them, see explain-as-you-go "How to write the decision log".)
 
-### D1. (what was set to what, in one line) — (접근 방식 / T1, etc.), (HH:MM)
-- 요약: (one sentence: what was decided, one key reason, one thing given up. Make it explainable from this line alone)
-- 상황: (why it had to be decided. Quote the original if there is evidence in it)
-- 검토한 안: A ... / B ... (or "대안 없음 — 이유")
-- 고른 이유: (if the user wrote a reason, their words first, then the AI's evidence. Include the benefit this option gives)
-- 트레이드오프: (what was given up, written as weakness → impact if it happens → how to check or respond)
-- 버린 안: (one line per option — why it was rejected / under what conditions that option would be better)
-- 확신도: 높음 / 중간 / 낮음 — (one line on why you see it that way). If 중간 or 낮음: (what, once checked, would raise it)
-- 코드 위치: (file and function. Before implementation, "구현 전")
-- 정한 사람: 사용자 — (summary of the reason the user wrote) (AI 추천 A) / 사용자 (추천과 같음) / AI (사용자가 위임)
-- 검증: ...
+(Copy the D template from explain-as-you-go "How to write the decision log".)
 
 ## 검증 결과
 (For each task, write in sentences "what you meant to check → what you did → the result → what that tells you". Before/after measurement numbers go in the "검증" line of the relevant decision; refer to them here by number.)
@@ -297,5 +291,5 @@ If you start from a feature list, it is easy to end up with many screens that do
 - Do not create implementation code, project files, or NOTES.md before receiving the user's answers (except the NOTES.md with only `## 지금 상태`, the `## 문제 정의` draft, and `## 확인 질문과 답` allowed in the hard rules).
 - Do not decide the language or structure from installed tools or folder state.
 - Do not edit or overwrite requirement documents written by others without asking.
-- Do not recommend based only on "보통 이렇다" (it is usually like this) without evidence. If there is no evidence in the original, say there is none.
+- Do not present "보통 이렇다" (it is usually like this) as evidence from the document. If there is no evidence in the original, say so with "원문에 없음 — ...".
 - Do not rewrite the success criteria set here to fit later results. If they must change, get the user's approval and record the original wording and the reason in the decision log.

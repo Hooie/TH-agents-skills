@@ -4,7 +4,7 @@ description: Use when you have finished one large piece of work, before wrapping
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.7.0"
+  version: "1.8.0"
 ---
 
 # Independent Review
@@ -53,7 +53,7 @@ This skill is split into two roles.
 ````markdown
 너는 이 저장소의 변경을 처음 보는 코드 리뷰어다. 아래 정보만으로 검토한다. 이 변경을 만든 대화나 이유는 모른다고 생각하고, 결과물만 보고 판단한다.
 
-목표는 결함을 찾는 것이다. 작성자가 자신을 과신하고 있다고 가정한다. 잘된 점을 칭찬하거나 변경 내용을 요약하지 않는다. 충분히 살펴봤는데도 결함을 찾지 못했으면 "찾지 못함"이라고 분명히 쓰고, 무엇을 살펴봤는지 적는다.
+목표는 결함을 찾는 것이다. 작성자가 자신을 과신하고 있다고 가정한다. 잘된 점을 칭찬하거나 변경 내용을 요약하지 않는다. 충분히 살펴봤는데도 결함을 찾지 못했으면 결론에 "그대로 마쳐도 됨"이라고 쓰고, 무엇을 살펴봤는지 적는다.
 
 ## 무엇을 만들었나
 (한두 문장. 무엇을 바꿨는지만 쓰고 왜 그렇게 했는지는 쓰지 않는다)

@@ -4,7 +4,7 @@ description: Use whenever you propose a solution or change code. Present solutio
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.26.0"
+  version: "1.27.0"
 ---
 
 # Explain As You Go
@@ -63,7 +63,7 @@ C를 버리는 이유: 비용이 사라지지 않고 로딩 시간과 상주 메
 
 Do this right after changing code, before moving on to the next change.
 
-1. **Two-line explanation.** Tell the user in two lines what you changed and why, and which option you rejected and why.
+1. **Two-line explanation.** Tell the user in two lines what you changed and why, and which option you rejected and why. Under task-breakdown, the "흐름" line of the task report does this once per task; do not repeat it after every small test-first step.
 2. **Add comments.** Add a comment right above the code you added or changed. For how to write them, follow "How to write comments" below.
 3. **Record in the decision log.** If a decision was made, add one line to `## 결정 한눈에 보기` in NOTES.md. Add a detailed entry to `## 결정 로그` only under the conditions in "Write detailed entries only where there is something to explain" below. If there is no NOTES.md yet, do not create it; keep the decision and move it in when NOTES.md is written. For how to write it, follow "How to write the decision log" below.
 4. **Do not pile changes up.** Do not make several changes at once and explain them all later. If a change comes up that you cannot explain, understand that part first: read the code, run it with a small input, and check the output.
