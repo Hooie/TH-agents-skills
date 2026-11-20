@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.45.0"
+  version: "1.46.0"
 ---
 
 # Task Breakdown
@@ -57,7 +57,7 @@ At each point below, this skill ends its response and waits for the user's answe
    - **Check that completion criteria do not collide.** For each task, check that its completion criterion still holds after the later tasks are done, and that it does not contradict a success criterion or another task's rule. For example, "T1: 7행 로드" collides with "T2: 음수 줄은 뺀다" — write it as "T1: 파일의 7줄을 모두 읽는다(줄 수 검사는 빼는 규칙이 없는 입력으로)". A collision left here later forces a test's expected value to change.
 6. **Get the user's confirmation.** Show the priorities, the task list, and the points to test for each task, and ask what to remove or change. For tasks whose verification is "수동", also get confirmation at this point that their tests are not written first (a TDD exception). If there are candidates for simultaneous work, also ask at this point whether to run them simultaneously (`references/simultaneous-work.md`, step 2). Apply the answers and record the reasons for the changes in the decision log.
    - **Ask where to run the tasks.** In the same response, offer two options with a recommendation:
-     - 이 세션에서 이어 가기 — the conversation with the questions stays, so nothing needs carrying over. Recommend it when the tool shows the context is less than about 30% used and time is short.
+     - 이 세션에서 이어 가기 — the conversation with the questions stays, so nothing needs carrying over. Recommend it when none of the conditions for a new session below apply.
      - 새 세션에서 T1부터 — the execution loop starts with an empty context, so compaction comes later. Recommend it when more than about 30% is used, the conversation was compacted, or many tasks remain. In exchange, anything not in NOTES.md does not carry over.
    - **If the user chooses a new session,** before stopping: first bring `## 지금까지의 흐름` and `## 남은 위험` up to the current state (remove what was settled, add what was decided). Then write into NOTES.md what is only in the conversation (the user's reasons, the requester's words, answers from others, confirmed interpretations, run commands). Write in `## 지금 상태` "작업 목록 승인, 다음은 T1 방법 제안". Commit only NOTES.md as `정리: 문제 정의와 작업 목록`. Then show the first message for the new session and stop:
      ```text
@@ -118,13 +118,18 @@ Tasks whose method, completion criteria, and verification command are settled, a
 ## Execution loop (per task)
 
 1. **Pick.** Among the tasks whose prerequisites are done, pick the one with the highest priority and change its status to `진행 중`.
-2. **Propose the method.** First check the fast path below; if every condition is met, take it instead of proposing. Otherwise, survey the scope of impact and consider an experiment (both below) before writing the proposal. If the task fixes a bug of unknown cause, first find the cause with systematic-debugging, then compare ways to fix it. If there are several ways to implement it and the choice changes the behavior, success criteria, scope, or hard-to-reverse structure, compare 2–3 alternatives in explain-as-you-go format and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. If there is only one method, write one line: "대안 없음 — 이유". Choices with the same result that differ only in implementation (how tests are split once the framework is set, how functions are split, number of measurements, output format) are not asked; write them as a one-line "알리고 진행: ..." (explain-as-you-go "Decisions to ask vs. decisions to announce"). If there is no decision to ask, show only the instruction draft and ask "이대로 진행할까요?". Below that, attach the instruction draft based on the recommendation and show everything at once. At the end, add "고를 때 고른 이유나 바꿀 점을 한 줄 함께 적어 주세요(예: "A로 해. 읽기만 하니까 쓰기 방어는 빼고")."
+2. **Propose the method.** Go through these in order and show the result in one response.
+   1. Check the fast path below. If every condition is met, take it instead of proposing; the rest of this step does not apply.
+   2. Survey the scope of impact and consider an experiment (both below).
+   3. If the task fixes a bug of unknown cause, first find the cause with systematic-debugging, then compare ways to fix it.
+   4. Write the method. If there are several ways to implement it and the choice changes the behavior, success criteria, scope, or hard-to-reverse structure, compare 2–3 alternatives in explain-as-you-go format and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. If there is only one method, write one line: "대안 없음 — 이유". Choices with the same result that differ only in implementation (how tests are split once the framework is set, how functions are split, number of measurements, output format) are not asked; write them as a one-line "알리고 진행: ..." (explain-as-you-go "Decisions to ask vs. decisions to announce").
+   5. Below the method, attach the instruction draft based on the recommendation. If there is a decision to ask, end with "고를 때 고른 이유나 바꿀 점을 한 줄 함께 적어 주세요(예: "A로 해. 읽기만 하니까 쓰기 방어는 빼고")." If there is no decision to ask, show only the instruction draft and end with "이대로 진행할까요?".
    - **Take the fast path for small fixes.** If **all** of the conditions below are met, announce "빠른 길: (what you change and how, in one sentence)" and proceed right away, without the alternatives comparison or instruction.
      - The change can be explained in one sentence.
      - Behavior rules, success criteria, scope, and public interfaces do not change.
-     - Only one file is changed, and the behavior of the places that call that code does not change.
+     - Only one source file is changed (adding or changing tests is allowed), and the behavior of the places that call that code does not change.
      - Examples: a typo, log wording, a rename, changing one constant according to a rule already decided, a one-line bug pointed to by a failing test.
-     - Flow: for a bug, a reproduction test first → fix → related tests and full tests → checks limited to spec comparison and test/criteria weakening → commit → two-line report ("검증: …", "남은 것: … · 커밋 …").
+     - Flow: for a bug, a reproduction test first → fix, with a reason comment → related tests and full tests → checks limited to spec comparison and test/criteria weakening → for a bug, a record with the explain-as-you-go bug template (status "버그") → commit → two-line report ("검증: …", "남은 것: … · 커밋 …").
      - If even one condition is unclear, do not take the fast path; go through the full procedure. If the work goes outside the conditions partway through, stop and return to the full procedure.
    - **Survey the scope of impact first.** If the task changes existing code, search for the places that call the function being changed and the places that use the same data, and show them as a list (together with the search commands). When comparing alternatives, include "how much existing code it touches" as a criterion. If the task only creates new files, write "영향 범위 — 없음(새 파일만)".
    - **If you do not know whether it will work, run a short experiment.** Put a "먼저 실험" option in the method proposal only in one of these two cases. ① When the behavior of the API, library, or engine feature you want to use cannot be confirmed right away from code or documentation ② When there is a numeric target (time, memory, count) and you do not know whether this approach will meet it. If neither applies, do not add it. Do not stop separately; ask in the same response as the method proposal.
@@ -167,7 +172,7 @@ Tasks whose method, completion criteria, and verification command are settled, a
    - Do not write the same decision twice. New news about the same decision, such as approval, the choice, or the implementation result, is reflected by updating that decision's entry. Write a new entry only when the decision switched to another option, and add "바뀜: → D번호" to the original entry.
    - Also record the counterexamples found and the bugs fixed in this task as entries in the decision log.
    - For tasks that changed behavior or performance, record the numbers measured before and after under the same conditions and metric in the "검증" line of the decision log (explain-as-you-go "Record the effect of a decision as before/after numbers"). For performance tasks, measure before changing anything.
-8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If any of the five lines is missing, the report is not finished (the fast path uses its two-line report instead). If you did not do the checks, go back to step 5 and do them before reporting.
+8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If no task remains, ask "마무리를 시작할까요?" instead of attaching a proposal, and end the response. If any of the five lines is missing, the report is not finished (the fast path uses its two-line report instead). If you did not do the checks, go back to step 5 and do them before reporting.
 
    ```text
    흐름: 입력 dt → `Skill.update()`에서 남은 시간에서 뺌 → `try_use()`가 남은 시간 1e-9초 이하면 사용 · 정한 값: 허용 오차 1e-9초(D14)

@@ -4,7 +4,7 @@ description: Use when you have finished one large piece of work, before wrapping
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.10.0"
+  version: "1.11.0"
 ---
 
 # Independent Review
@@ -15,17 +15,17 @@ When a session checks its own code, it misses during the check exactly what it m
 
 This skill is split into two roles.
 
-- **Requester (the session that did the work):** sets the review range, prepares a reviewer prompt that can be pasted as is into another session, and handles the findings that come back. It does not review directly.
+- **Working session (the session that did the work):** sets the review range, prepares a reviewer prompt that can be pasted as is into another session, and handles the findings that come back. It does not review directly.
 - **Reviewer (a new session):** receives only the prompt, reviews read-only, and returns a list of findings.
 
-## Requester procedure
+## Working session procedure
 
 1. **Set the range.**
    - Start commit: the commit before this work started (the initial state in NOTES.md, or the parent of the first task commit). If it is unclear, ask the user.
    - End commit: the current HEAD. If there are uncommitted changes, ask the user whether to commit them before the review. The reviewer sees only what is committed.
    - Check the list of commits in the range with `git log --oneline 시작..끝` and put it in the prompt.
 2. **Prepare the reviewer prompt.** Fill in the "Reviewer prompt template" below. Keep to what goes in and what stays out.
-   - Goes in: the path of the requirements document, the 만들지 않을 것, 제약, and 앞으로 바뀔 것 lines of NOTES.md `## 문제 정의` (not 원인, which is the working side's judgment), the criterion sentences of `## 성공 기준` (without `[x]` marks or the 성공 기준 대조표), `## 확인 질문과 답` (rules agreed with the user or with whoever requested the work), the run and test commands, and the review range (two commits).
+   - Goes in: the path of the requirements document, the 만들지 않을 것, 제약, and 앞으로 바뀔 것 lines of NOTES.md `## 문제 정의` (not 원인, which is the working side's judgment), the criterion sentences of `## 성공 기준` (without `[x]` marks or the 성공 기준 대조표), only the behavior rules from `## 확인 질문과 답` (rules agreed with the user or with whoever requested the work), the run and test commands, and the review range (two commits).
    - Stays out: the conversation history, `## 지금까지의 흐름`, the reasons and alternatives comparisons in the decision log, and notes such as "여기는 이미 확인했다". If the working side's judgment gets in, the reviewer follows the same blind spots.
 3. **Hand it to the user.** Show the prompt as a single code block, give the guidance below, and **stop.**
    - "새 터미널에서 이 폴더로 새 세션을 열고 아래 지시문을 그대로 붙여 넣어 주세요. 리뷰 결과가 나오면 여기에 붙여 주세요."
@@ -42,7 +42,7 @@ This skill is split into two roles.
    4. **잡음 (noise):** code that is correct in a context the reviewer did not have. Write the reason for not accepting it with evidence (code location, run result, requirement sentence). Also note whether this finding would have come up if that context had been in the prompt.
    - "고치면 좋은 것" is classified by default as 3 (감수할 트레이드오프) or 4 (잡음), with the reason recorded. Fix it only when it passes the over-engineering check in task-breakdown Execution loop 5 and the cost of fixing it is small. Following every reviewer finding leads to over-engineering.
    - Also go through the "판단하지 않고 넘긴 것" list one by one. Handle the ones that need handling the same way as findings; otherwise move them to `## 남은 위험` with the reason.
-5. **Decide whether to review again.** If you fixed "고칠 것" items or fixed the prompt, ask the user whether to get one more review the same way. Review at most 3 times. When a working time is set, review once by default, and offer a second round only if there is time left before the wrap-up checkpoint.
+5. **Decide whether to review again.** If you fixed "고칠 것" items or fixed the prompt, ask the user whether to get one more review the same way. Review at most 3 times. When a working time is set, review once by default, and offer a second round only if there is time left before the last 8% of the working time (task-breakdown "Time management").
    - If the next review brings up only trivial findings or ones already handled, stop.
    - If important findings keep coming after 3 reviews, do not run more; tell the user. It is a sign that the deliverable is not ready yet, so decide whether to reduce the scope or split the work again.
    - If the user says "그만해도 된다", stop.
@@ -66,11 +66,11 @@ This skill is split into two roles.
 
 ## 검토 범위
 - 시작 커밋: (해시) / 끝 커밋: (해시)
-- 볼 명령: `git log --oneline 시작..끝`, `git diff --stat 시작..끝`, `git diff 시작..끝`
+- 볼 명령: `git log --oneline 시작..끝`, `git diff --stat 시작..끝 -- . ':!NOTES.md' ':!HANDOFF.md' ':!notes'`, `git diff 시작..끝 -- . ':!NOTES.md' ':!HANDOFF.md' ':!notes'`
 - 실행·테스트 명령: (명령)
 
 ## 규칙
-- 읽기 전용이다. 파일을 고치거나 만들지 않는다. git 상태를 바꾸는 명령(add, commit, checkout, reset, stash 등)을 쓰지 않는다. 테스트와 실행 명령은 돌려도 된다.
+- 읽기 전용이다. 파일을 고치거나 만들지 않는다. git 상태를 바꾸는 명령(add, commit, checkout, reset, stash 등)을 쓰지 않는다. 테스트와 실행 명령은 돌려도 된다. NOTES.md, HANDOFF.md, `notes/` 폴더는 열지 않는다. 작업한 쪽의 판단이 들어 있어서 같은 사각지대를 따라가게 된다.
 - 다른 에이전트나 서브에이전트를 띄우지 않는다. 혼자 검토한다.
 - 요구사항 문서는 방향을 적은 문서이고 모든 상황을 나열하지 않는다. 문서가 말하지 않는 동작은 이 기능을 쓰는 사람이 당연히 기대할 동작을 기준으로 판단한다. 문서에 없다는 것은 아무렇게나 동작해도 된다는 허락이 아니다.
 - 특히 본다: 드러나지 않은 가정, 성공 기준마다 그것을 실제로 확인하는 테스트가 있는지, 통과시키려고 약하게 만든 테스트나 검사(삭제, skip, 단언 제거, 기대값을 결과에 맞춘 변경, 경고 끄기), 경계값, 상태를 기억하는 코드에서 같은 흐름을 반복하거나 가리키던 대상이 사라졌을 때, 요구사항에 근거가 없는 방어 코드·추상화(과잉 설계), 문서의 실행 방법대로 실행되는지.
@@ -125,7 +125,7 @@ Apply the same principle as code review to documents. The session that wrote a d
 
 ## What not to do
 
-- The requester does not review it directly, and does not guess the reviewer's conclusion in advance and put it into the prompt.
+- The working session does not review it directly, and does not guess the reviewer's conclusion in advance and put it into the prompt.
 - Do not apply review results as they are without checking them. Do not review the same range more than 3 times. Even if the conclusion is "그대로 마쳐도 됨", go through the "판단하지 않고 넘긴 것" list.
 - Do not launch subagents, new sessions, or external CLIs without the user's permission.
 - Do not assume uncommitted changes are included in the review range.
