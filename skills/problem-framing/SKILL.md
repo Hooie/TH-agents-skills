@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.23.0"
+  version: "1.24.0"
 ---
 
 # Problem Framing
@@ -28,7 +28,7 @@ If the user invoked this skill directly, follow the whole procedure below even i
 
 - **Do not decide on your own.** Anything not in the original request is undecided. The AI does not pick what is in the "Ask" column of the explain-as-you-go table "Decisions to ask vs. decisions to announce": the language, version, build tool, test framework, folder structure of a new project, behavior rules, or scope. Instead, find evidence in the original text, build a proposed answer, and get the user's confirmation (Step 1, items 2–5).
 - **The requirements document belongs to the requester.** Do not mix your notes or decisions into requirement documents written by others, such as specs, issues, or READMEs. Write run instructions, notes, and decisions in NOTES.md and HANDOFF.md. If a reason to change the document itself comes up, ask first.
-- **Do not build anything before the answers arrive.** Until the user's answers come, do not create or change files and do not run commands that create a project. NOTES.md is also created only after the answers. There are two exceptions. First, building and running the existing code and tests as they are, to check the initial state, is done before the answers. Second, after sending the first round of questions, you may create NOTES.md with only `## 지금 상태` and `## 확인 질문과 답`, so that the questions sent, the answers received, and what is still unknown survive compaction while the questions go back and forth.
+- **Do not build anything before the answers arrive.** Until the user's answers come, do not create or change files and do not run commands that create a project. NOTES.md is also created only after the answers. There are two exceptions. First, building and running the existing code and tests as they are, to check the initial state, is done before the answers. Second, after sending the first round of questions, you may create NOTES.md with only `## 지금 상태`, `## 문제 정의` (a draft, with "미확인" on unknown lines), and `## 확인 질문과 답`, so that the questions sent, the answers received, and what is still unknown survive compaction while the questions go back and forth.
 - **Use the environment only to build options.** Reading the folder contents or the installed tools is fine. But do not decide from the result; show it as options, such as "설치된 것: .NET 9, MSVC 19.44. 어느 것으로 할까요?".
 - **Do not decide on your own to "skip it because it is small".** To skip any of the confirmation questions, the approach comparison, or task-breakdown, ask the user first.
 - Proceed on assumptions only when the user says so directly, such as "알아서 정해" or "가정하고 진행해". Even then, write "가정(사용자가 위임)" in NOTES.md for each assumption.
@@ -83,6 +83,7 @@ This skill was written assuming the shared working rules (comparing alternatives
    - If the recommendation differs from the original request or reads it broadly, say so. For example: "원문은 '콘솔 프로젝트 하나에 테스트까지'인데, 별도 테스트 프로젝트를 추천합니다. 이유: ...".
 6. **Repeat for the next round.** When answers come, ask the questions that have now become askable in the next round, in the same way. Repeat until no undecided decision remains.
    - If an answer covered only part of a question (for example, the user answered only "추천안" but the question contained an item they were asked to decide separately), ask the remaining decision again in the next round.
+   - Keep the six-step order for requester questions. Use the "미확인" lines in `## 문제 정의` only to find what the order has not reached yet, not to choose what to ask first.
    - Before moving on to Step 2, confirm that no undecided decision remains. If even one remains, do not say "결정이 끝났다" (the decisions are done).
    - If there is a set working time, aim to finish the questions before 25% of the total time has passed. If it looks like it will go over, show the remaining questions in order of importance and ask the user whether to keep asking.
 
@@ -123,17 +124,8 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 9. **Set the success criteria.** Write them in a checkable form: tests that must pass, numeric targets (ms, fps, memory, input size), symptoms that must not reproduce. Do not write criteria such as "잘 동작한다" (works well). Attach a source to each criterion: (요구사항 문서 7행), (사용자 전달), (요청자 답), (사용자 답 — 29번째 프레임에는 안 써진다), (추정 — 사용자 확인). For numeric criteria, also write the current value and where it is measured (for example, "두 번째 열기 35ms → 10ms 이하, `stat unit` 3회 평균").
    - **Turn "never" and "always" into criteria.** When the requester or the user says something must never or always happen, write it as its own success criterion with its source. Under it, list three or more inputs that could break it, taken from the real data and from how that data is produced (blank lines, missing columns, empty or non-number values, every row invalid). For each input, write what should happen: 결과가 나온다 / 그 줄만 빼고 알린다 / 멈추고 오류를 낸다. If which one is unclear, ask. These inputs become test cases in task-breakdown.
      예: "설정 파일에 잘못된 줄이 있어도 게임이 켜진다 (요청자 답 — 안 켜지는 건 절대 안 돼요). 깨뜨릴 입력: 중간 빈 줄 → 빼고 알림 / 칸이 모자란 줄 → 빼고 알림 / 값이 숫자가 아님 → 빼고 알림"
-   - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then prepare an agreement message in this form for the user to send:
-     ```text
-     문제: …
-     원인(병목): …
-     성공 기준: (지표) — 지금 값 … / 목표 … / 재는 곳 …
-     만들 것: …
-     만들지 않을 것: …
-     제약: …
-     ```
-     Record the requester's reply in NOTES.md as "요청자 확인", quoting the reply, and link it to the criteria it confirms.
-10. **Write what is out of scope.** Based on the scope the user answered, write what will not be done this time.
+   - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then send the `## 문제 정의` block in NOTES.md as the agreement message, as it is; do not write a separate message. Record the requester's reply, quoted, on its "요청자 확인" line, and fix the lines the reply corrects.
+10. **Write what will not be built.** Based on the scope the user answered, fill in the "만들지 않을 것" line of `## 문제 정의`.
 11. **Pick the core problem.** Make the problem with the biggest impact on the success criteria the top priority, and write the reason in one line.
 12. **Compare approaches.** Compare 2–3 ways to solve the top-priority problem on success criteria, risk, and time required, and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. Follow explain-as-you-go "When proposing solutions" for the format. If there is only one reasonable approach, write "대안 없음 — 이유". When the user chooses, write this comparison as a D entry in the decision log.
 13. **Write the plan and roles.** Keep the plan within 5 lines, with a check method for each step. Separate the work given to the AI from the judgments the user makes.
@@ -141,11 +133,13 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 15. **Check, then get confirmation.** Before showing the results, check NOTES.md against this list and fill in what is missing. Do not show the list; show only what you filled in, one line each.
    - Requester questions covered all six steps of the order, including operation (who maintains it, what changes often). If a step was skipped, do not add more requester questions to this response: put it first in the next round, or, if there is no time for another round, write it under `## 남은 위험` as not asked.
    - Every numeric criterion has the current value, the target, and where it is measured.
-   - `## 범위 밖` names what will not be built this time, including what the requester said is for later.
+   - The "만들지 않을 것" line of `## 문제 정의` names what will not be built this time, including what the requester said is for later.
+   - Every line of `## 문제 정의` has a source or "미확인", and each 원인 line says 확인됨, 가설, or 미확인. Do not fill a line with a guess to make it look complete.
+   - Send `## 문제 정의` as the agreement message only after the six-step order is done. A block with every line filled does not mean the questions are finished.
    - Every "never/always" statement is a success criterion with the inputs that could break it.
    - Detailed D entries exist only for the cases in item 7. Everything else is one line with the status "질문 답".
 
-   Then show the success criteria, out of scope, the top-priority problem, and the approach comparison, and ask what to change and which approach to take. **End the response here.**
+   Then show `## 문제 정의`, the success criteria, the top-priority problem, and the approach comparison, and ask what to change and which approach to take. **End the response here.**
 
 ### Step 3: Point to the next step and stop
 
@@ -162,8 +156,39 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 ```markdown
 # NOTES
 
-## 목표
-(2–3 sentences. Source of the requirements: name of the document or issue)
+## 문제 정의
+(Fill this in as a draft once NOTES.md exists. Write "미확인" on lines not yet known. When the six-step order of requester questions is done, this block is sent as the agreement message as it is.)
+- 문제: (who, when, what goes wrong — source)
+- 원인: (one line per cause — there can be several. Each anomaly found in the data or code is its own line. For new builds, write "지금 방식의 불편" instead)
+  - 확인됨 — … (command or evidence) / 가설 — … / 미확인
+- 성공 기준: (core metric) — 지금 값 … / 목표 … / 재는 곳 … (the full list is in `## 성공 기준`)
+- 만들 것: …
+- 만들지 않을 것: … (include what the requester said is for later)
+- 제약: (things that must never happen, things that must not change, time — source)
+- 앞으로 바뀔 것: (who maintains it, what changes and when — source / 미확인). Decide for each whether it goes into 만들 것 or 만들지 않을 것.
+- 요청자 확인: "(reply quoted)" (time) / 아직 안 보냄 / 요청자 없음
+
+예 (문제 해결형):
+- 문제: 120칸 인벤토리를 두 번째 열 때 화면이 잠깐 멈춘다 (요청자 답 — QA 보고)
+- 원인:
+  - 확인됨 — 열 때마다 슬롯 위젯을 120개 새로 만든다 (Unreal Insights, CreateWidget 120회)
+  - 가설 — 아이콘 텍스처를 매번 동기 로드한다 (확인 전)
+- 성공 기준: 두 번째 열기 시간 — 지금 값 35ms / 목표 10ms 이하 / 재는 곳 `stat unit` 3회 평균
+- 만들 것: 슬롯 위젯을 풀에서 다시 쓰기
+- 만들지 않을 것: 레이아웃 재작성, 1,000칸 대응 (요청자 — 다음 분기)
+- 제약: 슬롯 배치와 드래그 동작은 바뀌면 안 된다 (요청자 답)
+- 앞으로 바뀔 것: 다음 분기에 칸 수 확장 (요청자 답) → 만들지 않을 것
+- 요청자 확인: "네, 맞아요" (14:10)
+
+예 (새로 만들기형, 질문 중인 초안):
+- 문제: 기획자가 몬스터 스탯 표를 바꿀 때마다 개발자에게 반영을 부탁한다 (요청자 답)
+- 지금 방식의 불편: 반영까지 하루가 걸리고, 옮겨 적다 틀린다 (요청자 답)
+- 성공 기준: 미확인
+- 만들 것: 미확인
+- 만들지 않을 것: 미확인
+- 제약: 기존 세이브 파일은 그대로 읽혀야 한다 (요청자 답 — "절대 깨지면 안 돼요")
+- 앞으로 바뀔 것: 미확인
+- 요청자 확인: 아직 안 보냄
 
 ## 지금 상태
 (Update this whenever a task is finished and whenever you stop after sending questions. If the conversation is compacted, read from here and continue.)
@@ -180,9 +205,6 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 ## 성공 기준
 - [ ] ... (출처: 요구사항 문서 7행)
 (At wrap-up, attach the "성공 기준 대조표" below this. The format is in task-breakdown "Wrapping up", step 3.)
-
-## 범위 밖
-- ...
 
 ## 결정 한눈에 보기
 | 번호 | 정한 것 | 이유 | 포기한 것 | 확신 | 상태 |
@@ -267,7 +289,7 @@ If you start from a feature list, it is easy to end up with many screens that do
 
 ## What not to do
 
-- Do not create implementation code, project files, or NOTES.md before receiving the user's answers (except the NOTES.md with only `## 지금 상태` and `## 확인 질문과 답` allowed in the hard rules).
+- Do not create implementation code, project files, or NOTES.md before receiving the user's answers (except the NOTES.md with only `## 지금 상태`, the `## 문제 정의` draft, and `## 확인 질문과 답` allowed in the hard rules).
 - Do not decide the language or structure from installed tools or folder state.
 - Do not edit or overwrite requirement documents written by others without asking.
 - Do not recommend based only on "보통 이렇다" (it is usually like this) without evidence. If there is no evidence in the original, say there is none.

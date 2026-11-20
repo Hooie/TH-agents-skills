@@ -34,7 +34,7 @@
 - Facts that can be looked up (installed tools, folder structure, behavior of existing code) are checked directly, and the method of checking is recorded. Do not treat something as "없음" (not present) just because it is not on PATH; check the standard install locations too, and if it cannot be confirmed, write "미확인" (unconfirmed). Ask the user only about decisions.
 - Put only one decision in each question. If the recommendation differs from the original request, say so.
 - Do not assume anything undecided (language, version, tools, behavior rules, scope); ask the user. Use installed tools and folder state only to build the options, not to make the decision.
-- Until the requirements are confirmed, do not create files or run commands that create a project. The exception is a NOTES.md with only `## 지금 상태` and `## 확인 질문과 답`, created after sending questions so that answers survive compaction.
+- Until the requirements are confirmed, do not create files or run commands that create a project. The exception is a NOTES.md with only `## 지금 상태`, a `## 문제 정의` draft, and `## 확인 질문과 답`, created after sending questions so that answers survive compaction.
 - Even if the work looks small, do not skip confirmation questions or steps on your own. Ask before skipping. The only exception is a change that meets all of task-breakdown's "빠른 길" (fast path) conditions (explainable in one sentence; no change to behavior rules, success criteria, scope, or public interface; a single file).
 - Proceed on assumptions only when the user explicitly says to leave it to you.
 - If there is a git repository, commit per task after the task is verified. Put the task ID and the verification result in the message. Commit cleanup that does not change behavior separately from behavior changes. Do not push, change remote repositories, or rewrite commits (amend, rebase, reset). Whether to create a new repository is the user's decision.
@@ -83,7 +83,7 @@
 
 - When starting a new session, if HANDOFF.md exists, read it first, then NOTES.md `## 지금 상태`. Summarize the current state and the next task in three lines and get the user's confirmation before starting.
 - Right before ending a response to wait for the user, if NOTES.md exists, update `## 지금 상태` (in progress, next step, last commit and tests, questions awaiting an answer, blockers, time). Write the handoff document (HANDOFF.md) only when the user invokes it.
-- Keep the front part of NOTES.md (goal, current state, story so far, success criteria and checklist, out of scope, decisions at a glance, remaining risks) short, and put the details in the back part. Do not repeat the same fact in several sections.
+- Keep the front part of NOTES.md (problem definition, current state, story so far, success criteria and checklist, decisions at a glance, remaining risks) short, and put the details in the back part. Do not repeat the same fact in several sections.
 - When one step (skill) ends, do not start the next skill on your own. Tell the user the next command and wait for the user's command.
 - Approval of the task list is not approval to execute. Tasks are approved one at a time, or per approved batch of simultaneous tasks (at most 3). Continue without stopping only over the range for which the user explicitly said "연속으로 진행해" (go on consecutively).
 - When building options, do not make "전부 한꺼번에 진행" (do everything at once) the recommendation.

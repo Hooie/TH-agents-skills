@@ -4,7 +4,7 @@ description: Use whenever you propose a solution or change code. Present solutio
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.25.0"
+  version: "1.26.0"
 ---
 
 # Explain As You Go
@@ -96,7 +96,7 @@ if self._exhausted and self.value >= 20.0:
 
 NOTES.md and HANDOFF.md must let the user read them from the beginning and redraw the flow of the work in their head. Write them so that even someone who did not take part in the work can follow "why it turned out this way". They are not notes for another AI to read.
 
-1. **Show the flow first.** Put `## 지금까지의 흐름` at the top of the document (right below the goal), and write it as a chronological story of 5–10 sentences. Never more than 10 sentences. As the work grows, do not keep adding sentences; shorten the earlier part and rewrite it. Keep detailed numbers and test names in the decision log and the verification results, and put only the essential numbers in the flow (for example, "목표 선택 시간이 3.0ms에서 0.03ms로 줄었다"). Split it into a paragraph per stage (question / decision / work / result). What the problem was at first → what was learned by asking → the chosen method and the reason → what changed along the way and why → the current state and what remains. Update it whenever a task ends. The remaining sections are detailed explanations of this flow.
+1. **Show the flow first.** Put `## 지금까지의 흐름` at the top of the document (right below `## 문제 정의`), and write it as a chronological story of 5–10 sentences. Never more than 10 sentences. As the work grows, do not keep adding sentences; shorten the earlier part and rewrite it. Keep detailed numbers and test names in the decision log and the verification results, and put only the essential numbers in the flow (for example, "목표 선택 시간이 3.0ms에서 0.03ms로 줄었다"). Split it into a paragraph per stage (question / decision / work / result). What the problem was at first → what was learned by asking → the chosen method and the reason → what changed along the way and why → the current state and what remains. Update it whenever a task ends. The remaining sections are detailed explanations of this flow.
 2. **Write in complete sentences.** Do not clip them like notes. Bad example: "기본100 RED 250.0, 설정60 mutation RED 235.0". Good example: "고치기 전에는 10초 쉬면 스태미나가 100에서 멈추지 않고 250까지 올라갔다. 상한을 넣은 뒤 같은 테스트에서 100에서 멈추는 것을 확인했다."
 3. **Do not speak only in internal jargon and numbers.**
    - Words such as RED/GREEN, mutation, regression (회귀), dt, and latch are spelled out, or replaced with plain words in the user's language, the first time they appear. For example: "고치기 전에 테스트가 실패하는 것을 확인(RED)", "코드를 일부러 틀리게 바꿔 테스트가 잡아내는지 확인".

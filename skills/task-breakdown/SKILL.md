@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.36.0"
+  version: "1.37.0"
 ---
 
 # Task Breakdown
@@ -17,7 +17,7 @@ The AI drafts the breakdown, the priorities, and the method for each task, and *
 
 ## Preconditions
 
-- NOTES.md must have a goal, success criteria, and an approach. If not, start with problem-framing.
+- NOTES.md must have `## 문제 정의`, success criteria, and an approach. If not, start with problem-framing.
 - If starting in a new session, read HANDOFF.md first if it exists, then read NOTES.md from beginning to end and check the requirements document and the last commit in `## 지금 상태`. Summarize the current state and the next task in three lines, and start after the user confirms.
 - Even if the work looks like it ends in one or two steps, do not skip this on your own. If the user invoked this skill, follow it as is; if you think skipping would be better, ask the user first.
 - If, while building the task list, you find something undecided (language, tools, behavior rules), do not decide it alone; ask with a proposed answer backed by evidence, as in problem-framing. If the requirements document would need to be changed, ask first.
@@ -114,7 +114,7 @@ Tasks whose method and completion criteria are settled are tasks where the human
 2. **Get the batch approved at once.** Gather, in one response, the method proposal from Execution loop 2 for each task in the batch (a comparison for those that need one, "알리고 진행" for the rest) and the instruction drafts. Show along with them: the time saved (estimate), the risks (conflicts when merging, bugs that appear only after merging), and the options for how to delegate — "서브에이전트" (subagent) if the tool supports it, otherwise "다른 터미널" (another terminal), and "하나씩 진행" (one at a time). Add a sentence asking the user to write a one-line reason or change when choosing, and **end the response here.**
 3. **Write the instructions.** For each approved task, write it so that a party that does not know this conversation can work from the instruction alone. Add the following to the "Instruction format" below.
    - On the first line, the skills to follow. In Codex, `$explain-as-you-go $test-driven-development`.
-   - Context: the parts of the goal and success criteria in NOTES.md that this task needs, the decided interfaces, the approved method and completion criteria, and the verification command
+   - Context: the parts of `## 문제 정의` and the success criteria in NOTES.md that this task needs, the decided interfaces, the approved method and completion criteria, and the verification command
    - The list of files to create and change, and "이 목록 밖의 파일은 고치지 않는다" (do not change files outside this list)
    - "지시문에 없는 결정(동작 규칙, 인터페이스 변경, 범위)을 해야 하면 정하지 말고 멈추고 보고한다." (if a decision not in the instruction is needed, stop and report instead of deciding)
    - "테스트를 지우거나 건너뛰게 하거나 기대값을 결과에 맞춰 바꾸지 않는다." And the comment rule (write the reasons, always in Korean; no decision or task numbers)
