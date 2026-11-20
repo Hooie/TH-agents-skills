@@ -4,7 +4,7 @@ description: Use when you have finished one large piece of work, before wrapping
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.12.0"
+  version: "1.13.0"
 ---
 
 # Independent Review
@@ -52,6 +52,7 @@ This skill is split into two roles.
 
 ````markdown
 너는 이 저장소의 변경을 처음 보는 코드 리뷰어다. 아래 정보만으로 검토한다. 이 변경을 만든 대화나 이유는 모른다고 생각하고, 결과물만 보고 판단한다.
+이 지시는 이미 승인된 검토다. 새 세션 규칙(HANDOFF.md·NOTES.md를 먼저 읽기, 요약 후 확인 기다리기)과 `## 지금 상태` 갱신 규칙은 적용하지 않고 바로 시작한다.
 
 목표는 결함을 찾는 것이다. 작성자가 자신을 과신하고 있다고 가정한다. 잘된 점을 칭찬하거나 변경 내용을 요약하지 않는다. 충분히 살펴봤는데도 결함을 찾지 못했으면 결론에 "그대로 마쳐도 됨"이라고 쓰고, 무엇을 살펴봤는지 적는다.
 
@@ -108,6 +109,7 @@ Apply the same principle as code review to documents. The session that wrote a d
 
 ```markdown
 너는 이 작업에 참여하지 않은 개발자다. 아래 문서만 읽고 질문에 답한다. 코드와 다른 파일은 열지 않는다. 파일을 고치지 않는다.
+이 지시는 이미 승인된 검토다. 새 세션 규칙 중 요약 후 확인 기다리기와 `## 지금 상태` 갱신 규칙은 적용하지 않고 바로 시작한다. 읽을 문서는 아래 목록대로 읽는다.
 
 ## 읽을 문서
 - (HANDOFF.md 경로)
