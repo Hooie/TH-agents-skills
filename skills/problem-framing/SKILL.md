@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.25.0"
+  version: "1.26.0"
 ---
 
 # Problem Framing
@@ -59,7 +59,7 @@ This skill was written assuming the shared working rules (comparing alternatives
    - Scope: what is not done this time
 3. **Separate facts from decisions.** Things that can be found by looking (installed tools, folder structure, behavior of existing code) are **facts**. The agent checks facts directly without asking the user, and records how they were checked. Ask the user only about **decisions** (what to use, how it should behave).
    - **Separate out what to ask the requester.** Some things only the person who gave the requirements (planner, lead, the colleague who asked) can answer: how they work now, what is inconvenient, what they will look at to judge it done, hidden constraints. If you do not know whether there is a way to ask the requester (messenger, issue comments, etc.), ask the user in the first round. If there is no way to ask, skip this split and ask the user everything as proposed answers.
-   - **Check a cause against the numbers.** Before writing a cause as 확인됨, work out what would be observed if this cause alone were true, and compare it with what was actually observed (the initial run, the data count). Write both numbers. If they differ, this cause explains only part of it: keep looking, and add another 원인 line marked 미확인. A cause read from the code is a 가설 until the numbers match.
+   - **Check a cause against the numbers.** Before writing a cause as 확인됨, work out what would be observed if this cause alone were true, and compare it with what was actually observed (the initial run, the data count). Write both numbers. If they differ, this cause explains only part of it: keep looking, and add another 원인 line marked 미확인. A cause read from the code is a 가설 until the numbers match. Write only causes on 원인 lines; evidence and effects (probabilities, how many people were hit) go in the parentheses or elsewhere. Write every 확인됨 line as "확인됨 — (cause) (예측 … = 관측 …, evidence)".
      예: "반올림이 원인이면 재고 차이는 하루 최대 1개 → 관측은 하루 3개 → 다른 원인 있음(미확인)"
    - Do not conclude "없음" (not present) for a tool that was not found on the command path (PATH). Check the standard install locations too. For example, on Windows look for Visual Studio and MSVC with `vswhere.exe`, and look for CMake inside the Visual Studio install folder. If you could not confirm it after all, write "미확인" and do not base a recommendation on it.
    - For options that require downloading external packages (NuGet, pip, vcpkg, etc.), first check whether downloading works. Check in a way that creates no files (such as connecting to the package server address), and if you could not check, write in the option "미확인 — 다운로드가 막혀 있으면 이 안은 실패한다" (unconfirmed — this option fails if downloads are blocked).
@@ -78,7 +78,7 @@ This skill was written assuming the shared working rules (comparing alternatives
      6. Operation: who maintains it, and what changes often
      Start with questions that seem trivial. Build the next question from new facts in the last answer (for example, "매주 엑셀로 따로 정리하신다고 하셨는데, 그 표에는 어떤 항목이 들어가나요?"). Ask about completion criteria and things not to do after the context has been gathered.
    - Do not ask the requester for a solution or a to-do list. Do not write questions such as "무엇을 만들면 되나요?" or "할 일을 순서대로 알려 주세요". Ask the requester about situations and criteria, and decide what to build and how with the user, based on those answers.
-   - If the requester's answer is short or covers only part, do not treat it as a failure. Record the answer received in `## 확인 질문과 답`, and turn what is still unknown into the next round's questions. Each round, show one line each for "이번 답으로 알게 된 것 / 아직 모르는 것".
+   - If the requester's answer is short or covers only part, do not treat it as a failure. Record the answer received in `## 확인 질문과 답`, and turn what is still unknown into the next round's questions. Each round, show one line each for "이번 답으로 알게 된 것 / 아직 모르는 것". Below them, show the six steps with a mark each, such as "질문 단계: 사례 ✓ / 방식·자료 ✓ / 숫자 ✗ / 영향 ✗ / 예외 ✓ / 운영 ✗". A step gets ✓ only when the requester answered a question about it; something you announced or assumed does not count.
    - **When the requester's answers stall,** try in this order: ask what they can answer ("어떤 부분을 알려 주실 수 있을까요?"), offer a closed question with 2–3 options, then confirm an interpretation ("그럼 X로 이해해도 될까요?"). If there is still no answer, write an estimate marked "추정 — 요청자 답 없음", show it to the user, and hold only the parts that depend on it.
    - The recommendation is a proposed answer built from evidence found in the original. Write the evidence as a quote from the original (for example, "요구사항 문서 12행: 매 프레임 호출된다"), and if the original has no evidence, write "원문에 없음 — (일반적인 경우나 비슷한 시스템 기준)". Say so when an estimate rests on weak evidence.
    - Put only one decision in each question. Do not bundle several decisions into one question, such as "0과 음수는 무시하고, 미등록 스킬은 예외로 할까요?". If they are bundled, a one-word "추천안" (recommendation) answer lets some of the decisions pass without being decided.
@@ -133,8 +133,9 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 13. **Write the plan and roles.** Keep the plan within 5 lines, with a check method for each step. Separate the work given to the AI from the judgments the user makes.
 14. **Create NOTES.md.** Create it at the root of the work folder in the format below.
 15. **Check, then get confirmation.** Before showing the results, check NOTES.md against this list and fill in what is missing. Do not show the list; show only what you filled in, one line each.
-   - Requester questions covered all six steps of the order, including operation (who maintains it, what changes often). If a step was skipped, do not add more requester questions to this response: put it first in the next round, or, if there is no time for another round, write it under `## 남은 위험` as not asked.
+   - Requester questions covered all six steps of the order (every mark in the last round's six-step line is ✓), including operation (who maintains it, what changes often). If a step was skipped, do not add more requester questions to this response: put it first in the next round, or, if there is no time for another round, write it under `## 남은 위험` as not asked.
    - Every numeric criterion has the current value, the target, and where it is measured.
+   - The success criteria do not contradict each other or the "만들 것" line (for example, "모든 줄이 읽힌다" against "문제 줄은 빼고 알린다"). If they do, rewrite them now into one consistent statement, such as "파일의 7줄을 모두 읽고, 문제 줄 2개는 빼고 알린다 → 남는 줄 5개". A contradiction left here later forces a test to be deleted or its expected value changed.
    - The "만들지 않을 것" line of `## 문제 정의` names what will not be built this time, including what the requester said is for later.
    - Every line of `## 문제 정의` has a source or "미확인", and each 원인 line says 확인됨, 가설, or 미확인. Each 확인됨 shows predicted and observed numbers that match. Do not fill a line with a guess to make it look complete.
    - Send `## 문제 정의` as the agreement message only after the six-step order is done. A block with every line filled does not mean the questions are finished.

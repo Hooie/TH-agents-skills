@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.38.0"
+  version: "1.40.0"
 ---
 
 # Task Breakdown
@@ -36,7 +36,7 @@ At each point below, this skill ends its response and waits for the user's answe
 - Approval of the task list is not approval to execute. Tasks are approved one at a time, or per approved batch of simultaneous tasks (at most 3).
 - Do simultaneous work only for batches the user approved. Approval of the task list does not include permission for simultaneous work. This session checks, verifies, and merges the delegated results.
 - When building options, do not make "한꺼번에 진행" (doing them all at once) the recommendation for tasks that do not meet the conditions for simultaneous work.
-- Continue through tasks without stopping only when the user says so directly, such as "T1~T4는 연속으로 진행해". Even then, do not leave out the alternatives comparison and the decision log for each task.
+- Continue through tasks without stopping only when the user says so directly, such as "T1~T4는 연속으로 진행해". Even then, do not leave out the alternatives comparison and the decision log for each task. Even in continuous mode, stop at that task and ask when a decision from the "Ask" column comes up (behavior rules, scope, success criteria, hard-to-reverse structure), or when a test would have to be deleted or its expected value changed. Keep going only for decisions that are announced.
 
 ## Procedure
 
@@ -57,7 +57,7 @@ At each point below, this skill ends its response and waits for the user's answe
    - **Ask where to run the tasks.** In the same response, offer two options with a recommendation:
      - 이 세션에서 이어 가기 — the conversation with the questions stays, so nothing needs carrying over. Recommend it when the tool shows the context is less than about 30% used and time is short.
      - 새 세션에서 T1부터 — the execution loop starts with an empty context, so compaction comes later. Recommend it when more than about 30% is used, the conversation was compacted, or many tasks remain. In exchange, anything not in NOTES.md does not carry over.
-   - **If the user chooses a new session,** before stopping: write into NOTES.md what is only in the conversation (the user's reasons, the requester's words, answers from others, confirmed interpretations, run commands). Write in `## 지금 상태` "작업 목록 승인, 다음은 T1 방법 제안". Commit only NOTES.md as `정리: 문제 정의와 작업 목록`. Then show the first message for the new session and stop:
+   - **If the user chooses a new session,** before stopping: first bring `## 지금까지의 흐름` and `## 남은 위험` up to the current state (remove what was settled, add what was decided). Then write into NOTES.md what is only in the conversation (the user's reasons, the requester's words, answers from others, confirmed interpretations, run commands). Write in `## 지금 상태` "작업 목록 승인, 다음은 T1 방법 제안". Commit only NOTES.md as `정리: 문제 정의와 작업 목록`. Then show the first message for the new session and stop:
      ```text
      $task-breakdown 승인된 작업 목록의 T1부터 이어서 해. NOTES.md를 끝까지 읽고 목표, 성공 기준, 다음 작업을 세 줄로 요약해. 확인 전엔 시작하지 마.
      ```
