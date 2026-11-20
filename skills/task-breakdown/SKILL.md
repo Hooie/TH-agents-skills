@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.42.0"
+  version: "1.43.0"
 ---
 
 # Task Breakdown
@@ -54,6 +54,7 @@ At each point below, this skill ends its response and waits for the user's answe
    - Mark tasks that do not wait on each other and do not touch the same files as candidates for simultaneous work (see "Simultaneous work" below).
 4. **Decide the verification method.** For tasks that can be checked with automated tests, write the run command or test file (individual test names are written in the "검증" line of the decision log after implementation), and write one line each on where to test (through which public function or interface) and on what that test catches and misses. Pick the test list from the groups in "Test design" below, and write a one-line reason for each group not picked. Do not pick points that test internal implementation (private functions, internal state) directly. For tasks that are hard to test automatically (UI layout, editor operations, feel checks), write a manual check procedure and mark it "수동" (manual). In NOTES.md, write at most three lines per task for this (the groups picked, the groups skipped and why, the run command); the individual test cases live in the test files, not in NOTES.md.
 5. **Write the task list in NOTES.md.** Put the table below in the `## 작업 목록` section. If you set up a separate task for the final overall verification (for example, "T4 통합 검증"), always put "성공 기준 대조표 작성(마치며 3단계 형식)" in that task's completion criteria. Splitting verification off into a task does not mean skipping the checklist at wrap-up. If there are candidates for simultaneous work, write the batch and its rationale in one line below the table.
+   - **Check that completion criteria do not collide.** For each task, check that its completion criterion still holds after the later tasks are done, and that it does not contradict a success criterion or another task's rule. For example, "T1: 7행 로드" collides with "T2: 음수 줄은 뺀다" — write it as "T1: 파일의 7줄을 모두 읽는다(줄 수 검사는 빼는 규칙이 없는 입력으로)". A collision left here later forces a test's expected value to change.
 6. **Get the user's confirmation.** Show the priorities, the task list, and the points to test for each task, and ask what to remove or change. For tasks whose verification is "수동", also get confirmation at this point that their tests are not written first (a TDD exception). If there are candidates for simultaneous work, also ask at this point whether to run them simultaneously ("Simultaneous work", step 2). Apply the answers and record the reasons for the changes in the decision log.
    - **Ask where to run the tasks.** In the same response, offer two options with a recommendation:
      - 이 세션에서 이어 가기 — the conversation with the questions stays, so nothing needs carrying over. Recommend it when the tool shows the context is less than about 30% used and time is short.

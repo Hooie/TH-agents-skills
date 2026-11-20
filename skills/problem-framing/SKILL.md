@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.28.0"
+  version: "1.29.0"
 ---
 
 # Problem Framing
@@ -83,13 +83,20 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
      6. Operation: who maintains it, and what changes often
      Start with questions that seem trivial. Build the next question from new facts in the last answer (for example, "매주 엑셀로 따로 정리하신다고 하셨는데, 그 표에는 어떤 항목이 들어가나요?"). Ask about completion criteria and things not to do after the context has been gathered.
    - Do not ask the requester for a solution or a to-do list. Do not write questions such as "무엇을 만들면 되나요?" or "할 일을 순서대로 알려 주세요". Ask the requester about situations and criteria, and decide what to build and how with the user, based on those answers.
-   - If the requester's answer is short or covers only part, do not treat it as a failure. Record the answer received in `## 확인 질문과 답`, and turn what is still unknown into the next round's questions. Each round, show one line each for "이번 답으로 알게 된 것 / 아직 모르는 것". Below them, show the six steps with a mark each, such as "질문 단계: 사례 ✓ / 방식·자료 ✓ / 숫자 ✗ / 영향 ✗ / 예외 ✓ / 운영 ✗". A step gets ✓ only when the requester answered a question about it; something you announced or assumed does not count.
+   - If the requester's answer is short or covers only part, do not treat it as a failure. Record the answer received in `## 확인 질문과 답`, and turn what is still unknown into the next round's questions.
    - **When the requester's answers stall,** try in this order: ask what they can answer ("어떤 부분을 알려 주실 수 있을까요?"), offer a closed question with 2–3 options, then confirm an interpretation ("그럼 X로 이해해도 될까요?"). If there is still no answer, write an estimate marked "추정 — 요청자 답 없음", show it to the user, and hold only the parts that depend on it.
    - The recommendation is a proposed answer built from evidence found in the original. Write the evidence as a quote from the original (for example, "요구사항 문서 12행: 매 프레임 호출된다"), and if the original has no evidence, write "원문에 없음 — (일반적인 경우나 비슷한 시스템 기준)". Say so when an estimate rests on weak evidence.
    - Put only one decision in each question. Do not bundle several decisions into one question, such as "0과 음수는 무시하고, 미등록 스킬은 예외로 할까요?". If they are bundled, a one-word "추천안" (recommendation) answer lets some of the decisions pass without being decided.
    - If the recommendation differs from the original request or reads it broadly, say so. For example: "원문은 '콘솔 프로젝트 하나에 테스트까지'인데, 별도 테스트 프로젝트를 추천합니다. 이유: ...".
-   - **Stop:** after sending this round's questions, end the response here.
+   - **Stop:** after sending this round's questions and the round block (item 6, also in the first round), end the response here.
 6. **Repeat for the next round.** When answers come, ask the questions that have now become askable in the next round, in the same way. Repeat until no undecided decision remains.
+   - **End every round with this block**, after the questions and before "Stop". Fill every line; do not leave the block out.
+     ```text
+     이번 답으로 알게 된 것: …
+     아직 모르는 것: …
+     질문 단계: 사례 ✓ / 방식·자료 ✗ / 숫자 ✓ / 영향 ✗ / 예외 ✓ / 운영 ✗
+     ```
+     A step gets ✓ only when the requester answered a question about it; something you announced or assumed does not count. While any step is ✗, pick this round's requester questions from the ✗ steps, in the order above. Do not write "질문을 모두 마쳤다" while a ✗ remains.
    - If an answer covered only part of a question (for example, the user answered only "추천안" but the question contained an item they were asked to decide separately), ask the remaining decision again in the next round.
    - Keep the six-step order for requester questions. Use the "미확인" lines in `## 문제 정의` only to find what the order has not reached yet, not to choose what to ask first.
    - Before moving on to Step 2, confirm that no undecided decision remains. If even one remains, do not say "결정이 끝났다" (the decisions are done).
@@ -132,7 +139,17 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 9. **Set the success criteria.** Write them in a checkable form: tests that must pass, numeric targets (ms, fps, memory, input size), symptoms that must not reproduce. Do not write criteria such as "잘 동작한다" (works well). Attach a source to each criterion: (요구사항 문서 7행), (사용자 전달), (요청자 답), (사용자 답 — 29번째 프레임에는 안 써진다), (추정 — 사용자 확인). For numeric criteria, also write the current value and where it is measured (for example, "두 번째 열기 35ms → 10ms 이하, `stat unit` 3회 평균").
    - **Turn "never" and "always" into criteria.** When the requester or the user says something must never or always happen, write it as its own success criterion with its source. Under it, list three or more inputs that could break it, taken from the real data and from how that data is produced (blank lines, missing columns, empty or non-number values, every row invalid). For each input, write what should happen: 결과가 나온다 / 그 줄만 빼고 알린다 / 멈추고 오류를 낸다. If which one is unclear, ask. These inputs become test cases in task-breakdown.
      예: "설정 파일에 잘못된 줄이 있어도 게임이 켜진다 (요청자 답 — 안 켜지는 건 절대 안 돼요). 깨뜨릴 입력: 중간 빈 줄 → 빼고 알림 / 칸이 모자란 줄 → 빼고 알림 / 값이 숫자가 아님 → 빼고 알림"
-   - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then send the `## 문제 정의` block in NOTES.md as the agreement message, with one change only: on the 원인 lines, drop the 확인됨/가설/미확인 marks and the predicted/observed numbers, and write each cause in plain words the requester can read. Do not add or remove anything else, and do not write a separate message. Record the requester's reply, quoted, on its "요청자 확인" line, and fix the lines the reply corrects. The agreement message goes out in the same response as item 15; there is no separate stop for it.
+   - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then send the agreement message in this form, filled from `## 문제 정의`. Keep every line, even when its content is "없음":
+     ```text
+     문제: …
+     원인: … (확인됨·가설 같은 표시와 예측·관측 숫자는 빼고, 요청자가 읽을 수 있는 말로)
+     성공 기준: (지표) — 지금 값 … / 목표 … / 재는 곳 …
+     만들 것: …
+     만들지 않을 것: …
+     제약: …
+     앞으로 바뀔 것: …
+     ```
+     Do not add or remove lines, and do not write a separate summary instead. Record the requester's reply, quoted, on the "요청자 확인" line of `## 문제 정의`, and fix the lines the reply corrects. The agreement message goes out in the same response as item 15; there is no separate stop for it.
 10. **Write what will not be built.** Based on the scope the user answered, fill in the "만들지 않을 것" line of `## 문제 정의`.
 11. **Pick the core problem.** Make the problem with the biggest impact on the success criteria the top priority, and write the reason in one line.
 12. **Compare approaches.** Compare 2–3 ways to solve the top-priority problem on success criteria, risk, and time required, and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. Follow explain-as-you-go "When proposing solutions" for the format. If there is only one reasonable approach, write "대안 없음 — 이유". When the user chooses, write this comparison as a D entry in the decision log.
