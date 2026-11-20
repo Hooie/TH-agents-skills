@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.30.0"
+  version: "1.31.0"
 ---
 
 # Problem Framing
@@ -96,8 +96,9 @@ Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), b
      이번 답으로 알게 된 것: …
      아직 모르는 것: …
      질문 단계: 사례 ✓(A1) / 방식·자료 ✓(A2) / 숫자 ✗ / 영향 ✗ / 예외 ✓(A5) / 운영 ✗
+     미룬 질문: 테스트 프레임워크(Q1 답 뒤) / 빈 표일 때 처리(A5 답 뒤)
      ```
-     A step gets ✓ only with the number of the requester question that asked about it, as in "✓(A1)". A ✓ without a question number does not count; something the requester mentioned in passing, or something you announced or assumed, stays ✗ until you ask about it. While any step is ✗, pick this round's requester questions from the ✗ steps, in the order above. Do not write "질문을 모두 마쳤다" while a ✗ remains.
+     A step gets ✓ only with the number of the requester question that asked about it, as in "✓(A1)". A ✓ without a question number does not count; something the requester mentioned in passing, or something you announced or assumed, stays ✗ until you ask about it. While any step is ✗, pick this round's requester questions from the ✗ steps, in the order above. On "미룬 질문", list every question you deferred (item 4) and the answer it waits on; when that answer arrives, ask it in the next round and take it off the line. Do not write "질문을 모두 마쳤다" while a ✗ remains or while "미룬 질문" is not "없음".
    - If an answer covered only part of a question (for example, the user answered only "추천안" but the question contained an item they were asked to decide separately), ask the remaining decision again in the next round.
    - Keep the six-step order for requester questions. Use the "미확인" lines in `## 문제 정의` only to find what the order has not reached yet, not to choose what to ask first.
    - Before moving on to Step 2, confirm that no undecided decision remains. If even one remains, do not say "결정이 끝났다" (the decisions are done).
