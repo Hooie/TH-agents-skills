@@ -1,10 +1,10 @@
 ---
 name: session-handoff
-description: Use when the user invokes it to hand off unfinished or finished work: before moving to a new session mid-task, before pausing the work for a long time, or before handing the work to another person. Organize the current state, the work done and remaining, how to run and verify, the key decisions, and the remaining risks in HANDOFF.md so that another person or a new session can pick it up right away, and check that the run instructions actually work. Do not mix your notes into requirement documents written by others. When starting a new session, read HANDOFF.md first. Use only when the user invokes it, to hand off work to a new session, a pause, or another person.
+description: Use when the user invokes it to hand off unfinished or finished work: before moving to a new session mid-task, before pausing the work for a long time, or before handing the work to another person. Organize the current state, the work done and remaining, how to run and verify, the key decisions, and the remaining risks in HANDOFF.md so that another person or a new session can pick it up right away, and check that the run instructions actually work. Do not mix your notes into requirement documents written by others. When starting a new session, read HANDOFF.md first.
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.11.0"
+  version: "1.12.0"
 ---
 
 # Session Handoff

@@ -1,10 +1,10 @@
 ---
 name: independent-review
-description: Use when you have finished one large piece of work, before wrapping up, before opening a PR, or when reviewing a change someone else made. Instead of the session that did the work reviewing its own code, prepare a reviewer prompt so that a new session with no conversation history (a new terminal or a subagent) reviews it from only the requirements and the diff. Check the findings that come back, then fix them or answer with evidence. Also use it to test whether someone reading HANDOFF.md or NOTES.md for the first time can understand the work from the documents alone (the record reading test). Use to get a fresh-context review of finished work - prepare a self-contained reviewer prompt, then verify and act on the findings.
+description: Use when you have finished one large piece of work, before wrapping up, before opening a PR, or when reviewing a change someone else made. Instead of the session that did the work reviewing its own code, prepare a reviewer prompt so that a new session with no conversation history (a new terminal or a subagent) reviews it from only the requirements and the diff. Check the findings that come back, then fix them or answer with evidence. Also use it to test whether someone reading HANDOFF.md or NOTES.md for the first time can understand the work from the documents alone (the record reading test).
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.8.0"
+  version: "1.9.0"
 ---
 
 # Independent Review
@@ -26,7 +26,7 @@ This skill is split into two roles.
    - Check the list of commits in the range with `git log --oneline 시작..끝` and put it in the prompt.
 2. **Prepare the reviewer prompt.** Fill in the "Reviewer prompt template" below. Keep to what goes in and what stays out.
    - Goes in: the path of the requirements document, NOTES.md `## 문제 정의`, the criterion sentences of `## 성공 기준` (without `[x]` marks or the 성공 기준 대조표), `## 확인 질문과 답` (rules agreed with the user or with whoever requested the work), the run and test commands, and the review range (two commits).
-   - Stays out: the conversation history, `## 지금까지의 흐름`, the reasons and alternatives comparisons in the decision log, and notes such as "여기는 이미 확인했다" (this part has already been checked). If the working side's judgment gets in, the reviewer follows the same blind spots.
+   - Stays out: the conversation history, `## 지금까지의 흐름`, the reasons and alternatives comparisons in the decision log, and notes such as "여기는 이미 확인했다". If the working side's judgment gets in, the reviewer follows the same blind spots.
 3. **Hand it to the user.** Show the prompt as a single code block, give the guidance below, and **stop.**
    - "새 터미널에서 이 폴더로 새 세션을 열고 아래 지시문을 그대로 붙여 넣어 주세요. 리뷰 결과가 나오면 여기에 붙여 주세요."
    - If the tool in use supports subagents, also ask, as an option, "제가 서브에이전트로 직접 띄울 수도 있습니다". Launch one only after permission, and use the same prompt.
@@ -40,12 +40,12 @@ This skill is split into two roles.
    2. **고칠 것 (fix):** a real defect. Add a failing test first and fix it (the same order and the same report and commit format as the task-breakdown execution loop). For findings that require deciding a behavior rule, ask the user.
    3. **감수할 트레이드오프 (accepted trade-off):** a real problem, but fixing it costs more. Show it to the user and record it in the decision log as a trade-off.
    4. **잡음 (noise):** code that is correct in a context the reviewer did not have. Write the reason for not accepting it with evidence (code location, run result, requirement sentence). Also note whether this finding would have come up if that context had been in the prompt.
-   - "고치면 좋은 것" (nice to fix) is classified by default as 3 (감수할 트레이드오프) or 4 (잡음), with the reason recorded. Fix it only when it passes the over-engineering check in task-breakdown Execution loop 5 and the cost of fixing it is small. Following every reviewer finding leads to over-engineering.
-   - Also go through the "판단하지 않고 넘긴 것" (passed over without judgment) list one by one. Handle the ones that need handling the same way as findings; otherwise move them to `## 남은 위험` with the reason.
+   - "고치면 좋은 것" is classified by default as 3 (감수할 트레이드오프) or 4 (잡음), with the reason recorded. Fix it only when it passes the over-engineering check in task-breakdown Execution loop 5 and the cost of fixing it is small. Following every reviewer finding leads to over-engineering.
+   - Also go through the "판단하지 않고 넘긴 것" list one by one. Handle the ones that need handling the same way as findings; otherwise move them to `## 남은 위험` with the reason.
 5. **Decide whether to review again.** If you fixed "고칠 것" items or fixed the prompt, ask the user whether to get one more review the same way. Review at most 3 times. When a working time is set, review once by default, and offer a second round only if there is time left before the wrap-up checkpoint.
    - If the next review brings up only trivial findings or ones already handled, stop.
    - If important findings keep coming after 3 reviews, do not run more; tell the user. It is a sign that the deliverable is not ready yet, so decide whether to reduce the scope or split the work again.
-   - If the user says "그만해도 된다" (it is fine to stop), stop.
+   - If the user says "그만해도 된다", stop.
 6. **Record it.** Leave one paragraph in NOTES.md `## 검증 결과`: when, which range, by which method (new terminal / subagent / read-only Codex), and how many times it was reviewed; the findings split into the four classes with the count for each, and the reasons for those not accepted. Record fixed findings as entries in the decision log.
 
 ## Reviewer prompt template
@@ -130,4 +130,3 @@ Apply the same principle as code review to documents. The session that wrote a d
 - Do not launch subagents, new sessions, or external CLIs without the user's permission.
 - Do not assume uncommitted changes are included in the review range.
 
-(This skill was newly written with reference to: from requesting-code-review in obra/superpowers (MIT), "a reviewer prompt built without the conversation history" and "the list of things passed over without judgment"; from doc-coauthoring in anthropics/skills, "a test that has a session with no conversation history read the documents"; and from doubt-driven-development in addyosmani/agent-skills (MIT), "an instruction to find defects", "the four classes of findings", "at most 3 times", and "a read-only CLI run".)

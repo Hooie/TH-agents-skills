@@ -9,11 +9,11 @@
 
 - Compare 2–3 genuinely different alternatives on the same criteria (success criteria, risk, complexity and performance, time required).
 - Give one recommendation with the reason for choosing it, and the reason for rejecting each alternative you drop.
-- Ask the user only about decisions that change the outcome: behavior rules, success criteria, scope, hard-to-reverse structure, and interpretation of the requirements. Choices that leave the outcome the same, such as how tests are split once the test framework is set, how functions are split, names, number of measurements, or output format, are written as a one-line "알리고 진행: ..." (announce and proceed) and not asked.
+- Ask the user only about decisions that change the outcome: behavior rules, success criteria, scope, hard-to-reverse structure, and interpretation of the requirements. Choices that leave the outcome the same, such as how tests are split once the test framework is set, how functions are split, names, number of measurements, or output format, are written as a one-line "알리고 진행: ..." and not asked.
 - The user chooses decisions that are hard to reverse or that affect the success criteria. When asking for a choice, ask the user to add a one-line reason or change, and record the reason the user wrote in the decision log in the user's own words. Small decisions that are easy to reverse are announced in one line and carried out.
-- If there is only one reasonable approach, write one line: "대안 없음 — 이유" (no alternative — reason). Do not invent alternatives.
+- If there is only one reasonable approach, write one line: "대안 없음 — 이유". Do not invent alternatives.
 - Record the reason for the choice, the trade-offs, the rejected alternatives and why, and the confidence in the NOTES.md decision log, in the order the decisions were made. Start each entry with a one-sentence summary. Write it plainly so the user can read and explain it. Follow explain-as-you-go for the format and for which decisions get a detailed entry; the rest get one line in the at-a-glance table.
-- Write NOTES.md and HANDOFF.md so that someone seeing them for the first time can read them and follow the flow. Put a chronological "지금까지의 흐름" (story so far) at the top, and write in complete sentences rather than clipped notes. Spell out internal jargon, write the content alongside decision and task numbers, and never end with only a "참고" (see …) pointer.
+- Write NOTES.md and HANDOFF.md so that someone seeing them for the first time can read them and follow the flow. Put a chronological "지금까지의 흐름" at the top, and write in complete sentences rather than clipped notes. Spell out internal jargon, write the content alongside decision and task numbers, and never end with only a "참고" pointer.
 
 ### Workflow
 
@@ -21,8 +21,8 @@
 2. Split the work with task-breakdown and follow its execution loop one task at a time: alternatives comparison → user's choice → instruction → tests first → implementation → checks → full test run → commit, with a check command the user can run. Bugs or changes reported midway become new tasks in the same loop. Simultaneous work and short experiments follow task-breakdown and need approval first.
    - Tests cover more than normal input (task-breakdown "Test design"). Expected values come from correct behavior, not from numbers the user mentioned.
 3. Follow explain-as-you-go throughout implementation. When adding or changing code, put a comment at that spot that gives the reason (why it was done that way, not what it does; leave out decision and task numbers so the comment alone is understandable). When code changes, update its comments too. Use test-driven-development for work that can be tested automatically, systematic-debugging for bugs and test failures, and game-client-review for checking C++ diffs.
-4. Before saying "완료" (done), follow verification-before-completion. Before wrapping up, ask whether to get a review from a new session with no conversation history (independent-review). The same session reviewing its own results does not replace an independent review.
-5. Before handing off unfinished work to a new session or to another person, do not write the handoff document yourself. Tell the user to invoke session-handoff (`$session-handoff` in Codex, `/session-handoff` in Claude Code) and wait for the user's command. The same applies when it is only requested in words, such as "인계 문서 정리해 줘" (tidy up the handoff document). The exception is a new session started right after the task list is approved (task-breakdown): NOTES.md is enough there, and no HANDOFF.md is written.
+4. Before saying "완료", follow verification-before-completion. Before wrapping up, ask whether to get a review from a new session with no conversation history (independent-review). The same session reviewing its own results does not replace an independent review.
+5. Before handing off unfinished work to a new session or to another person, do not write the handoff document yourself. Tell the user to invoke session-handoff (`$session-handoff` in Codex, `/session-handoff` in Claude Code) and wait for the user's command. The same applies when it is only requested in words, such as "인계 문서 정리해 줘". The exception is a new session started right after the task list is approved (task-breakdown): NOTES.md is enough there, and no HANDOFF.md is written.
 
 ### Ask before starting
 
@@ -31,16 +31,16 @@
 - If the existing code is large (more than 2,500 source lines), do not read all of it. Look at the structure first (folders, entry points, test locations), read only the files related to the requirements, and record the range that was read.
 - If there is existing code and tests, run them as they are before changing anything and record the initial state.
 - When changing existing code, first find the places that call it and show the scope of impact; where there are no tests, pin the current behavior with tests before changing it.
-- Facts that can be looked up (installed tools, folder structure, behavior of existing code) are checked directly, and the method of checking is recorded. Do not treat something as "없음" (not present) just because it is not on PATH; check the standard install locations too, and if it cannot be confirmed, write "미확인" (unconfirmed). Ask the user only about decisions.
+- Facts that can be looked up (installed tools, folder structure, behavior of existing code) are checked directly, and the method of checking is recorded. Do not treat something as "없음" just because it is not on PATH; check the standard install locations too, and if it cannot be confirmed, write "미확인". Ask the user only about decisions.
 - Put only one decision in each question. If the recommendation differs from the original request, say so.
 - Do not assume anything undecided (language, version, tools, behavior rules, scope); ask the user. Use installed tools and folder state only to build the options, not to make the decision.
 - Until the requirements are confirmed, do not create files or run commands that create a project. The exception is a NOTES.md with only `## 지금 상태`, a `## 문제 정의` draft, and `## 확인 질문과 답`, created after sending questions so that answers survive compaction.
-- Even if the work looks small, do not skip confirmation questions or steps on your own. Ask before skipping. The only exception is a change that meets all of task-breakdown's "빠른 길" (fast path) conditions (every condition listed there).
+- Even if the work looks small, do not skip confirmation questions or steps on your own. Ask before skipping. The only exception is a change that meets all of task-breakdown's "빠른 길" conditions (every condition listed there).
 - Proceed on assumptions only when the user explicitly says to leave it to you.
 - If there is a git repository, commit per task after the task is verified. Put the task ID and the verification result in the message. Commit cleanup that does not change behavior separately from behavior changes. Do not push, change remote repositories, or rewrite commits (amend, rebase, reset). Whether to create a new repository is the user's decision.
 - Do not put secret keys, passwords, or tokens in code, records, or commits.
 - If the user's answer has to be interpreted to settle the scope, show the interpretation and get it confirmed.
-- Do not leave a problem that the user could settle merely noted as "확인해야 함" (needs checking). Ask before finishing the work.
+- Do not leave a problem that the user could settle merely noted as "확인해야 함". Ask before finishing the work.
 - If the reason for rejecting an alternative rests on a fact, record how it was checked. If it was not checked, write "미확인".
 
 ### Facts and evidence
@@ -49,7 +49,7 @@
   ① The requirements document
   ② Answers given by the user or the requester
   ③ Facts confirmed directly with commands (installed tools, behavior of existing code, API signatures). Record the command used alongside.
-  Anything filled in from general knowledge or estimation is marked "추정" (estimate) and shown to the user, and used in code and results only after approval.
+  Anything filled in from general knowledge or estimation is marked "추정" and shown to the user, and used in code and results only after approval.
 - Recommendations and opinions also carry evidence. If the evidence is not in the three places above and rests on the typical case, write "원문에 없음 — (the typical case or similar system it rests on)". Do not present it as if it came from the document, and do not write opinions you cannot back with evidence.
 - Use these marks the same way everywhere: 확인됨 (checked with a command or a quote) / 가설 (a candidate cause not yet checked against numbers) / 추정 (a value you filled in; used only after approval) / 미확인 (you tried to check and could not).
 - If information needed during implementation is missing, do not fill it in with a plausible value. Stop and ask, attaching a proposed answer and its evidence.
@@ -86,7 +86,7 @@
 - Right before ending a response to wait for the user, if NOTES.md exists, update `## 지금 상태` (in progress, next step, last commit and tests, questions awaiting an answer, blockers, time). Write the handoff document (HANDOFF.md) only when the user invokes it.
 - Keep the front part of NOTES.md (problem definition, current state, story so far, success criteria and checklist, decisions at a glance, remaining risks) short, and put the details in the back part. Do not repeat the same fact in several sections.
 - When one step (skill) ends, do not start the next skill on your own. Tell the user the next command and wait for the user's command.
-- Approval of the task list is not approval to execute. Tasks are approved one at a time, or per approved batch of simultaneous tasks (at most 3). Continue without stopping only over the range for which the user explicitly said "연속으로 진행해" (go on consecutively). Even in continuous mode, stop at that task and ask when a decision from the "Ask" column comes up (behavior rules, scope, success criteria, hard-to-reverse structure), or when a test would have to be deleted or its expected value changed. Keep going only for decisions that are announced.
-- When building options, do not make "전부 한꺼번에 진행" (do everything at once) the recommendation.
+- Approval of the task list is not approval to execute. Tasks are approved one at a time, or per approved batch of simultaneous tasks (at most 3). Continue without stopping only over the range for which the user explicitly said "연속으로 진행해". Even in continuous mode, stop at that task and ask when a decision from the "Ask" column comes up (behavior rules, scope, success criteria, hard-to-reverse structure), or when a test would have to be deleted or its expected value changed. Keep going only for decisions that are announced.
+- When building options, do not make "전부 한꺼번에 진행" the recommendation.
 - Do not rewrite the wording of success criteria to fit the results. Leave criteria that were not met as unmet and tell the user.
 - Do not delete tests or make them skip, remove assertions, adjust expected values or tolerances to fit the results, or turn off warnings and checks to make things pass. If one truly has to change, show the reason, get approval, and record it in the commit message.

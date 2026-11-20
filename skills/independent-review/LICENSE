@@ -19,3 +19,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+Credits
+This skill was newly written with reference to: from requesting-code-review in obra/superpowers (MIT), "a reviewer prompt built without the conversation history" and "the list of things passed over without judgment"; from doc-coauthoring in anthropics/skills, "a test that has a session with no conversation history read the documents"; and from doubt-driven-development in addyosmani/agent-skills (MIT), "an instruction to find defects", "the four classes of findings", "at most 3 times", and "a read-only CLI run".
