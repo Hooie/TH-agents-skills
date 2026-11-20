@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.48.0"
+  version: "1.49.0"
 ---
 
 # Task Breakdown
@@ -29,11 +29,12 @@ The AI drafts the breakdown, the priorities, and the method for each task, and *
 At each point below, this skill ends its response and waits for the user's answer. Do not start the next step before the answer arrives.
 
 1. After showing the task list (Procedure 6). Also ask at this point whether to do simultaneous work, and whether to run the tasks in this session or a new session.
-2. For each task (for each batch, in simultaneous work), after showing the method proposal and the instruction draft (Execution loop 2, `references/simultaneous-work.md` step 2)
+2. For each task, after showing the method proposal (Execution loop 2); for a batch of simultaneous work, after showing the method proposals and instruction drafts (`references/simultaneous-work.md` step 2)
 3. After finishing the final check, summarizing the results, and pointing to the independent review and session-handoff (Wrapping up)
 4. Any other time the response asks the user something that must be answered before you can go on: an unknown value (Execution loop 4), being stuck (Procedure 9, 10), the questions in Wrapping up 2 and 3.
 
 - Right before stopping, update NOTES.md `## 지금 상태` (task in progress, next step, last commit and tests, questions awaiting an answer, blockers, time). This way the work can continue from these few lines even if the conversation is compacted. Write HANDOFF.md only when the user invokes `$session-handoff`.
+- **Keep a stop message within one terminal screen (about 25 lines).** Order it as: result → what to decide → the question in one line, last. Test lists, counterexamples, fact-check tables, and mutation results go only into NOTES.md `## 검증 결과`, not into the message.
 - Approval of the task list is not approval to execute. Tasks are approved one at a time, or per approved batch of simultaneous tasks (at most 3).
 - Do simultaneous work only for batches the user approved. Approval of the task list does not include permission for simultaneous work. This session checks, verifies, and merges the delegated results.
 - When building options, do not make "한꺼번에 진행" the recommendation for tasks that do not meet the conditions for simultaneous work.
@@ -89,7 +90,7 @@ Write the status as one of `대기`, `진행 중`, `완료`, `보류(이유)`. I
 
 ## Test design
 
-When deciding the tests for each task (Procedure 4), go through the groups below one by one and pick every one that applies. For each group not picked, write the reason in one line. For example: "규모 — 입력이 10개 이하로 정해짐(Q3)".
+When deciding the tests for each task (Procedure 4), go through the groups below one by one and pick every one that applies. Write one test per picked group by default, and more only when a success criterion needs them. For each group not picked, write the reason in one line. For example: "규모 — 입력이 10개 이하로 정해짐(Q3)".
 
 | Group | What to check |
 | --- | --- |
@@ -108,7 +109,7 @@ When deciding the tests for each task (Procedure 4), go through the groups below
 - Do not write tests tied to the internal implementation (tests that break when only the structure changes).
 - A test that checks a rule (for example, "20 미만이면 잠긴다") passing does not mean the symptom is fixed. To mark a success criterion as done, that criterion's symptom reproduction test must pass.
 - Do not use the number the user mentioned when describing the symptom as the test threshold as is. Compute and set the value that correct behavior should produce after the fix. For example: even if the user said "17번 넘게 바뀐다", if the correct count is 6, the threshold is `<= 6`. With `< 17`, it still passes even if it degrades back to 10.
-- **Finding counterexamples:** When the implementation is done, set out to break the code: make 3 or more counterexample candidates and actually run them (Execution loop 5). Look where the groups above have not been tested yet, where two rules meet, and where the original is ambiguous. Do not pick only orderings that obviously pass. Keep the counterexamples you ran in the test file even if they passed.
+- **Finding counterexamples:** When the implementation is done, set out to break the code: make 3–5 counterexample candidates and actually run them (Execution loop 5). Look where the groups above have not been tested yet, where two rules meet, and where the original is ambiguous. Do not pick only orderings that obviously pass. Keep the counterexamples you ran in the test file even if they passed.
 - **When you find a failure:** First add a test that reproduces that failure (a regression test), confirm it fails, then find the cause and fix it. Record the counterexample found and the fix as an entry in the decision log.
 
 ## Simultaneous work (subagents or several terminals)
@@ -120,10 +121,11 @@ Tasks whose method, completion criteria, and verification command are settled, a
 1. **Pick.** Among the tasks whose prerequisites are done, pick the one with the highest priority and change its status to `진행 중`.
 2. **Propose the method.** Go through these in order and show the result in one response.
    1. Check the fast path below. If every condition is met, take it instead of proposing; the rest of this step does not apply.
-   2. Survey the scope of impact and consider an experiment (both below).
+   2. Survey the scope of impact and consider an experiment (both below). Run other fact-checking commands before proposing only when their result could change the decision.
    3. If the task fixes a bug of unknown cause, first find the cause with systematic-debugging, then compare ways to fix it.
    4. Write the method. If there are several ways to implement it and the choice changes the behavior, success criteria, scope, or hard-to-reverse structure, compare 2–3 alternatives in explain-as-you-go format and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. If there is only one method, write one line: "대안 없음 — 이유". Choices with the same result that differ only in implementation (how tests are split once the framework is set, how functions are split, number of measurements, output format) are not asked; write them as a one-line "알리고 진행: ..." (explain-as-you-go "Decisions to ask vs. decisions to announce").
-   5. Below the method, attach the instruction draft based on the recommendation. If there is a decision to ask, end with "고를 때 고른 이유나 바꿀 점을 한 줄 함께 적어 주세요(예: "A로 해. 읽기만 하니까 쓰기 방어는 빼고")." If there is no decision to ask, show only the instruction draft and end with "이대로 진행할까요?".
+      - In the message, write each alternative in one line ("A: 내용 — 얻는 것 / 잃는 것") and the recommendation with its reason in one line; the full comparison goes into the decision log. Show at most 3 "알리고 진행" lines, the ones that most affect the result; record the rest in the decision log as "알림". State the test plan in one line, such as "새 테스트 5건: 경계 2 · 잘못된 입력 2 · 회귀 1".
+   5. Write the instruction in the "Instruction format" below. When this session carries it out itself, do not show it in the message, because it repeats the proposal; show it in full only when delegating or when the user asks for it ("지시문"). If there is a decision to ask, end with "고를 때 고른 이유나 바꿀 점을 한 줄 함께 적어 주세요(예: "A로 해. 읽기만 하니까 쓰기 방어는 빼고")." If there is no decision to ask, show the method in one or two lines and end with "이대로 진행할까요?".
    - **Take the fast path for small fixes.** If **all** of the conditions below are met, announce "빠른 길: (what you change and how, in one sentence)" and proceed right away, without the alternatives comparison or instruction.
      - The change can be explained in one sentence.
      - Behavior rules, success criteria, scope, and public interfaces do not change.
@@ -138,7 +140,7 @@ Tasks whose method, completion criteria, and verification command are settled, a
      - Record the result in the `검증` line of the decision record as "실험: (what you tried) → (result, numbers)", and adjust the confidence accordingly.
      - If the result supports the recommendation, announce "실험 결과 A로 진행" and proceed. Otherwise, go back to the alternatives comparison, show it, and stop.
      - Run at most one experiment per task.
-   - **Stop:** after showing the method proposal and the instruction draft, end the response here.
+   - **Stop:** after showing the method proposal, end the response here.
 3. **The user decides.** If the user picks an option and sends back an edited instruction, follow that instruction. Record the reasons and direction the user attached in the decision log in the user's own words. If the user says only "진행", do this one task according to the recommendation and the draft. Do not polish or change an instruction the user edited; follow it as is.
 4. **Write the tests first.** If the verification method is automated tests, follow the test-driven-development order: write the test, confirm it fails, then implement. Write tests one at a time from the list set in Procedure 4 (the groups in "Test design"). Repeat in the order one test → implement just enough to pass → next test, and do not write all of the task's tests up front at once.
    - **Do not fill in unknown values.** If, during implementation, you need a value or rule that is not in the requirements (numbers, whether to include a boundary value, exception handling, processing order), do not fill it in with a plausible value. Stop and ask, attaching a proposed answer and its evidence. Set the task's status in the table to `보류(질문 대기)`. Choices that do not change behavior, such as names or file locations, are announced and carried out.
@@ -156,12 +158,12 @@ Tasks whose method, completion criteria, and verification command are settled, a
    - **Conflicts with existing code:** whether every call site of the functions whose signature or behavior changed was found and checked, whether code with the same name or the same role already exists, and whether it departs from the conventions of the existing code (naming rules, error handling, folder structure). Record the number of call sites checked and the search command.
    - **Security and sensitive data:** whether secret keys, passwords, or tokens got into code, records, or commits; whether input from outside is validated; whether any path is missing a permission check; whether sensitive data leaks into error messages and logs. If none of this applies, write "해당 없음 — 이유".
    - **Test and criteria weakening:** search the diff for verification that was weakened to get things to pass. Targets: deleting tests; skipping them (skip, disabled, commented out); removing assertions; changing expected values to match the actual results; increasing tolerances, time limits, or repeat counts; turning off warnings or checks (`#pragma warning(disable`, `// NOLINT`, `# noqa`, `# type: ignore`, Unreal's warning-disabling macros); lowering the build warning level; changing the wording or numbers of the success criteria. If you find any, revert it, or show the reason it must change (a requirement change, an error in the test itself) with evidence and get the user's approval. Even when approved, record the reason in the commit message and the decision log.
-   - **Counterexamples:** run 3 or more counterexample candidates as described in "Finding counterexamples" in "Test design". If a failure appears, add a regression test first.
+   - **Counterexamples:** run 3–5 counterexample candidates as described in "Finding counterexamples" in "Test design". If a failure appears, add a regression test first.
    - If something needs fixing, fix it before moving on to the next step. If the cause is unknown, find it with systematic-debugging; if there are several ways to fix it, compare the alternatives and let the user choose.
    - If it is a C++ change and game-client-review is installed, also go through the rest of that skill's checklist (lifetime and memory, performance, multiplayer, threads).
 6. **Verify.** Actually run the verification method and check the output. Not just this task's tests: **rerun the full test suite** to confirm the earlier tasks did not break (regression check). If something fails, find the cause with systematic-debugging.
    - **Rerun after the last change.** If you changed even one character of code or tests, discard the results you saw before. In reports and records, use only results run after the last change, and record the command, the pass/fail counts, and the exit code.
-   - **Confirm the test actually catches it.** For tests tied to the success criteria, deliberately break the code that the test protects once (flip a condition, delete a line), see it fail, and revert. If you already saw it fail before implementation (step 4), that is enough. A test that has never failed does not count as evidence. After reverting, rerun the full test suite.
+   - **Confirm the test actually catches it.** For tests tied to the success criteria that you did not see fail before implementation (step 4), deliberately break the code that the test protects (flip a condition, delete a line), see it fail, and revert; at most 2 per task. A test you saw fail before implementation is enough as is. A test that has never failed does not count as evidence. After reverting, rerun the full test suite.
 7. **Record and commit.** If it passes, update the decision log, `## 검증 결과` (sentences that have the four parts from explain-as-you-go "How to write records people read"), `## 지금까지의 흐름`, `## 지금 상태`, and the task's status in the table (`완료`). Do not repeat the same number in several sections (same guide, item 10). Then, if there is a git repository, commit this task's changes, the code together with NOTES.md.
    - Commit only after passing verification (step 6). Put the task ID and the verification result in the message. For example: `T2: 충전 횟수 추가 (전체 테스트 18건 통과)`.
    - **Commit cleanup separately from behavior changes.** If during the task you need cleanup that does not change behavior (splitting functions, renaming, removing duplication, moving files), do only the cleanup first, confirm that the full test suite passes exactly as before, and commit it separately. Add "정리" to the message. For example: `T2 정리: 충전 계산을 함수로 분리, 동작 변화 없음 (전체 테스트 18건 통과)`. Then commit the behavior change. If they are already mixed, do not force a split; mention both in the message.
@@ -172,16 +174,17 @@ Tasks whose method, completion criteria, and verification command are settled, a
    - Do not write the same decision twice. New news about the same decision, such as approval, the choice, or the implementation result, is reflected by updating that decision's entry. Write a new entry only when the decision switched to another option, and add "바뀜: → D번호" to the original entry.
    - Also record the counterexamples found and the bugs fixed in this task as entries in the decision log.
    - For tasks that changed behavior or performance, record the numbers measured before and after under the same conditions and metric in the "검증" line of the decision log (explain-as-you-go "Record the effect of a decision as before/after numbers"). For performance tasks, measure before changing anything.
-8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If no task remains, ask "마무리를 시작할까요?" instead of attaching a proposal, and end the response. If the 75% point has passed and tasks remain, do not attach a proposal; ask "남은 작업(Tn…)은 보류로 두고 마무리를 시작할까요?" and end the response. If the user says to continue, follow that. If any of the five lines is missing, the report is not finished (the fast path uses its two-line report instead). If you did not do the checks, go back to step 5 and do them before reporting.
+8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal (step 2) in the same response, and end the response. If no task remains, ask "마무리를 시작할까요?" instead of attaching a proposal, and end the response. If the 75% point has passed and tasks remain, do not attach a proposal; ask "남은 작업(Tn…)은 보류로 두고 마무리를 시작할까요?" and end the response. If the user says to continue, follow that. If any of the five lines is missing, the report is not finished (the fast path uses its two-line report instead). If you did not do the checks, go back to step 5 and do them before reporting.
 
    ```text
    흐름: 입력 dt → `Skill.update()`에서 남은 시간에서 뺌 → `try_use()`가 남은 시간 1e-9초 이하면 사용 · 정한 값: 허용 오차 1e-9초(D14)
    검증: 전체 테스트 24건 통과(이번 작업 7건 — 경계 3, 잘못된 입력 2, 누적 1, 회귀 1), 빌드 경고 0 (명령: ...)
-   점검: 정확성 — 1/30·1/60·1/144초 누적 확인 / 과잉 설계 — 지적 없음 / 스펙 대조 — 지적 없음(성공 기준 2, 3) / API — 지적 없음(std::isfinite 확인) / 충돌 — 호출부 3곳 확인, 지적 없음 / 반례 — 4개 실행, 1건 실패(음수 dt) → 회귀 테스트 추가 후 고침(D5) / 테스트 약화 — 없음(테스트 삭제·skip·기대값 변경 없음) / 보안 — 해당 없음(밖에서 들어오는 입력과 비밀값이 없음)
+   점검: 반례 4개 중 1건 실패(음수 dt) → 회귀 테스트 추가 후 고침(D5) · 나머지 7개 항목 지적 없음
    직접 확인: `ctest --test-dir build -R cooldown` → 7건 통과가 보이면 정상 / `./build/demo 1.0` → 60번째 줄에 READY
    남은 것: 없음 (또는 다음 작업으로 넘긴 것과 이유) · 커밋 a1b2c3d
    ```
 
+   - Each of the five lines is one line. In "점검", name only the items with findings; if there are none, write "8개 항목 지적 없음". The full check results are in `## 검증 결과`. Add at most 3 lines after the five lines, only for what the user must know to decide.
    - "흐름" is one line on how input becomes output through the files and functions changed in this task, with the values that were decided, so that the user can explain the task without reading the code.
    - **Do not write sentences without evidence.** Attach evidence in parentheses to the facts written in reports and NOTES.md. The evidence is one of three: a command run this time and its output, a code location (file and function or line), or a document quote (a line in the requirements document, a user answer). Numbers such as counts, measurements, and line numbers are copied as-is from output run this time. Do not write numbers remembered or guessed. Without evidence, write "추정" or "미확인". Replace sentences such as "통과할 것이다" or "문제없어 보인다" with run results, or delete them.
    - "직접 확인" is 1–2 commands the user can run on their own, with the expected results. When the user tells you the results they got, record them in `## 검증 결과` as "직접 확인(사용자)". If the results differ, do not move on to the next task; find the cause first.
@@ -206,6 +209,7 @@ Things that are easy to leave out: concrete context such as measurements or file
 
 - At the start, write the total time and the checkpoint times (25%, 50%, 75%) in NOTES.md. If you do not know the total time, ask the user.
 - **Look at the clock directly.** The agent does not know on its own how much time has passed. At the start, check the start time with `date` (`Get-Date` in Windows PowerShell) and record it, and run it again each time you finish a task and right before stopping to wait for the user, to check the current time. Do not write times from memory or guesses.
+- **Set a target time per task:** the remaining time divided by the remaining tasks. If a task goes past it, narrow the checks to the success criteria the task is tied to, and say so in the report.
 - With the time you checked, update the "시간" line in `## 지금 상태` (elapsed / remaining / next checkpoint). If a checkpoint has passed, do the comparison below on the spot.
 - The default allocation is as follows. If the user decides otherwise, follow that.
 
@@ -233,7 +237,7 @@ Things that are easy to leave out: concrete context such as measurements or file
 
 When every task is `완료` or a `보류` with a reason written down, finish in the order below.
 
-1. **Shake the whole thing once more.** First, find the decisions in the decision log with confidence 낮음 or 중간, and actually check "what, once checked, would raise it" for each of them (adding tests, measuring, running counterexamples). Update the confidence according to the results, and move decisions that remain 낮음 to `## 남은 위험`. Then run the full test suite, and run 3 or more additional counterexamples, not task by task but where features meet (using two features together, changing the order, restarting from the end, repeating the whole flow twice). Also confirm that each symptom in the original has a symptom reproduction test and that it passes. If a failure appears, add a regression test first and fix it, as in Execution loop 5.
+1. **Shake the whole thing once more.** First, find the decisions in the decision log with confidence 낮음 or 중간, and actually check "what, once checked, would raise it" for each of them (adding tests, measuring, running counterexamples). Update the confidence according to the results, and move decisions that remain 낮음 to `## 남은 위험`. Then run the full test suite, and run 3–5 additional counterexamples, not task by task but where features meet (using two features together, changing the order, restarting from the end, repeating the whole flow twice). Also confirm that each symptom in the original has a symptom reproduction test and that it passes. If a failure appears, add a regression test first and fix it, as in Execution loop 5.
 2. **Clean up temporary files.** Look at the uncommitted and ignored files with `git status --short` and `git status --short --ignored`. Show a list of the temporary files made in this work (the `build-T*` folders for simultaneous work, `notes/T*.md` after merging, temporary prompt files for the independent review, measurement scripts, screenshots, logs) and the build outputs, and for each file ask "지운다 / `.gitignore`에 넣는다 / 결과물로 커밋한다". Do not commit build outputs or secrets. For things worth running again, such as measurement scripts, recommend committing them and give the reason. After cleaning up, rerun the full test suite.
 3. **Final check.** Recheck all the success criteria with verification-before-completion. First, re-read the requirements document, the success criteria in NOTES.md, and the finished code from the files, without relying on memory. Then run the full test suite fresh, and write the checklist below directly under NOTES.md `## 성공 기준` (in the reading part).
 
