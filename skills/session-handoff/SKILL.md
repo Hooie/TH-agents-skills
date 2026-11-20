@@ -4,7 +4,7 @@ description: Use when the user invokes it to hand off unfinished or finished wor
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.13.0"
+  version: "1.14.0"
 ---
 
 # Session Handoff
@@ -33,7 +33,7 @@ Only when the user invokes it (`$session-handoff`, `/session-handoff`):
    - Do not copy content that lives elsewhere wholesale; write the gist in one or two sentences and add the location. Do not end with only "NOTES.md 참고". Keep the detailed alternatives comparisons and the verification process only in NOTES.md.
    - Do not write API keys, passwords, tokens, or personal data. If they appear in commands or output, replace them with `<REDACTED>`.
    - When done, ask whether to take the record reading test (independent-review). Skip it if the user does not want it.
-4. **Commit last.** If there is a git repository, commit including NOTES.md and HANDOFF.md, and check with `git status` that no changes remain. Do not push. If there is no repository, skip this step.
+4. **Commit last.** If there is a git repository, commit including NOTES.md and HANDOFF.md, and check with `git status` that no changes remain. Do not push. If there is no repository, skip this step. When handing off mid-task, do not commit unverified code: commit only NOTES.md and HANDOFF.md, and list the uncommitted files and their state in HANDOFF.md `## 남은 일`.
 
 ## HANDOFF.md format
 
@@ -83,7 +83,7 @@ Only when the user invokes it (`$session-handoff`, `/session-handoff`):
 - The wording of the success criteria is the same as the original set in problem-framing. If it changed, the user's approval and the reason are in the decision log.
 - For each key decision, the summary, the options considered, the reason for the choice, the rejected options and why, and the confidence are in the decision log.
 - The run instructions in HANDOFF.md were just run directly, and the full test suite passed. When handing off mid-task, write the last test result and the failing tests instead.
-- If there is a git repository, there are no uncommitted changes. Nothing was pushed.
+- If there is a git repository, there are no uncommitted changes (mid-task: except the files listed in `## 남은 일`). Nothing was pushed.
 - No secret keys or personal data are in the code, records, or commits.
 - The requirements documents were not changed without asking. The deliverable format is as the documents specify.
 - Reading the task list and the decision log in NOTES.md in order shows the flow of the work and the trade-offs of each decision.

@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.46.0"
+  version: "1.47.0"
 ---
 
 # Task Breakdown
@@ -172,7 +172,7 @@ Tasks whose method, completion criteria, and verification command are settled, a
    - Do not write the same decision twice. New news about the same decision, such as approval, the choice, or the implementation result, is reflected by updating that decision's entry. Write a new entry only when the decision switched to another option, and add "바뀜: → D번호" to the original entry.
    - Also record the counterexamples found and the bugs fixed in this task as entries in the decision log.
    - For tasks that changed behavior or performance, record the numbers measured before and after under the same conditions and metric in the "검증" line of the decision log (explain-as-you-go "Record the effect of a decision as before/after numbers"). For performance tasks, measure before changing anything.
-8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If no task remains, ask "마무리를 시작할까요?" instead of attaching a proposal, and end the response. If any of the five lines is missing, the report is not finished (the fast path uses its two-line report instead). If you did not do the checks, go back to step 5 and do them before reporting.
+8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If no task remains, ask "마무리를 시작할까요?" instead of attaching a proposal, and end the response. If the 75% point has passed and tasks remain, do not attach a proposal; ask "남은 작업(Tn…)은 보류로 두고 마무리를 시작할까요?" and end the response. If the user says to continue, follow that. If any of the five lines is missing, the report is not finished (the fast path uses its two-line report instead). If you did not do the checks, go back to step 5 and do them before reporting.
 
    ```text
    흐름: 입력 dt → `Skill.update()`에서 남은 시간에서 뺌 → `try_use()`가 남은 시간 1e-9초 이하면 사용 · 정한 값: 허용 오차 1e-9초(D14)

@@ -13,6 +13,7 @@ Tasks whose method and completion criteria are settled are tasks where the human
 2. **Get the batch approved at once.** Gather, in one response, the method proposal from Execution loop 2 for each task in the batch (a comparison for those that need one, "알리고 진행" for the rest) and the instruction drafts. Show along with them: the time saved (estimate), the risks (conflicts when merging, bugs that appear only after merging), and the options for how to delegate — "서브에이전트" if the tool supports it, otherwise "다른 터미널", and "하나씩 진행". Add a sentence asking the user to write a one-line reason or change when choosing, and **end the response here.**
 3. **Write the instructions.** For each approved task, write it so that a party that does not know this conversation can work from the instruction alone. Add the following to the "Instruction format" in SKILL.md.
    - On the first line, the skills to follow. In Codex, `$explain-as-you-go $test-driven-development`.
+   - "이 지시는 이미 승인된 작업이다. 요약하고 확인을 기다리지 말고 바로 시작한다. `## 지금 상태`를 포함해 NOTES.md는 고치지 않는다." (This overrides the shared rules for a new session and for stopping.)
    - Context: the parts of `## 문제 정의` and the success criteria in NOTES.md that this task needs, the decided interfaces, the approved method and completion criteria, and the verification command
    - The list of files to create and change, and "이 목록 밖의 파일은 고치지 않는다"
    - "지시문에 없는 결정(동작 규칙, 인터페이스 변경, 범위)을 해야 하면 정하지 말고 멈추고 보고한다."
