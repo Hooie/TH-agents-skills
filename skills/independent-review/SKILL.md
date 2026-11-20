@@ -4,7 +4,7 @@ description: Use when you have finished one large piece of work, before wrapping
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Independent Review
@@ -25,7 +25,7 @@ This skill is split into two roles.
    - End commit: the current HEAD. If there are uncommitted changes, ask the user whether to commit them before the review. The reviewer sees only what is committed.
    - Check the list of commits in the range with `git log --oneline 시작..끝` and put it in the prompt.
 2. **Prepare the reviewer prompt.** Fill in the "Reviewer prompt template" below. Keep to what goes in and what stays out.
-   - Goes in: the path of the requirements document, NOTES.md `## 문제 정의`, `## 성공 기준`, `## 확인 질문과 답` (rules agreed with the user or with whoever requested the work), the run and test commands, and the review range (two commits).
+   - Goes in: the path of the requirements document, NOTES.md `## 문제 정의`, the criterion sentences of `## 성공 기준` (without `[x]` marks or the 성공 기준 대조표), `## 확인 질문과 답` (rules agreed with the user or with whoever requested the work), the run and test commands, and the review range (two commits).
    - Stays out: the conversation history, `## 지금까지의 흐름`, the reasons and alternatives comparisons in the decision log, and notes such as "여기는 이미 확인했다" (this part has already been checked). If the working side's judgment gets in, the reviewer follows the same blind spots.
 3. **Hand it to the user.** Show the prompt as a single code block, give the guidance below, and **stop.**
    - "새 터미널에서 이 폴더로 새 세션을 열고 아래 지시문을 그대로 붙여 넣어 주세요. 리뷰 결과가 나오면 여기에 붙여 주세요."
@@ -60,7 +60,7 @@ This skill is split into two roles.
 
 ## 요구사항
 - 요구사항 문서: (경로)
-- 성공 기준: (NOTES.md `## 성공 기준`을 그대로 붙인다)
+- 성공 기준: (NOTES.md `## 성공 기준`의 기준 문장만 붙인다. `[x]` 표시, 성공 기준 대조표, 확인한 테스트는 뺀다)
 - 정해진 규칙: (NOTES.md `## 확인 질문과 답`에서 동작 규칙만 붙인다)
 - 만들지 않을 것과 제약: (NOTES.md `## 문제 정의`의 만들지 않을 것, 제약, 앞으로 바뀔 것)
 

@@ -4,7 +4,7 @@ description: Use right after the problem is defined, before starting implementat
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.40.0"
+  version: "1.41.0"
 ---
 
 # Task Breakdown
@@ -63,7 +63,7 @@ At each point below, this skill ends its response and waits for the user's answe
      ```
      (Claude Code: `/task-breakdown`.) Do not write HANDOFF.md for this; NOTES.md is enough at this point.
 7. **Run one task at a time.** Go through the execution loop below for each task.
-8. **Handle bugs and changes that come in midway as tasks too.** When the user reports a bug or a requirement change midway, add it to the task table as a new task (T number) and run the same execution loop. Even if it looks urgent, do not cut down the method proposal, writing a failing test first, the five-line report, or the commit message format (task ID and verification result).
+8. **Handle bugs and changes that come in midway as tasks too.** When the user reports a bug or a requirement change midway, add it to the task table as a new task (T number) and run the same execution loop. Even if it looks urgent, do not cut down the method proposal, writing a failing test first, the five-line report, or the commit message format (task ID and verification result), unless every fast-path condition is met.
 9. **Stop when spinning in place.** If the same failure (the same test fails or the same symptom remains) is not resolved after **two** fixes, do not attempt a third fix. If you keep fixing, the conversation fills up with failed attempts and blurs the next attempt as well.
    - Write what was tried and why each attempt failed in NOTES.md, and update "막힌 것" in `## 지금 상태`.
    - Question the initial assumptions and form the root-cause hypotheses again (from systematic-debugging Phase 1). Compare new approaches as alternatives, show them to the user, and stop.
@@ -162,7 +162,7 @@ Tasks whose method and completion criteria are settled are tasks where the human
    - **Add comments.** Add comments that give the reasons to code you added or changed, always in Korean, even if the file's existing comments are in another language (explain-as-you-go "How to write comments"). Do not put decision numbers or task numbers in comments.
    - **Pin the behavior before changing it.** If the existing code to be changed has no tests, first write one test that checks the current behavior as it is and see it pass. If this test breaks after the change, confirm whether the change was intended, and if it was, record the reason for changing the test in the decision log.
    - A task whose verification is "수동" is the TDD exception confirmed in Procedure 6, so implement it directly and record the manual check result.
-5. **Check the result.** Read the diff and strip out changes nobody asked for. Then check the eight items below and record the result in `## 검증 결과` as a list of findings or as "지적 없음(확인한 항목: ...)". Do this for every task regardless of language, and do not skip it.
+5. **Check the result.** Read the diff and strip out changes nobody asked for. Then check the eight items below and record the result in `## 검증 결과` as a list of findings or as "지적 없음(확인한 항목: ...)". Do this for every task regardless of language, and do not skip it. The fast path is the only exception: it does only the checks listed in its flow.
    - **Correctness:** boundary values (exactly 0, the maximum), accumulated error (adding or subtracting floating-point numbers many times), integer overflow, dividing by 0
    - **Over-engineering:** whether defensive code, abstraction, generalization, or configuration options without basis in the requirements were added. For example: write-contention protection on a read-only API, an interface used in only one place. If there are any, strip them out, or give a requirements sentence as the reason to keep them and record it in the decision log. For a "더 견고한" (sturdier) structure suggested by an AI, first ask whether this product's requirements and scale need it.
    - **Spec comparison:** missing requirements, features nobody asked for, anything that will behave differently from the spec. For each finding, quote the spec sentence that backs it (the original request, the success criteria, answers to the confirmation questions).
@@ -189,7 +189,7 @@ Tasks whose method and completion criteria are settled are tasks where the human
    - Do not write the same decision twice. New news about the same decision, such as approval, the choice, or the implementation result, is reflected by updating that decision's entry. Write a new entry only when the decision switched to another option, and add "바뀜: → D번호" to the original entry.
    - Also record the counterexamples found and the bugs fixed in this task as entries in the decision log.
    - For tasks that changed behavior or performance, record the numbers measured before and after under the same conditions and metric in the "검증" line of the decision log (explain-as-you-go "Record the effect of a decision as before/after numbers"). For performance tasks, measure before changing anything.
-8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If any of the five lines is missing, the report is not finished. If you did not do the checks, go back to step 5 and do them before reporting.
+8. **Report and stop.** Report this task's result in the five lines below, attach the next task's method proposal and instruction draft (step 2) in the same response, and end the response. If any of the five lines is missing, the report is not finished (the fast path uses its two-line report instead). If you did not do the checks, go back to step 5 and do them before reporting.
 
    ```text
    흐름: 입력 dt → `Skill.update()`에서 남은 시간에서 뺌 → `try_use()`가 남은 시간 1e-9초 이하면 사용 · 정한 값: 허용 오차 1e-9초(D14)

@@ -1,10 +1,10 @@
 ---
 name: session-handoff
-description: Use before switching to a new session, before summarizing the conversation (compact), before pausing the work for a long time, and right before opening a PR or handing off the work. Organize the current state, the work done and remaining, how to run and verify, the key decisions, and the remaining risks in HANDOFF.md so that another person or a new session can pick it up right away, and check that the run instructions actually work. Do not mix your notes into requirement documents written by others. When starting a new session, read HANDOFF.md first. Use before switching sessions, compacting, pausing, or handing off work (e.g. opening a PR).
+description: Use when the user invokes it to hand off unfinished or finished work: before moving to a new session mid-task, before pausing the work for a long time, or before handing the work to another person. Organize the current state, the work done and remaining, how to run and verify, the key decisions, and the remaining risks in HANDOFF.md so that another person or a new session can pick it up right away, and check that the run instructions actually work. Do not mix your notes into requirement documents written by others. When starting a new session, read HANDOFF.md first. Use only when the user invokes it, to hand off work to a new session, a pause, or another person.
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.10.0"
+  version: "1.11.0"
 ---
 
 # Session Handoff
@@ -15,19 +15,20 @@ Make it so that even when the session changes or the work passes to someone else
 
 ## When to use
 
-- Right before moving to a new session or compacting because the context has grown long
+Only when the user invokes it (`$session-handoff`, `/session-handoff`):
+- Right before moving to a new session mid-task because the context has grown long (a new session right after the task list is approved needs only NOTES.md)
 - When pausing the work or handing it over to another person or another agent
-- Right before opening a PR or handing over the deliverable
+- When handing over the finished deliverable
 - When starting a new session (in this case, do only "When taking over" below)
 
 ## When handing off
 
-1. **Bring NOTES.md up to date.** Check that the task list statuses, the decision log, and the verification results match the actual code. If it is right before handing off and `## 검증 결과` has no record of rechecking all the success criteria, do verification-before-completion first.
+1. **Bring NOTES.md up to date.** Check that the task list statuses, the decision log, and the verification results match the actual code. If the work is finished and `## 검증 결과` has no record of rechecking all the success criteria, do verification-before-completion first. If handing off mid-task, do not recheck everything; record the time of the last verification and the criteria not yet met.
    - Read the decision log in order from the beginning. Check that the order of the decisions and the numbers match and that each entry has a reason, benefits, trade-offs, and a code location, and fill in the gaps.
 2. **Recheck the run instructions.** Run the install, run, and test commands that will go into HANDOFF.md `## 실행과 검증` exactly as written, as someone seeing them for the first time. If they fail, fix the commands or the code.
    - Do not mix your notes into requirement documents written by others. Write the run instructions in HANDOFF.md. If there is a reason to change the document, ask the user first.
    - If the requirements document specifies the format of the deliverable (file names, locations, how to run it, output format), check again that it matches exactly.
-3. **Write HANDOFF.md.** Create it at the root of the work folder in the format below. If it already exists, do not overwrite it; update the upper part.
+3. **Write HANDOFF.md.** Create it at the root of the work folder in the format below. If it already exists, do not write it again from scratch; update `## 요약`, `## 작업 흐름`, `## 실행과 검증`, `## 끝난 일`, `## 남은 일`, and `## 남은 위험과 알려진 문제` to the current state, and keep the rest unless it changed.
    - Write it so that someone seeing it for the first time understands what was done and why from HANDOFF.md alone. Follow explain-as-you-go "How to write records people read": complete sentences, internal jargon spelled out, content alongside numbers, concrete values.
    - Do not copy content that lives elsewhere wholesale; write the gist in one or two sentences and add the location. Do not end with only "NOTES.md 참고". Keep the detailed alternatives comparisons and the verification process only in NOTES.md.
    - Do not write API keys, passwords, tokens, or personal data. If they appear in commands or output, replace them with `<REDACTED>`.

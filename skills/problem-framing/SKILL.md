@@ -4,7 +4,7 @@ description: Use before writing code when you first receive work that needs mult
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.26.0"
+  version: "1.27.0"
 ---
 
 # Problem Framing
@@ -38,6 +38,8 @@ If the user invoked this skill directly, follow the whole procedure below even i
 ### Step 0: Check the shared rules
 
 This skill was written assuming the shared working rules (comparing alternatives, asking before starting, facts and evidence, stopping and waiting). If the instructions this session received (AGENTS.md, CLAUDE.md, etc.) already contain a "Working rules (my-agent-skills)" section (or the older "작업 규칙 (my-agent-skills)"), skip this step. If not, read `references/rules.md` in this skill folder all the way through and follow those rules until this work is finished. This is so that the same rules apply even in an environment where only the skills are installed and there is no global instruction file. If you read it, leave one line in the first response: "공통 규칙: references/rules.md를 읽음".
+
+Also read two sections of explain-as-you-go (`../explain-as-you-go/SKILL.md`), because this skill uses them before task-breakdown does: "Decisions to ask vs. decisions to announce" and "How to write the decision log". Skip this if it is not installed.
 
 ### Step 1: Ask, then stop
 
@@ -126,7 +128,7 @@ A2. 그 과정에서 가장 불편하거나 자주 틀리는 부분은 무엇인
 9. **Set the success criteria.** Write them in a checkable form: tests that must pass, numeric targets (ms, fps, memory, input size), symptoms that must not reproduce. Do not write criteria such as "잘 동작한다" (works well). Attach a source to each criterion: (요구사항 문서 7행), (사용자 전달), (요청자 답), (사용자 답 — 29번째 프레임에는 안 써진다), (추정 — 사용자 확인). For numeric criteria, also write the current value and where it is measured (for example, "두 번째 열기 35ms → 10ms 이하, `stat unit` 3회 평균").
    - **Turn "never" and "always" into criteria.** When the requester or the user says something must never or always happen, write it as its own success criterion with its source. Under it, list three or more inputs that could break it, taken from the real data and from how that data is produced (blank lines, missing columns, empty or non-number values, every row invalid). For each input, write what should happen: 결과가 나온다 / 그 줄만 빼고 알린다 / 멈추고 오류를 낸다. If which one is unclear, ask. These inputs become test cases in task-breakdown.
      예: "설정 파일에 잘못된 줄이 있어도 게임이 켜진다 (요청자 답 — 안 켜지는 건 절대 안 돼요). 깨뜨릴 입력: 중간 빈 줄 → 빼고 알림 / 칸이 모자란 줄 → 빼고 알림 / 값이 숫자가 아님 → 빼고 알림"
-   - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then send the `## 문제 정의` block in NOTES.md as the agreement message, as it is; do not write a separate message. Record the requester's reply, quoted, on its "요청자 확인" line, and fix the lines the reply corrects.
+   - If the requester can be asked, check the criteria with them before building. First, for rules or criteria that the AI or the user set (thresholds, the decision method such as exact versus approximate, parameters), write 2–3 options as a question the requester can pick from. Then send the `## 문제 정의` block in NOTES.md as the agreement message, with one change only: on the 원인 lines, drop the 확인됨/가설/미확인 marks and the predicted/observed numbers, and write each cause in plain words the requester can read. Do not add or remove anything else, and do not write a separate message. Record the requester's reply, quoted, on its "요청자 확인" line, and fix the lines the reply corrects.
 10. **Write what will not be built.** Based on the scope the user answered, fill in the "만들지 않을 것" line of `## 문제 정의`.
 11. **Pick the core problem.** Make the problem with the biggest impact on the success criteria the top priority, and write the reason in one line.
 12. **Compare approaches.** Compare 2–3 ways to solve the top-priority problem on success criteria, risk, and time required, and write the recommendation, the reason for choosing it, and the reason for rejecting each alternative. Follow explain-as-you-go "When proposing solutions" for the format. If there is only one reasonable approach, write "대안 없음 — 이유". When the user chooses, write this comparison as a D entry in the decision log.
@@ -160,7 +162,7 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 # NOTES
 
 ## 문제 정의
-(Fill this in as a draft once NOTES.md exists. Write "미확인" on lines not yet known. When the six-step order of requester questions is done, this block is sent as the agreement message as it is.)
+(Fill this in as a draft once NOTES.md exists. Write "미확인" on lines not yet known. When the six-step order of requester questions is done, this block is sent as the agreement message, with the 원인 marks and numbers dropped.)
 - 문제: (who, when, what goes wrong — source)
 - 원인: (one line per cause — there can be several. Each anomaly found in the data or code is its own line. For new builds, write "지금 방식의 불편" instead)
   - 확인됨 — … (evidence; predicted … = observed …) / 가설 — … / 미확인
@@ -195,7 +197,7 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 
 ## 지금 상태
 (Update this whenever a task is finished and whenever you stop after sending questions. If the conversation is compacted, read from here and continue.)
-- 진행 중: T3 — 방법 승인 대기 / 구현 중 / 검증 중 / 없음
+- 진행 중: T3 — 방법 승인 대기 / 구현 중 / 검증 중 / 작업 목록 승인, 다음은 T1 방법 제안 / 없음
 - 다음 할 일: (one line)
 - 마지막 커밋과 테스트: a1b2c3d, 전체 테스트 16건 통과 (22:26)
 - 답을 기다리는 질문: 없음 / Q5 (one-line summary)
@@ -224,7 +226,7 @@ NOTES.md is split into two parts. The front part, "읽는 부분" (the reading p
 ## 확인 질문과 답
 - 사용자 전달: (information received outside the document. If none, "없음")
 - 요청자 답: (answers obtained by asking the requester, and the confirmed summary. If there was nobody to ask, "없음")
-- 처음 상태: (if there was existing code, the build and test results and commands from before changing it. Initial numbers are written only here)
+- 처음 상태: 시작 커밋 … (`git rev-parse --short HEAD`; "git 없음" if there is no repository) / (if there was existing code, the build and test results and commands from before changing it. Initial numbers are written only here)
 - Q1. 언어 → C++17 (사용자, 추천과 같음) — 근거: 요구사항 문서 3행
 - Q2. 쿨다운 0인 프레임에 바로 사용 → 예 (사용자) → D2
 
