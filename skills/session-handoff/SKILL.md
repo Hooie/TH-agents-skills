@@ -4,7 +4,7 @@ description: Use when the user invokes it to hand off unfinished or finished wor
 license: MIT
 metadata:
   author: my-agent-skills
-  version: "1.14.0"
+  version: "1.15.0"
 ---
 
 # Session Handoff
@@ -16,7 +16,7 @@ Make it so that even when the session changes or the work passes to someone else
 ## When to use
 
 Only when the user invokes it (`$session-handoff`, `/session-handoff`):
-- Right before moving to a new session mid-task because the context has grown long (a new session right after the task list is approved needs only NOTES.md)
+- Right before moving to a new session mid-task because the context has grown long (a new session right after problem-framing or right after the task list is approved needs only NOTES.md)
 - When pausing the work or handing it over to another person or another agent
 - When handing over the finished deliverable
 - When starting a new session (in this case, do only "When taking over" below)
